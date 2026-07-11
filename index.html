@@ -2,10 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- 
+      ========================================================================
+      PROJECT: Premium Community App
+      DEVELOPER: Roni Vai
+      COUNTRY: Made in Bangladesh 🇧🇩
+      DESCRIPTION: A Facebook-style community app with Firebase v10, Telegram Bot, 
+                   Pure CSS AI Cat, GPS Location, and Push Notifications.
+      ========================================================================
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Community App - Developer by Roni Vai</title>
-    <!-- Google Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Community App - Developer by Roni Vai</title>
+    
+    <!-- Google Fonts for Modern UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
     <!-- OneSignal SDK for Push Notifications -->
@@ -13,283 +25,1055 @@
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       OneSignalDeferred.push(function(OneSignal) {
-        OneSignal.init({
-          appId: "YOUR_ONESIGNAL_APP_ID", // আপনার OneSignal App ID এখানে বসাবেন
+        OneSignal.init({ 
+            appId: "YOUR_ONESIGNAL_APP_ID" // Your OneSignal App ID
         });
       });
     </script>
 
     <style>
-        /* =========================================
-           1. CORE STYLES & CLEAN UI VARIABLES
-        ========================================= */
+        /* ========================================================================
+           1. CORE CSS VARIABLES (THEME SETTINGS)
+           ======================================================================== */
         :root {
-            --primary: #2563eb; /* Clean Blue */
-            --primary-dark: #1d4ed8;
-            --bg-color: #f3f4f6; /* Light Gray Background */
-            --card-bg: #ffffff;
-            --text-dark: #111827;
-            --text-gray: #6b7280;
-            --danger: #ef4444;
-            --success: #10b981;
-            --border-color: #e5e7eb;
+            --primary-color: #0866ff; /* Facebook Blue */
+            --primary-hover: #075ce5;
+            --background-gray: #f0f2f5;
+            --white-color: #ffffff;
+            --text-main: #050505;
+            --text-muted: #65676b;
+            --danger-color: #e41e3f;
+            --danger-hover: #c91835;
+            --border-color: #ced0d4;
+            --success-color: #16a34a;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-dark); height: 100vh; width: 100vw; overflow: hidden; display: flex; flex-direction: column; }
-        .hidden { display: none !important; }
-        
-        /* Typography & Inputs */
-        h1, h2, h3, h4 { color: var(--text-dark); }
-        .input-field { width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 15px; outline: none; transition: 0.2s; background: #f9fafb; margin-bottom: 12px; }
-        .input-field:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        
-        /* Buttons */
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn:active { transform: scale(0.97); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }
-        .btn-danger { background: #fef2f2; color: var(--danger); border: 1px solid #fca5a5; padding: 6px 12px; border-radius: 8px; font-size: 13px; width: auto; }
 
-        /* App Layout */
-        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; z-index: 10; background: var(--bg-color); animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .header { background: var(--card-bg); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 40; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .content-area { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 100px; }
+        /* ========================================================================
+           2. GLOBAL RESETS & TYPOGRAPHY
+           ======================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* =========================================
-           2. BOTTOM NAVIGATION & FAB (CREATE POST)
-        ========================================= */
-        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; padding: 10px 0 20px; z-index: 50; }
-        .nav-item { font-size: 24px; color: var(--text-gray); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -5px; width: 5px; height: 5px; background: var(--primary); border-radius: 50%; }
-        
-        /* Floating Action Button (New Post) */
-        .fab-post { width: 56px; height: 56px; background: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-size: 24px; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); transform: translateY(-15px); cursor: pointer; transition: 0.2s; border: 4px solid var(--bg-color); }
-        .fab-post:active { transform: translateY(-15px) scale(0.9); }
+        body {
+            background-color: var(--background-gray);
+            color: var(--text-main);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-        /* =========================================
-           3. POST CREATION MODAL (OVERLAY)
-        ========================================= */
-        #create-post-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--card-bg); z-index: 100; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s ease; }
-        #create-post-modal.show { transform: translateY(0); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border-color); }
-        .modal-body { padding: 20px; flex: 1; overflow-y: auto; }
-        
-        /* =========================================
-           4. FEED & POST CARDS
-        ========================================= */
-        .post-card { background: var(--card-bg); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
-        .post-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #e5e7eb; }
-        .post-text { font-size: 15px; line-height: 1.5; margin-bottom: 10px; color: var(--text-dark); word-wrap: break-word; }
-        .post-img { width: 100%; border-radius: 12px; margin-bottom: 10px; max-height: 300px; object-fit: cover; }
-        .gps-badge { display: inline-flex; align-items: center; gap: 5px; background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 12px; font-size: 12px; margin-bottom: 10px; font-weight: 500; }
-        
-        .action-bar { display: flex; gap: 20px; border-top: 1px solid var(--border-color); padding-top: 12px; color: var(--text-gray); }
-        .action-btn { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; cursor: pointer; }
-        .comment-box { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color); }
-        
-        .tag { color: var(--primary); font-weight: 600; cursor: pointer; }
+        .hidden {
+            display: none !important;
+        }
 
-        /* =========================================
-           5. PROFILE REDESIGN (CLEAN & PROFESSIONAL)
-        ========================================= */
-        .profile-header-bg { height: 120px; background: linear-gradient(135deg, var(--primary), #60a5fa); border-radius: 0 0 20px 20px; }
-        .profile-top { display: flex; flex-direction: column; align-items: center; margin-top: -50px; margin-bottom: 20px; }
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--bg-color); object-fit: cover; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .cam-btn { transform: translate(30px, -30px); background: var(--text-dark); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid var(--bg-color); cursor: pointer; }
-        
-        .stats-row { display: flex; justify-content: center; gap: 40px; margin-bottom: 25px; background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .stat { text-align: center; }
-        .stat span { display: block; font-size: 20px; font-weight: 700; color: var(--text-dark); }
-        .stat small { font-size: 13px; color: var(--text-gray); }
+        /* ========================================================================
+           3. BUTTON STYLES
+           ======================================================================== */
+        .btn {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
 
-        .settings-card { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .developer-credit { text-align: center; padding: 20px; font-size: 12px; font-weight: 700; color: var(--text-gray); letter-spacing: 1px; text-transform: uppercase; }
+        .btn:active {
+            transform: scale(0.98);
+        }
 
-        /* =========================================
-           6. PURE CSS AI CAT (Fixed & Neat)
-        ========================================= */
-        #ai-assistant { position: fixed; bottom: 100px; right: 20px; z-index: 150; cursor: pointer; animation: bounce 3s infinite ease-in-out; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        .cat-icon { width: 50px; height: 50px; background: white; border-radius: 50%; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: 2px solid var(--primary); display: flex; justify-content: center; align-items: center; }
-        .cat-ear-l, .cat-ear-r { position: absolute; top: -5px; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 15px solid white; }
-        .cat-ear-l { left: 2px; transform: rotate(-25deg); } .cat-ear-r { right: 2px; transform: rotate(25deg); }
-        .cat-eye-l, .cat-eye-r { width: 8px; height: 8px; background: var(--text-dark); border-radius: 50%; position: absolute; top: 18px; }
-        .cat-eye-l { left: 12px; } .cat-eye-r { right: 12px; }
-        .cat-nose { width: 6px; height: 4px; background: #f472b6; border-radius: 50%; position: absolute; top: 25px; }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            width: 100%;
+        }
 
-        /* Secret Admin Panel */
-        #admin-panel { background: #111827; color: #10b981; font-family: monospace; z-index: 999; }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #e4e6eb;
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #d8dadf;
+        }
+
+        .btn-danger {
+            background-color: #fee2e2;
+            color: var(--danger-color);
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .btn-danger:hover {
+            background-color: #fecaca;
+        }
+
+        /* ========================================================================
+           4. FORM INPUTS & TEXTAREAS
+           ======================================================================== */
+        input[type="text"], 
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+            background-color: var(--white-color);
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus, 
+        textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(8, 102, 255, 0.2);
+        }
+
+        /* ========================================================================
+           5. SCREEN LAYOUT CONTROLS
+           ======================================================================== */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-gray);
+            z-index: 10;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 80px; /* Space for bottom nav */
+            scroll-behavior: smooth;
+        }
+
+        /* ========================================================================
+           6. TOP HEADER (LOGO, SEARCH, INBOX)
+           ======================================================================== */
+        .top-header {
+            background-color: var(--white-color);
+            height: 65px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            z-index: 50;
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: #e4e6eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: background-color 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: #d8dadf;
+        }
+
+        /* Search Bar inside Header */
+        .search-bar {
+            background-color: var(--background-gray);
+            border-radius: 25px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 220px;
+            transition: width 0.3s ease;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            padding: 0;
+            font-size: 15px;
+            width: 100%;
+        }
+
+        .search-bar input:focus {
+            box-shadow: none;
+        }
+
+        /* Dropdown Menus (Search Results & Notifications) */
+        .dropdown-menu {
+            position: absolute;
+            top: 70px;
+            background-color: var(--white-color);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            z-index: 100;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            padding: 10px;
+        }
+
+        #search-results {
+            left: 15px;
+            width: calc(100% - 30px);
+        }
+
+        #notif-dropdown {
+            right: 15px;
+            width: 320px;
+        }
+
+        .notif-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--background-gray);
+            font-size: 14px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
+        .notif-item:hover {
+            background-color: var(--background-gray);
+        }
+
+        /* ========================================================================
+           7. FACEBOOK-STYLE POST CREATION (WHAT'S ON YOUR MIND?)
+           ======================================================================== */
+        .fb-create-post-card {
+            background-color: var(--white-color);
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .fb-create-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--background-gray);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .fb-create-top img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .fb-dummy-input {
+            flex: 1;
+            background-color: var(--background-gray);
+            padding: 12px 20px;
+            border-radius: 25px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .fb-dummy-input:hover {
+            background-color: #e4e6eb;
+        }
+
+        .fb-create-actions {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .fb-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .fb-action:hover {
+            background-color: var(--background-gray);
+        }
+
+        /* Post Creation Full Modal */
+        #post-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--white-color);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #post-modal.show {
+            transform: translateY(0);
+        }
+
+        .pm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pm-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .pm-textarea {
+            width: 100%;
+            border: none;
+            font-size: 20px;
+            outline: none;
+            resize: none;
+            min-height: 150px;
+            padding: 0;
+        }
+
+        .add-to-post {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        /* ========================================================================
+           8. POST FEED CARDS (NEWSFEED)
+           ======================================================================== */
+        .post-card {
+            background-color: var(--white-color);
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 15px 15px 5px;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .post-header img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .post-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-main);
+        }
+
+        .post-time {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .post-text {
+            font-size: 16px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .post-image {
+            width: calc(100% + 30px);
+            margin-left: -15px;
+            max-height: 450px;
+            object-fit: cover;
+            margin-bottom: 12px;
+        }
+
+        .gps-tag {
+            font-size: 13px;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--background-gray);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 5px 0;
+        }
+
+        .post-action-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            font-size: 15px;
+        }
+
+        .post-action-btn:hover {
+            background-color: var(--background-gray);
+        }
+
+        /* ========================================================================
+           9. PROFILE PAGE & SETTINGS MODAL
+           ======================================================================== */
+        .profile-cover {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            position: relative;
+        }
+
+        .profile-pic-large {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 5px solid var(--white-color);
+            position: absolute;
+            bottom: -50px;
+            left: 20px;
+            object-fit: cover;
+            background: var(--white-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .profile-details {
+            padding: 60px 20px 20px;
+            background-color: var(--white-color);
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Edit Profile & Settings Modal */
+        #settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-gray);
+            z-index: 150;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #settings-modal.show {
+            transform: translateX(0);
+        }
+
+        .settings-header {
+            background-color: var(--white-color);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 20px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .settings-card {
+            background-color: var(--white-color);
+            margin: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .set-img-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .set-img-box img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            padding: 3px;
+        }
+
+        /* Made in Bangladesh Footer */
+        .made-in-bd {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--success-color);
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        /* ========================================================================
+           10. BOTTOM NAVIGATION BAR
+           ======================================================================== */
+        .bottom-nav {
+            background-color: var(--white-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 50;
+        }
+
+        .nav-item {
+            font-size: 26px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px 30px;
+            border-radius: 10px;
+            transition: color 0.2s, transform 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: var(--background-gray);
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        /* ========================================================================
+           11. PURE CSS AI CAT ICON (NO IMAGES USED)
+           ======================================================================== */
+        #ai-cat-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            z-index: 90;
+            cursor: pointer;
+            animation: floatCat 3s infinite ease-in-out;
+        }
+
+        @keyframes floatCat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .cat-head {
+            width: 55px;
+            height: 50px;
+            background-color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 50% 50% 40% 40%;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+        }
+
+        .ear-l, .ear-r {
+            position: absolute;
+            top: -10px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 18px solid #333333;
+        }
+
+        .ear-l::after, .ear-r::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: -7px;
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-bottom: 12px solid #f9a8d4; /* Pink inside */
+        }
+
+        .ear-l { left: -3px; transform: rotate(-22deg); }
+        .ear-r { right: -3px; transform: rotate(22deg); }
+
+        .eye {
+            width: 10px;
+            height: 10px;
+            background-color: #333333;
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            animation: catBlink 4s infinite;
+        }
+
+        @keyframes catBlink {
+            0%, 96%, 98%, 100% { transform: scaleY(1); }
+            97%, 99% { transform: scaleY(0.1); }
+        }
+
+        .eye-l { left: 12px; }
+        .eye-r { right: 12px; }
+
+        .nose {
+            width: 8px;
+            height: 5px;
+            background-color: #f472b6;
+            border-radius: 50%;
+            position: absolute;
+            top: 30px;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- 1. ONBOARDING SCREEN -->
-    <div id="onboarding-screen" class="screen" style="justify-content: center; align-items: center; padding: 30px; text-align: center; background: white;">
-        <div style="width: 100px; height: 100px; background: var(--primary); border-radius: 25px; display: flex; justify-content: center; align-items: center; font-size: 40px; color: white; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(37,99,235,0.3);">
-            <i class="fas fa-satellite-dish"></i>
-        </div>
-        <h1 style="font-size: 26px; margin-bottom: 10px;">Welcome to Community</h1>
-        <p style="color: var(--text-gray); margin-bottom: 40px; line-height: 1.5;">Connect with your friends, share your exact location, and explore viral content.</p>
-        <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="appUI.showLogin()">Done</button>
-        <button class="btn btn-outline" style="border: none;" onclick="appUI.showLogin()">Skip</button>
-    </div>
-
-    <!-- 2. LOGIN SCREEN -->
-    <div id="login-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; text-align: center; background: white;">
-        <h2 style="font-size: 28px; margin-bottom: 10px;">Sign In</h2>
-        <p style="color: var(--text-gray); margin-bottom: 40px;">Please authenticate to continue</p>
+    <!-- 
+      ========================================================================
+      UI SECTION 1: ONBOARDING SCREEN
+      ========================================================================
+    -->
+    <div id="onboarding-screen" class="screen" style="justify-content: center; align-items: center; padding: 30px; text-align: center; background-color: var(--white-color);">
         
-        <button class="btn" id="btn-google-login" style="background: #f3f4f6; color: var(--text-dark); border: 1px solid var(--border-color);">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="width: 20px;"> 
-            Login with Google
+        <i class="fas fa-globe-americas" style="font-size: 90px; color: var(--primary-color); margin-bottom: 40px;"></i>
+        
+        <h2 style="font-size: 28px; font-weight: 700; color: var(--text-main);">Welcome to Community</h2>
+        
+        <p style="color: var(--text-muted); margin: 20px 0 40px; font-size: 16px; line-height: 1.6;">
+            Connect with friends, share your location, explore trending posts, 
+            and interact safely in our verified environment.
+        </p>
+        
+        <button class="btn btn-primary" onclick="appUI.switchScreen('login')" style="padding: 15px; font-size: 18px;">
+            Get Started
         </button>
+        
+        <button class="btn" style="background: transparent; color: var(--primary-color); margin-top: 15px; font-size: 16px;" onclick="appUI.switchScreen('login')">
+            Skip Intro
+        </button>
+        
     </div>
 
-    <!-- 3. MAIN APP INTERFACE -->
+    <!-- 
+      ========================================================================
+      UI SECTION 2: LOGIN SCREEN
+      ========================================================================
+    -->
+    <div id="login-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; background-color: var(--white-color);">
+        
+        <h2 style="color: var(--primary-color); font-size: 34px; margin-bottom: 15px; font-weight: 700;">
+            Sign In
+        </h2>
+        
+        <p style="color: var(--text-muted); margin-bottom: 50px; font-size: 16px;">
+            Secure authentication via Google
+        </p>
+        
+        <button class="btn" id="btn-google-login" style="background-color: var(--background-gray); width: 100%; border: 1px solid var(--border-color); padding: 15px; font-size: 18px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="width: 24px; margin-right: 10px;" alt="Google Logo"> 
+            Continue with Google
+        </button>
+        
+    </div>
+
+    <!-- 
+      ========================================================================
+      UI SECTION 3: MAIN APP INTERFACE
+      ========================================================================
+    -->
     <div id="main-app" class="screen hidden">
         
-        <div class="header">
-            <h2 id="header-title" style="font-size: 20px;">Newsfeed</h2>
-            <!-- Search bar right in the header for easy access -->
-            <div style="position: relative; width: 55%;" id="search-container">
-                <input type="text" id="search-input" class="input-field" style="margin:0; padding: 8px 12px; font-size: 13px; border-radius: 20px;" placeholder="Search users...">
-                <div id="search-results" style="position: absolute; top: 40px; right: 0; width: 200px; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 12px; z-index: 60; max-height: 250px; overflow-y: auto; display: none;"></div>
+        <!-- ================= TOP HEADER ================= -->
+        <div class="top-header">
+            
+            <div class="logo">Community</div>
+            
+            <div class="header-actions">
+                <!-- Search System -->
+                <div class="search-bar">
+                    <i class="fas fa-search" style="color: var(--text-muted);"></i>
+                    <input type="text" id="search-input" placeholder="Search people...">
+                </div>
+                
+                <!-- Notifications Inbox (Top Right) -->
+                <div class="icon-btn" onclick="appUI.toggleInbox()" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                </div>
             </div>
+
+            <!-- Dynamic Search Results -->
+            <div id="search-results" class="dropdown-menu"></div>
+            
+            <!-- Dynamic Notifications Dropdown -->
+            <div id="notif-dropdown" class="dropdown-menu">
+                <h4 style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; font-size: 18px;">
+                    Notifications
+                </h4>
+                <div id="notifications-container"></div>
+            </div>
+            
         </div>
 
-        <!-- A. FEED TAB (ONLY POSTS HERE) -->
+        <!-- ================= FEED TAB ================= -->
         <div id="tab-feed" class="content-area">
+            
+            <!-- FB-Style Post Creation Trigger -->
+            <div class="fb-create-post-card">
+                <div class="fb-create-top">
+                    <img src="https://via.placeholder.com/45" id="feed-avatar" alt="Avatar">
+                    <div class="fb-dummy-input" onclick="appUI.openPostModal()">
+                        What's on your mind?
+                    </div>
+                </div>
+                <div class="fb-create-actions">
+                    <div class="fb-action" onclick="appUI.openPostModal()">
+                        <i class="fas fa-image" style="color: #45bd62; font-size: 20px;"></i> Photo
+                    </div>
+                    <div class="fb-action" onclick="appUI.openPostModal()">
+                        <i class="fas fa-map-marker-alt" style="color: #f5533d; font-size: 20px;"></i> Location
+                    </div>
+                </div>
+            </div>
+
+            <!-- Posts Inject Container -->
             <div id="feed-container">
-                <div style="text-align: center; color: var(--text-gray); margin-top: 40px;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
-            </div>
-        </div>
-
-        <!-- B. NOTIFICATIONS TAB -->
-        <div id="tab-notifications" class="content-area hidden">
-            <h3 style="margin-bottom: 15px; font-size: 18px;">Inbox</h3>
-            <div id="notifications-container"></div>
-        </div>
-
-        <!-- C. PROFILE TAB (REDESIGNED) -->
-        <div id="tab-profile" class="content-area hidden" style="padding: 0 0 100px 0;">
-            <div class="profile-header-bg"></div>
-            <div class="profile-top">
-                <div>
-                    <img src="https://via.placeholder.com/150" id="prof-avatar" class="profile-pic">
-                    <label class="cam-btn">
-                        <i class="fas fa-camera" style="font-size: 14px;"></i>
-                        <input type="file" id="upload-avatar-file" accept="image/*" class="hidden">
-                    </label>
+                <div style="text-align: center; margin-top: 40px; color: var(--text-muted);">
+                    <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+                    <p style="margin-top: 15px;">Loading amazing posts...</p>
                 </div>
-                <h2 id="display-name" style="font-size: 22px; margin-top: -15px;">Loading...</h2>
-                <p id="display-phone" style="color: var(--text-gray); font-size: 14px; margin-top: 5px;">---</p>
             </div>
+            
+        </div>
 
-            <div style="padding: 0 15px;">
-                <div class="stats-row">
-                    <div class="stat"><span id="stat-posts">0</span><small>Posts</small></div>
-                    <div class="stat"><span id="stat-followers">0</span><small>Followers</small></div>
-                    <div class="stat"><span id="stat-following">0</span><small>Following</small></div>
+        <!-- ================= PROFILE TAB ================= -->
+        <div id="tab-profile" class="content-area hidden">
+            
+            <!-- Profile Hero Section -->
+            <div class="profile-cover">
+                <img src="https://via.placeholder.com/150" id="prof-pic-main" class="profile-pic-large" alt="Profile Picture">
+            </div>
+            
+            <div class="profile-details">
+                <h2 id="prof-name-main" style="font-size: 28px; margin-bottom: 8px; font-weight: 700;">
+                    Loading User...
+                </h2>
+                
+                <p id="prof-phone-main" style="color: var(--text-muted); margin-bottom: 20px; font-size: 16px;">
+                    Phone Number Loading...
+                </p>
+                
+                <div style="display: flex; gap: 30px; font-weight: 600; margin-bottom: 25px; font-size: 18px;">
+                    <div><span id="stat-posts" style="font-size: 20px;">0</span> Posts</div>
+                    <div><span id="stat-followers" style="font-size: 20px;">0</span> Followers</div>
                 </div>
                 
-                <div class="settings-card">
-                    <h4 style="margin-bottom: 15px; color: var(--primary);">User Details</h4>
-                    <input type="text" id="prof-name" class="input-field" placeholder="Full Name">
-                    <input type="text" id="prof-phone" class="input-field" placeholder="Phone Number">
-                    
-                    <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; margin: 10px 0 20px; cursor: pointer;">
-                        <input type="checkbox" id="prof-phone-public" style="width: 18px; height: 18px;">
-                        Publish Phone Number
-                    </label>
-                    <button class="btn btn-primary" id="btn-save-profile">Save Changes</button>
-                </div>
-
-                <div class="settings-card">
-                    <h4 style="color: var(--danger); margin-bottom: 15px;"><i class="fas fa-shield-alt"></i> Block History</h4>
-                    <div id="block-list-container"></div>
-                </div>
-
-                <!-- REQUIRED CREDENTIAL -->
-                <div class="developer-credit">Developer by Roni Vai</div>
+                <!-- Open Detailed Settings -->
+                <button class="btn btn-secondary" style="width: 100%; padding: 14px; font-size: 16px;" onclick="appUI.openSettings()">
+                    <i class="fas fa-pen"></i> Edit Profile & Settings
+                </button>
             </div>
+            
+            <!-- App Trademark / Credential -->
+            <div class="made-in-bd">
+                Developer by Roni Vai 
+                <br> Made in Bangladesh <img src="https://flagcdn.com/w40/bd.png" style="width: 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);" alt="BD Flag">
+            </div>
+            
         </div>
 
-        <!-- Bottom Navigation -->
+        <!-- ================= BOTTOM NAVIGATION ================= -->
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="appUI.switchTab('feed')"><i class="fas fa-home"></i></div>
-            
-            <!-- NEW CREATE POST FAB -->
-            <div class="fab-post" onclick="appUI.openCreatePost()">
-                <i class="fas fa-plus"></i>
+            <div class="nav-item active" onclick="appUI.switchTab('feed')" title="Home">
+                <i class="fas fa-home"></i>
             </div>
-            
-            <div class="nav-item" onclick="appUI.switchTab('notifications')"><i class="fas fa-bell"></i></div>
-            <div class="nav-item" onclick="appUI.switchTab('profile')"><i class="fas fa-user"></i></div>
+            <div class="nav-item" onclick="appUI.switchTab('profile')" title="Profile">
+                <i class="fas fa-user-circle"></i>
+            </div>
         </div>
 
-        <!-- POST CREATION MODAL -->
-        <div id="create-post-modal">
-            <div class="modal-header">
-                <h3 style="font-size: 18px;">Create New Post</h3>
-                <i class="fas fa-times" style="font-size: 20px; color: var(--text-gray); cursor: pointer;" onclick="appUI.closeCreatePost()"></i>
+        <!-- 
+          ========================================================================
+          MODALS / OVERLAYS 
+          ========================================================================
+        -->
+
+        <!-- 1. FULL SETTINGS MODAL (WITH LOGOUT) -->
+        <div id="settings-modal">
+            
+            <div class="settings-header">
+                <i class="fas fa-arrow-left" style="cursor: pointer; padding: 10px; margin-left: -10px;" onclick="appUI.closeSettings()"></i> 
+                Settings & Privacy
             </div>
-            <div class="modal-body">
-                <textarea id="new-post-text" placeholder="What's on your mind? Use @username to tag..." style="width: 100%; height: 100px; border: none; outline: none; font-size: 16px; resize: none; background: transparent;"></textarea>
+            
+            <div style="flex:1; overflow-y:auto; padding-bottom: 80px;">
                 
-                <img id="new-post-img-preview" class="hidden" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin-bottom: 15px;">
-                
-                <!-- Explicit Location Display -->
-                <div id="post-location-display" class="hidden gps-badge" style="margin-bottom: 15px;"></div>
-                
-                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                    <label class="btn btn-outline" style="cursor: pointer; background: #f9fafb;">
-                        <i class="fas fa-image" style="color: var(--primary);"></i> Attach Image
-                        <input type="file" id="new-post-file" accept="image/*" class="hidden">
-                    </label>
-                    <button class="btn btn-outline" style="background: #f9fafb;" id="btn-get-location">
-                        <i class="fas fa-map-marker-alt" style="color: var(--danger);"></i> Add GPS Location
-                    </button>
-                    <button class="btn btn-primary" style="margin-top: 10px;" id="btn-publish-post">Publish Post</button>
+                <!-- Avatar Update -->
+                <div class="settings-card">
+                    <h3 style="margin-bottom: 20px; font-size: 18px;">Profile Picture</h3>
+                    <div class="set-img-box">
+                        <img src="https://via.placeholder.com/150" id="set-img-preview" alt="Preview">
+                        <br>
+                        <label class="btn btn-secondary" style="margin-top: 15px; display: inline-flex; cursor: pointer; padding: 10px 20px;">
+                            <i class="fas fa-camera"></i> Change Photo
+                            <input type="file" id="upload-avatar-file" accept="image/*" class="hidden">
+                        </label>
+                    </div>
                 </div>
+
+                <!-- Profile Information -->
+                <div class="settings-card">
+                    <h3 style="margin-bottom: 20px; font-size: 18px;">Personal Information</h3>
+                    
+                    <label style="color: var(--text-muted); font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                        Full Name
+                    </label>
+                    <input type="text" id="edit-name" style="margin-bottom: 20px;" placeholder="Enter full name">
+                    
+                    <label style="color: var(--text-muted); font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">
+                        Phone Number
+                    </label>
+                    <input type="text" id="edit-phone" style="margin-bottom: 15px;" placeholder="Enter phone number">
+                    
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 15px; font-size: 15px; font-weight: 500;">
+                        <input type="checkbox" id="edit-phone-public" style="width: 22px; height: 22px; accent-color: var(--primary-color);"> 
+                        Publish Phone Number to Public
+                    </label>
+                    
+                    <button class="btn btn-primary" style="margin-top: 25px; padding: 14px;" id="btn-save-settings">
+                        Save Changes
+                    </button>
+                </div>
+
+                <!-- Block History -->
+                <div class="settings-card">
+                    <h3 style="margin-bottom: 15px; color: var(--danger-color); font-size: 18px;">
+                        <i class="fas fa-user-shield"></i> Block History
+                    </h3>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+                        Users listed here are blocked. They cannot see your posts, interact with you, or find you in search.
+                    </p>
+                    <div id="block-list-container">
+                        <!-- Blocked users will appear here -->
+                    </div>
+                </div>
+
+                <!-- LOGOUT BUTTON (Added as Requested) -->
+                <div class="settings-card" style="text-align: center; background: #fff5f5; border: 1px solid #fecaca;">
+                    <h3 style="margin-bottom: 10px; color: var(--danger-color); font-size: 18px;">Account Access</h3>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                        Sign out of your account to log in with a different Google ID.
+                    </p>
+                    <button class="btn btn-danger" style="width: 100%; padding: 14px; font-size: 16px; justify-content: center;" onclick="coreLogic.logoutUser()">
+                        <i class="fas fa-sign-out-alt"></i> Log Out
+                    </button>
+                </div>
+
             </div>
         </div>
 
-        <!-- PURE CSS AI CAT ICON -->
-        <div id="ai-assistant" onclick="aiBot.talk()">
-            <div class="cat-icon">
-                <div class="cat-ear-l"></div>
-                <div class="cat-ear-r"></div>
-                <div class="cat-eye-l"></div>
-                <div class="cat-eye-r"></div>
-                <div class="cat-nose"></div>
+        <!-- 2. CREATE POST MODAL (FACEBOOK STYLE) -->
+        <div id="post-modal">
+            
+            <div class="pm-header">
+                <i class="fas fa-times" style="font-size: 22px; cursor: pointer; color: var(--text-muted); padding: 5px;" onclick="appUI.closePostModal()"></i>
+                <h3 style="font-size: 18px; font-weight: 600;">Create post</h3>
+                <button class="btn btn-primary" style="width: auto; padding: 8px 20px; border-radius: 6px; font-size: 15px;" id="btn-publish-post">
+                    POST
+                </button>
             </div>
+            
+            <div class="pm-body">
+                
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                    <img src="https://via.placeholder.com/50" id="pm-avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);">
+                    <div>
+                        <div style="font-weight: 700; font-size: 16px;" id="pm-name">User Name</div>
+                        <div style="font-size: 13px; background-color: #e4e6eb; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; font-weight: 500;">
+                            <i class="fas fa-globe-americas"></i> Public
+                        </div>
+                    </div>
+                </div>
+                
+                <textarea id="new-post-text" class="pm-textarea" placeholder="What's on your mind? (Use @username to tag)"></textarea>
+                
+                <img id="new-post-img-preview" class="hidden" style="width: 100%; border-radius: 12px; margin-bottom: 15px; max-height: 300px; object-fit: cover; border: 1px solid var(--border-color);">
+                
+                <div id="post-location-display" class="hidden" style="background: #e0f2fe; color: #0284c7; padding: 10px 15px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <!-- GPS Text goes here -->
+                </div>
+                
+                <div class="add-to-post">
+                    <span style="font-weight: 600; font-size: 16px; color: var(--text-main);">Add to your post</span>
+                    <div style="display: flex; gap: 20px; font-size: 26px;">
+                        <label style="cursor: pointer; transition: transform 0.2s;" title="Add Photo">
+                            <i class="fas fa-images" style="color: #45bd62;"></i>
+                            <input type="file" id="new-post-file" accept="image/*" class="hidden">
+                        </label>
+                        <i class="fas fa-map-marker-alt" style="color: #f5533d; cursor: pointer; transition: transform 0.2s;" id="btn-get-location" title="Add Location"></i>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- ================= PURE CSS AI CAT ICON ================= -->
+        <div id="ai-cat-btn" onclick="aiBot.talk()" title="Talk to AI Assistant">
+            <div class="cat-head">
+                <div class="ear-l"></div>
+                <div class="ear-r"></div>
+                <div class="eye eye-l"></div>
+                <div class="eye eye-r"></div>
+                <div class="nose"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 
+      ========================================================================
+      ADMIN TERMINAL (HIDDEN VIA URL PARAMETER ?admin=true)
+      ========================================================================
+    -->
+    <div id="admin-panel" class="screen hidden" style="padding: 25px; background-color: #000000; color: #00ff00; overflow-y: auto; font-family: monospace;">
+        <h2 style="border-bottom: 2px solid #00ff00; padding-bottom: 15px; margin-bottom: 20px;">
+            <i class="fas fa-shield-alt"></i> ROOT ADMIN TERMINAL
+        </h2>
+        <p style="color: #888888; font-size: 14px; margin-bottom: 25px;">
+            Warning: Direct Database Access. Actions are irreversible.
+        </p>
+        <div id="admin-posts-list">
+            <!-- Admin items load here -->
         </div>
     </div>
 
-    <!-- SECRET ADMIN PANEL (?admin=true) -->
-    <div id="admin-panel" class="screen hidden" style="padding: 20px; overflow-y: auto;">
-        <h2><i class="fas fa-terminal"></i> SYSTEM ADMIN</h2>
-        <p style="color: gray; font-size: 12px; margin-bottom: 20px;">Telegram alerts run automatically.</p>
-        <div id="admin-posts-list">Loading real-time DB...</div>
-    </div>
 
-
-    <!-- =========================================================
-         JAVASCRIPT & FIREBASE LOGIC
-    ========================================================= -->
+    <!-- ========================================================================
+         JAVASCRIPT LOGIC (HEAVILY COMMENTED & EXPANDED FOR CLARITY)
+         ======================================================================== -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, getDoc, setDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+        /* 
+         * IMPORTING FIREBASE v10 SDK MODULES
+         * Modular imports optimize the app and provide access to all necessary functions.
+         */
+        import { 
+            initializeApp 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            onAuthStateChanged,
+            signOut /* Added Logout Capability */
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            onSnapshot, 
+            query, 
+            orderBy, 
+            doc, 
+            updateDoc, 
+            getDoc, 
+            setDoc, 
+            deleteDoc, 
+            arrayUnion, 
+            arrayRemove 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        import { 
+            getStorage, 
+            ref, 
+            uploadBytesResumable, 
+            getDownloadURL 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-        // Firebase Config given by User
+        /* 
+         * ---------------------------------------------------------
+         * FIREBASE CONFIGURATION OBJECT
+         * This connects the frontend exactly to your provided DB.
+         * ---------------------------------------------------------
+         */
         const firebaseConfig = {
             apiKey: "AIzaSyCAtiOdN_n9IYBrsBG0G4H6xBmAYMkK_zM",
             authDomain: "news-app-94b75.firebaseapp.com",
@@ -300,454 +1084,1162 @@
             appId: "1:165815847758:web:a409bc847d7f9a0bb36c1f"
         };
 
+        // Initializing Firebase App and core services
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const storage = getStorage(app);
         const provider = new GoogleAuthProvider();
 
-        // TELEGRAM BOT CONFIG
-        // Note: The bot MUST be started (/start) by the user in Telegram for this to work!
+        /* 
+         * ---------------------------------------------------------
+         * TELEGRAM BOT CONFIGURATION
+         * Sent real-time alerts for critical actions.
+         * ---------------------------------------------------------
+         */
         const TG_TOKEN = "8886551340:AAG3VP-SL8uirznpQzUtmckb_H6qfs8GU00";
         const TG_CHAT_ID = "6438545807";
 
-        // Global State
-        let currentUserData = null;
-        let allUsers = [];
-        let postLocation = { lat: null, lng: null };
-        window.coreLogic = {}; 
+        /* 
+         * ---------------------------------------------------------
+         * GLOBAL APPLICATION STATE VARIABLES
+         * ---------------------------------------------------------
+         */
+        let currentUserData = null; // Holds the logged-in user's Firestore document
+        let allUsers = [];          // Caches all users for search and tagging
+        let postLocation = null;    // Holds GPS coordinates temporarily during post creation
 
-        // ==========================================
-        // UI Navigation
-        // ==========================================
+        // We attach logic to the window object so inline HTML functions can call them easily
+        window.coreLogic = {};
+
+        /* 
+         * ---------------------------------------------------------
+         * ROUTING & URL PARAMETER CHECK (ADMIN PANEL)
+         * ---------------------------------------------------------
+         */
         const urlParams = new URLSearchParams(window.location.search);
         const isAdminRoute = urlParams.get('admin') === 'true';
 
+        /* 
+         * ---------------------------------------------------------
+         * UI CONTROLLER METHODS
+         * Manages all screen transitions, modals, and tab switching
+         * ---------------------------------------------------------
+         */
         window.appUI = {
-            showLogin: () => {
-                document.getElementById('onboarding-screen').classList.add('hidden');
-                document.getElementById('login-screen').classList.remove('hidden');
-            },
-            switchTab: (tabId) => {
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.content-area').forEach(el => el.classList.add('hidden'));
+            /**
+             * Switches between main full-page screens (Onboarding, Login, Main App)
+             * @param {string} id - The prefix of the screen ID.
+             */
+            switchScreen: (id) => {
+                const screens = document.querySelectorAll('.screen');
+                screens.forEach(element => {
+                    element.classList.add('hidden');
+                });
                 
-                event.currentTarget.classList.add('active');
-                document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+                const targetScreen = document.getElementById(`${id}-screen`);
+                if (targetScreen) {
+                    targetScreen.classList.remove('hidden');
+                }
+            },
+            
+            /**
+             * Switches between bottom navigation tabs (Feed, Profile)
+             * @param {string} id - The ID of the tab to show.
+             */
+            switchTab: (id) => {
+                // Reset active states on navigation icons
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                });
                 
-                const title = document.getElementById('header-title');
-                const search = document.getElementById('search-container');
-                if(tabId === 'feed') { title.innerText = "Newsfeed"; search.style.display = 'block'; }
-                if(tabId === 'notifications') { title.innerText = "Inbox"; search.style.display = 'none'; window.coreLogic.renderNotifications(); }
-                if(tabId === 'profile') { title.innerText = "Profile"; search.style.display = 'none'; window.coreLogic.renderBlockList(); }
+                // Add active state to the clicked icon
+                if (event && event.currentTarget) {
+                    event.currentTarget.classList.add('active');
+                }
+                
+                // Hide all content areas
+                document.getElementById('tab-feed').classList.add('hidden');
+                document.getElementById('tab-profile').classList.add('hidden');
+                
+                // Show requested tab
+                const targetTab = document.getElementById(`tab-${id}`);
+                if (targetTab) {
+                    targetTab.classList.remove('hidden');
+                }
+                
+                // If profile is opened, refresh the block list to show latest data
+                if (id === 'profile') {
+                    window.coreLogic.renderBlockList();
+                }
             },
-            openCreatePost: () => {
-                document.getElementById('create-post-modal').classList.add('show');
+            
+            /**
+             * Toggles the visibility of the Top Notifications Inbox Dropdown
+             */
+            toggleInbox: () => {
+                const dropdown = document.getElementById('notif-dropdown');
+                
+                if (dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                } else {
+                    dropdown.style.display = 'block';
+                    // Render latest notifications when opening
+                    window.coreLogic.renderNotifications();
+                }
             },
-            closeCreatePost: () => {
-                document.getElementById('create-post-modal').classList.remove('show');
+            
+            /**
+             * Opens the Facebook-style "Create Post" modal
+             */
+            openPostModal: () => {
+                const modal = document.getElementById('post-modal');
+                modal.classList.add('show');
+            },
+            
+            /**
+             * Closes the post modal and resets all temporary input states
+             */
+            closePostModal: () => {
+                const modal = document.getElementById('post-modal');
+                modal.classList.remove('show');
+                
+                // Reset form fields
                 document.getElementById('new-post-text').value = "";
-                document.getElementById('new-post-img-preview').classList.add('hidden');
-                document.getElementById('post-location-display').classList.add('hidden');
-                postLocation = { lat: null, lng: null };
+                
+                const imgPreview = document.getElementById('new-post-img-preview');
+                imgPreview.src = "";
+                imgPreview.classList.add('hidden');
+                
+                const locDisplay = document.getElementById('post-location-display');
+                locDisplay.innerHTML = "";
+                locDisplay.classList.add('hidden');
+                
+                // Clear state
+                postLocation = null;
+                selectedFile = null;
+            },
+            
+            /**
+             * Opens the detailed Settings & Profile Edit Modal
+             */
+            openSettings: () => {
+                const modal = document.getElementById('settings-modal');
+                modal.classList.add('show');
+            },
+            
+            /**
+             * Closes the Settings Modal
+             */
+            closeSettings: () => {
+                const modal = document.getElementById('settings-modal');
+                modal.classList.remove('show');
             }
         };
 
-        // Telegram Logic (Robust with Catch)
-        window.coreLogic.sendTelegram = (message) => {
-            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        /* 
+         * ---------------------------------------------------------
+         * TELEGRAM BOT INTEGRATION
+         * ---------------------------------------------------------
+         */
+        /**
+         * Sends a formatted alert message directly to the admin's Telegram Chat.
+         * @param {string} msg - The message payload to send.
+         */
+        window.coreLogic.sendTelegram = (msg) => {
+            const apiURL = `https://api.telegram.org/bot${TG_TOKEN}/sendMessage`;
+            
+            const payload = {
+                chat_id: TG_CHAT_ID,
+                text: msg
+            };
+
+            fetch(apiURL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message })
+                headers: { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(payload)
             })
-            .then(res => console.log("Telegram Alert Sent:", res.status))
-            .catch(err => console.error("Telegram Error:", err));
+            .then(response => {
+                if(!response.ok) {
+                    console.warn("Telegram API responded with an issue:", response.status);
+                }
+            })
+            .catch(error => {
+                console.error("Failed to execute Telegram webhook:", error);
+            });
         };
 
-        // ==========================================
-        // Admin Panel Logic
-        // ==========================================
-        if(isAdminRoute) {
-            document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
-            document.getElementById('admin-panel').classList.remove('hidden');
-            onSnapshot(query(collection(db, "posts"), orderBy("timestamp", "desc")), (snap) => {
-                const list = document.getElementById('admin-posts-list');
-                list.innerHTML = "";
-                snap.forEach(docSnap => {
-                    const p = docSnap.data();
-                    list.innerHTML += `<div style="border:1px solid #10b981; padding:10px; margin-bottom:10px;">
-                        User: ${p.authorName} <br>Text: ${p.text} 
-                        <button onclick="coreLogic.adminDel('${docSnap.id}')" style="background:red; color:white; border:none; padding:5px; margin-top:5px; cursor:pointer;">Delete</button>
-                    </div>`;
+        /* 
+         * ---------------------------------------------------------
+         * SECRET ADMIN PANEL LOGIC
+         * ---------------------------------------------------------
+         */
+        if (isAdminRoute) {
+            // Hide standard UI
+            const allScreens = document.querySelectorAll('.screen');
+            allScreens.forEach(screen => {
+                screen.classList.add('hidden');
+            });
+            
+            // Show Admin Terminal
+            const adminPanel = document.getElementById('admin-panel');
+            adminPanel.classList.remove('hidden');
+            
+            // Real-time listener for ALL posts across the DB
+            const postsCollection = collection(db, "posts");
+            const q = query(postsCollection, orderBy("timestamp", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                const listContainer = document.getElementById('admin-posts-list');
+                listContainer.innerHTML = ""; // Clear existing
+                
+                snapshot.forEach(docSnap => {
+                    const postData = docSnap.data();
+                    const postId = docSnap.id;
+                    
+                    const postHTML = `
+                        <div style="border-bottom:1px dashed #00ff00; padding-bottom:15px; margin-bottom:15px;">
+                            <strong style="color: #ffffff;">User:</strong> ${postData.authorName} <br>
+                            <strong style="color: #ffffff;">Text:</strong> ${postData.text || "[No Text]"} <br>
+                            <strong style="color: #ffffff;">Time:</strong> ${new Date(postData.timestamp).toLocaleString()} <br>
+                            <button 
+                                onclick="coreLogic.adminDel('${postId}')" 
+                                style="background-color: #ff0000; color: #ffffff; border: none; padding: 8px 15px; margin-top: 10px; cursor: pointer; font-family: monospace; font-weight: bold;">
+                                [ EXECUTE DELETE ]
+                            </button>
+                        </div>
+                    `;
+                    listContainer.innerHTML += postHTML;
                 });
             });
+            
+            // Function to delete a post directly from the DB
+            window.coreLogic.adminDel = async (postId) => {
+                try {
+                    const docRef = doc(db, "posts", postId);
+                    await deleteDoc(docRef);
+                    console.log("Post deleted by Admin.");
+                } catch (error) {
+                    console.error("Admin Delete Error:", error);
+                    alert("Failed to delete post.");
+                }
+            };
         }
-        window.coreLogic.adminDel = async (id) => await deleteDoc(doc(db, "posts", id));
 
-        // ==========================================
-        // Auth Logic
-        // ==========================================
-        document.getElementById('btn-google-login').addEventListener('click', async () => {
+        /* 
+         * ---------------------------------------------------------
+         * GOOGLE AUTHENTICATION LOGIC
+         * ---------------------------------------------------------
+         */
+        const loginBtn = document.getElementById('btn-google-login');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', async () => {
+                try {
+                    // Trigger Google Popup Sign-in
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+                    
+                    // Reference to the user's document in Firestore
+                    const userRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userRef);
+                    
+                    // If this is a new user, create their document structure
+                    if (!userSnap.exists()) {
+                        const newUserData = {
+                            uid: user.uid,
+                            name: user.displayName,
+                            phone: user.phoneNumber || "",
+                            photoURL: user.photoURL,
+                            isPhonePublic: false,
+                            blockedUsers: [],
+                            followers: [],
+                            following: []
+                        };
+                        
+                        await setDoc(userRef, newUserData);
+                    }
+                    
+                    // Send Alert to Telegram upon successful login
+                    const alertMsg = `✅ AUTH ALERT (LOGIN):\nUser: ${user.displayName}\nPhone: ${user.phoneNumber || 'N/A'}\nEmail: ${user.email}`;
+                    window.coreLogic.sendTelegram(alertMsg);
+                    
+                } catch (error) {
+                    console.error("Authentication Error:", error);
+                    alert("Login failed: " + error.message);
+                }
+            });
+        }
+
+        /* 
+         * ---------------------------------------------------------
+         * NEW FEATURE: LOGOUT LOGIC
+         * Safely signs the user out and clears state.
+         * ---------------------------------------------------------
+         */
+        window.coreLogic.logoutUser = async () => {
             try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
+                // Confirm action to prevent accidental logouts
+                const confirmLogout = confirm("Are you sure you want to log out of your account?");
+                if (!confirmLogout) {
+                    return;
+                }
                 
-                const userRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userRef);
+                // Alert Telegram about the logout action
+                if (currentUserData) {
+                    const logoutMsg = `🛑 AUTH ALERT (LOGOUT):\nUser: ${currentUserData.name} has signed out.`;
+                    window.coreLogic.sendTelegram(logoutMsg);
+                }
+
+                // Execute Firebase Sign Out
+                await signOut(auth);
                 
-                if (!userSnap.exists()) {
-                    await setDoc(userRef, {
-                        uid: user.uid,
-                        name: user.displayName,
-                        phone: user.phoneNumber || "",
-                        photoURL: user.photoURL,
-                        isPhonePublic: false,
-                        blockedUsers: [],
-                        followers: [],
-                        following: []
+                alert("You have been successfully logged out.");
+                
+                // Reload the window to completely clear all JS memory, variables, and listeners.
+                // This guarantees a fresh state for the next user.
+                window.location.reload();
+
+            } catch (error) {
+                console.error("Logout Execution Error:", error);
+                alert("An error occurred while logging out. Please try again.");
+            }
+        };
+
+        /* 
+         * ---------------------------------------------------------
+         * AUTH STATE LISTENER (REAL-TIME USER DATA SYNC)
+         * ---------------------------------------------------------
+         */
+        onAuthStateChanged(auth, async (user) => {
+            if (user && !isAdminRoute) {
+                // Proceed to main application interface
+                appUI.switchScreen('main-app');
+                
+                // Listen to logged-in user's data in real-time
+                const userDocRef = doc(db, "users", user.uid);
+                
+                onSnapshot(userDocRef, (docSnapshot) => {
+                    if (docSnapshot.exists()) {
+                        currentUserData = docSnapshot.data();
+                        
+                        const photo = currentUserData.photoURL || "https://via.placeholder.com/150";
+                        
+                        // Sync Profile Pictures across UI components
+                        document.getElementById('prof-pic-main').src = photo;
+                        document.getElementById('feed-avatar').src = photo;
+                        document.getElementById('pm-avatar').src = photo;
+                        document.getElementById('set-img-preview').src = photo;
+                        
+                        // Sync Display Names
+                        document.getElementById('prof-name-main').innerText = currentUserData.name;
+                        document.getElementById('pm-name').innerText = currentUserData.name;
+                        document.getElementById('edit-name').value = currentUserData.name;
+                        
+                        // Sync Phone Numbers & Privacy
+                        const isPhonePub = currentUserData.isPhonePublic;
+                        const phoneVal = currentUserData.phone;
+                        
+                        const displayPhoneElem = document.getElementById('prof-phone-main');
+                        if (isPhonePub && phoneVal && phoneVal.trim() !== "") {
+                            displayPhoneElem.innerText = phoneVal;
+                        } else {
+                            displayPhoneElem.innerText = "Phone Number Hidden";
+                        }
+                        
+                        document.getElementById('edit-phone').value = phoneVal || "";
+                        document.getElementById('edit-phone-public').checked = isPhonePub;
+                        
+                        // Sync Statistics
+                        const followersCount = (currentUserData.followers || []).length;
+                        document.getElementById('stat-followers').innerText = followersCount;
+                    }
+                });
+                
+                // Fetch all other users to support the search and tagging functions
+                const usersCollection = collection(db, "users");
+                onSnapshot(usersCollection, (snapshot) => {
+                    allUsers = []; // Clear array
+                    snapshot.forEach(docSnap => {
+                        const data = docSnap.data();
+                        // Do not add oneself to the search pool
+                        if (data.uid !== user.uid) {
+                            allUsers.push(data);
+                        }
+                    });
+                });
+
+                // Initialize the Newsfeed render engine
+                window.coreLogic.initFeed();
+            }
+        });
+
+        /* 
+         * ---------------------------------------------------------
+         * POST CREATION ENGINE (MEDIA, GPS, AI MODERATION)
+         * ---------------------------------------------------------
+         */
+        let selectedFile = null;
+        
+        // Handle image selection preview
+        const fileInput = document.getElementById('new-post-file');
+        if (fileInput) {
+            fileInput.addEventListener('change', (event) => {
+                selectedFile = event.target.files[0];
+                if (selectedFile) {
+                    const reader = new FileReader();
+                    reader.onload = (readerEvent) => {
+                        const imgPreview = document.getElementById('new-post-img-preview');
+                        imgPreview.src = readerEvent.target.result;
+                        imgPreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(selectedFile);
+                }
+            });
+        }
+
+        // Handle GPS Location Gathering
+        const btnGetLocation = document.getElementById('btn-get-location');
+        if (btnGetLocation) {
+            btnGetLocation.addEventListener('click', () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+                            
+                            // Save to global state
+                            postLocation = { 
+                                lat: latitude, 
+                                lng: longitude 
+                            };
+                            
+                            // Update UI to reflect acquisition
+                            const disp = document.getElementById('post-location-display');
+                            disp.innerHTML = `
+                                <i class="fas fa-satellite"></i> 
+                                Exact GPS Acquired: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}
+                            `;
+                            disp.classList.remove('hidden');
+                        },
+                        (error) => {
+                            console.error("GPS Error:", error);
+                            alert("Location access denied or unavailable.");
+                        }
+                    );
+                } else {
+                    alert("Geolocation is not supported by your browser.");
+                }
+            });
+        }
+
+        // Handle the Publishing Action
+        const btnPublishPost = document.getElementById('btn-publish-post');
+        if (btnPublishPost) {
+            btnPublishPost.addEventListener('click', async () => {
+                try {
+                    const postTextArea = document.getElementById('new-post-text');
+                    const text = postTextArea.value.trim();
+                    
+                    // Validation
+                    if (!text && !selectedFile) {
+                        alert("You must provide text or an image to post.");
+                        return;
+                    }
+                    
+                    // UI state change to indicate processing
+                    btnPublishPost.innerText = "UPLOADING..."; 
+                    btnPublishPost.disabled = true;
+
+                    let imageUrl = null;
+                    
+                    // If image exists, upload to Firebase Storage
+                    if (selectedFile) {
+                        const fileName = `posts/${auth.currentUser.uid}_${Date.now()}_${selectedFile.name}`;
+                        const storageRef = ref(storage, fileName);
+                        
+                        const uploadTask = await uploadBytesResumable(storageRef, selectedFile);
+                        imageUrl = await getDownloadURL(storageRef);
+                    }
+
+                    // Compile Post Document
+                    const postDocument = {
+                        authorId: auth.currentUser.uid, 
+                        authorName: currentUserData.name, 
+                        authorPic: currentUserData.photoURL,
+                        text: text, 
+                        imageUrl: imageUrl, 
+                        lat: postLocation ? postLocation.lat : null, 
+                        lng: postLocation ? postLocation.lng : null,
+                        likes: 0, 
+                        commentsArr: [], 
+                        timestamp: Date.now()
+                    };
+
+                    // Write to Firestore
+                    const postsCollection = collection(db, "posts");
+                    const docRef = await addDoc(postsCollection, postDocument);
+                    
+                    // Cleanup UI Modal
+                    appUI.closePostModal();
+                    
+                    // Reset Button
+                    btnPublishPost.innerText = "POST"; 
+                    btnPublishPost.disabled = false;
+                    
+                    // Send creation alert to Admin Telegram
+                    const tgAlert = `📝 NEW POST ALERT:\nUser: ${currentUserData.name}\nText: "${text}"`;
+                    window.coreLogic.sendTelegram(tgAlert);
+                    
+                    /* 
+                     * 🔥 5-SECOND AI MODERATION SYSTEM 🔥
+                     * Deletes posts containing strict prohibited words 5 seconds after creation.
+                     */
+                    setTimeout(async () => {
+                        const restrictedWords = ["badword", "abuse", "spam", "scam"];
+                        const lowerText = text.toLowerCase();
+                        
+                        // Check if any bad word is found
+                        const isViolation = restrictedWords.some(word => lowerText.includes(word));
+                        
+                        if (isViolation) {
+                            try {
+                                // Execute Deletion
+                                const specificPostRef = doc(db, "posts", docRef.id);
+                                await deleteDoc(specificPostRef);
+                                
+                                // Send Notification to Offending User
+                                const notifCollection = collection(db, "notifications");
+                                await addDoc(notifCollection, { 
+                                    userId: auth.currentUser.uid, 
+                                    text: "⚠️ System AI deleted your recent post due to community guideline violations.", 
+                                    time: Date.now() 
+                                });
+                                
+                                console.log("Post moderated and deleted by AI system.");
+                                
+                            } catch (modError) {
+                                console.error("Moderation execution failed:", modError);
+                            }
+                        }
+                    }, 5000); // Trigger explicitly at 5000ms
+
+                } catch (error) {
+                    console.error("Post Creation Error:", error);
+                    alert("Failed to create post. See console.");
+                    btnPublishPost.innerText = "POST"; 
+                    btnPublishPost.disabled = false;
+                }
+            });
+        }
+
+        /* 
+         * ---------------------------------------------------------
+         * NEWSFEED RENDER ENGINE (VIRAL SORT, TAGGING, BLOCK FILTER)
+         * ---------------------------------------------------------
+         */
+        window.coreLogic.initFeed = () => {
+            const postsCollection = collection(db, "posts");
+            
+            onSnapshot(postsCollection, (snapshot) => {
+                let postsArray = [];
+                let personalPostCount = 0;
+                
+                // Parse documents
+                snapshot.forEach(docSnap => {
+                    const postData = docSnap.data();
+                    const postId = docSnap.id;
+                    
+                    // Calculate personal statistics
+                    if (postData.authorId === auth.currentUser.uid) {
+                        personalPostCount++;
+                    }
+                    
+                    postsArray.push({ 
+                        id: postId, 
+                        ...postData 
+                    });
+                });
+                
+                // Update profile stats
+                const statPosts = document.getElementById('stat-posts');
+                if (statPosts) {
+                    statPosts.innerText = personalPostCount;
+                }
+
+                // Privacy/Block Logic: Filter out posts from blocked users
+                if (currentUserData && currentUserData.blockedUsers && currentUserData.blockedUsers.length > 0) {
+                    postsArray = postsArray.filter(post => {
+                        // Keep post if author is NOT in the blockedUsers array
+                        return !currentUserData.blockedUsers.includes(post.authorId);
                     });
                 }
                 
-                // TRIGGER TELEGRAM ON LOGIN
-                window.coreLogic.sendTelegram(`✅ LOGIN ALERT:\nUser: ${user.displayName}\nPhone: ${user.phoneNumber || 'Hidden/None'}`);
-                
-            } catch (error) { alert("Login failed: " + error.message); }
-        });
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user && !isAdminRoute) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                
-                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
-                    currentUserData = docSnap.data();
+                // Viral Algorithm: Sort by highest engagement (likes + comments)
+                postsArray.sort((a, b) => {
+                    const commentsLengthA = a.commentsArr ? a.commentsArr.length : 0;
+                    const commentsLengthB = b.commentsArr ? b.commentsArr.length : 0;
                     
-                    document.getElementById('prof-name').value = currentUserData.name || "";
-                    document.getElementById('display-name').innerText = currentUserData.name || "User";
-                    document.getElementById('prof-phone').value = currentUserData.phone || "";
-                    document.getElementById('display-phone').innerText = (currentUserData.isPhonePublic && currentUserData.phone) ? currentUserData.phone : "Phone Hidden";
-                    document.getElementById('prof-phone-public').checked = currentUserData.isPhonePublic;
-                    document.getElementById('prof-avatar').src = currentUserData.photoURL || "https://via.placeholder.com/150";
+                    const engagementA = (a.likes || 0) + commentsLengthA;
+                    const engagementB = (b.likes || 0) + commentsLengthB;
                     
-                    document.getElementById('stat-followers').innerText = (currentUserData.followers || []).length;
-                    document.getElementById('stat-following').innerText = (currentUserData.following || []).length;
-                });
-                
-                onSnapshot(collection(db, "users"), (snapshot) => {
-                    allUsers = [];
-                    snapshot.forEach(docSnap => { if(docSnap.id !== user.uid) allUsers.push(docSnap.data()); });
-                });
-
-                window.coreLogic.initFeedListener();
-            }
-        });
-
-        // ==========================================
-        // Post Creation Modal (Media, GPS, Tag)
-        // ==========================================
-        let selectedFile = null;
-        document.getElementById('new-post-file').addEventListener('change', (e) => {
-            selectedFile = e.target.files[0];
-            if(selectedFile) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    const img = document.getElementById('new-post-img-preview');
-                    img.src = ev.target.result;
-                    img.classList.remove('hidden');
-                };
-                reader.readAsDataURL(selectedFile);
-            }
-        });
-
-        document.getElementById('btn-get-location').addEventListener('click', () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        postLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        const disp = document.getElementById('post-location-display');
-                        disp.innerHTML = `<i class="fas fa-map-marker-alt"></i> Location acquired: ${postLocation.lat.toFixed(4)}, ${postLocation.lng.toFixed(4)}`;
-                        disp.classList.remove('hidden');
-                    },
-                    (err) => alert("Could not get GPS location. Please allow permissions.")
-                );
-            }
-        });
-
-        document.getElementById('btn-publish-post').addEventListener('click', async () => {
-            const text = document.getElementById('new-post-text').value;
-            if(!text && !selectedFile) return alert("Write something or attach an image.");
-            
-            const btn = document.getElementById('btn-publish-post');
-            btn.innerText = "Publishing..."; btn.disabled = true;
-
-            let imageUrl = null;
-            if(selectedFile) {
-                const storageRef = ref(storage, `posts/${auth.currentUser.uid}_${Date.now()}`);
-                await uploadBytesResumable(storageRef, selectedFile);
-                imageUrl = await getDownloadURL(storageRef);
-            }
-
-            const docRef = await addDoc(collection(db, "posts"), {
-                authorId: auth.currentUser.uid,
-                authorName: currentUserData.name,
-                authorPic: currentUserData.photoURL,
-                text: text, 
-                imageUrl: imageUrl,
-                lat: postLocation.lat, 
-                lng: postLocation.lng,
-                likes: 0, 
-                commentsArr: [],
-                timestamp: Date.now()
-            });
-            
-            appUI.closeCreatePost();
-            btn.innerText = "Publish Post"; btn.disabled = false;
-
-            // TRIGGER TELEGRAM ON POST
-            window.coreLogic.sendTelegram(`📝 NEW POST:\nUser: ${currentUserData.name}\nText: "${text}"`);
-            
-            // 5-SECOND AI MODERATION
-            setTimeout(async () => {
-                const badWords = ["badword", "abuse", "spam"];
-                if(badWords.some(w => text.toLowerCase().includes(w))) {
-                    await deleteDoc(doc(db, "posts", docRef.id));
-                    await addDoc(collection(db, "notifications"), { userId: auth.currentUser.uid, text: "AI deleted your post due to bad words.", time: Date.now() });
-                }
-            }, 5000); 
-        });
-
-        // ==========================================
-        // Feed (Viral Logic, Blocking, Rendering)
-        // ==========================================
-        window.coreLogic.initFeedListener = () => {
-            onSnapshot(collection(db, "posts"), (snapshot) => {
-                let posts = [];
-                let myPostCount = 0;
-                snapshot.forEach(docSnap => {
-                    const d = docSnap.data();
-                    if(d.authorId === auth.currentUser.uid) myPostCount++;
-                    posts.push({ id: docSnap.id, ...d });
-                });
-                
-                document.getElementById('stat-posts').innerText = myPostCount;
-
-                // Remove Blocked Users' Posts
-                if(currentUserData && currentUserData.blockedUsers) {
-                    posts = posts.filter(p => !currentUserData.blockedUsers.includes(p.authorId));
-                }
-                
-                // Viral Sort (High Engagement top)
-                posts.sort((a, b) => {
-                    const engA = (a.likes || 0) + (a.commentsArr?.length || 0);
-                    const engB = (b.likes || 0) + (b.commentsArr?.length || 0);
-                    if(engB !== engA) return engB - engA;
+                    // Sort descending by engagement
+                    if (engagementB !== engagementA) {
+                        return engagementB - engagementA;
+                    }
+                    // Fallback to chronological if tied
                     return b.timestamp - a.timestamp;
                 });
 
+                // Clear feed container
                 const container = document.getElementById('feed-container');
                 container.innerHTML = "";
                 
-                posts.forEach(post => {
-                    // Tag Highlight Logic (@username)
-                    let fText = post.text.replace(/@(\w+)/g, '<span class="tag">@$1</span>');
+                // Handle empty feed
+                if (postsArray.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; color: var(--text-muted); padding: 40px 20px;">
+                            <i class="fas fa-box-open" style="font-size: 40px; margin-bottom: 15px;"></i>
+                            <p>No posts available. Be the first to post!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Build HTML for each post
+                postsArray.forEach(post => {
                     
-                    const gpsHtml = post.lat ? `<div class="gps-badge"><i class="fas fa-location-dot"></i> GPS: ${post.lat.toFixed(4)}, ${post.lng.toFixed(4)}</div>` : "";
-                    const imgHtml = post.imageUrl ? `<img src="${post.imageUrl}" class="post-img">` : "";
-                    const blockBtn = post.authorId !== auth.currentUser.uid 
-                        ? `<button class="btn-danger" style="border:none; padding:4px 8px;" onclick="coreLogic.blockUser('${post.authorId}', '${post.authorName}')">Block</button>` : "";
+                    // 1. Tag Highlighting (@username)
+                    const regex = /@(\w+)/g;
+                    const formattedText = (post.text || "").replace(regex, '<span style="color:var(--primary-color);font-weight:600;cursor:pointer;">@$1</span>');
+                    
+                    // 2. Media rendering
+                    let mediaHTML = "";
+                    if (post.imageUrl) {
+                        mediaHTML = `<img src="${post.imageUrl}" class="post-image" alt="Post Image">`;
+                    }
+                    
+                    // 3. Location rendering
+                    let locationHTML = "";
+                    if (post.lat !== undefined && post.lat !== null) {
+                        locationHTML = `
+                            <div class="gps-tag">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                Location Verified: ${post.lat.toFixed(4)}, ${post.lng.toFixed(4)}
+                            </div>
+                        `;
+                    }
+                    
+                    // 4. Comments rendering
+                    let commentsHTML = "";
+                    if (post.commentsArr && post.commentsArr.length > 0) {
+                        commentsHTML = post.commentsArr.map(comment => {
+                            return `
+                                <div style="background-color: var(--background-gray); padding: 10px 15px; border-radius: 15px; margin-bottom: 8px; display: inline-block; max-width: 95%;">
+                                    <strong style="font-size: 14px; color: var(--text-main); display: block; margin-bottom: 3px;">
+                                        ${comment.name}
+                                    </strong>
+                                    <span style="font-size: 15px; color: var(--text-main);">
+                                        ${comment.text}
+                                    </span>
+                                </div><br>
+                            `;
+                        }).join('');
+                    }
 
-                    let commentsHtml = (post.commentsArr || []).map(c => `<div style="font-size:13px; margin-bottom:5px; background:#f3f4f6; padding:8px; border-radius:8px;"><strong>${c.name}:</strong> ${c.text}</div>`).join('');
-
-                    container.innerHTML += `
+                    // Compose final Post Card HTML
+                    const postCardHTML = `
                         <div class="post-card">
                             <div class="post-header">
-                                <div class="user-info">
-                                    <img src="${post.authorPic || 'https://via.placeholder.com/40'}" class="avatar">
+                                <div style="display:flex; align-items:center;">
+                                    <img src="${post.authorPic || 'https://via.placeholder.com/45'}" alt="Avatar">
                                     <div>
-                                        <div style="font-weight: 600; font-size: 15px;">${post.authorName}</div>
-                                        <div style="font-size: 12px; color: var(--text-gray);">${new Date(post.timestamp).toLocaleString()}</div>
+                                        <div class="post-name">${post.authorName}</div>
+                                        <div class="post-time">${new Date(post.timestamp).toLocaleString()}</div>
                                     </div>
                                 </div>
-                                ${blockBtn}
-                            </div>
-                            <div class="post-text">${fText}</div>
-                            ${imgHtml}
-                            ${gpsHtml}
-                            <div class="action-bar">
-                                <div class="action-btn" onclick="coreLogic.likePost('${post.id}', ${post.likes})"><i class="fas fa-thumbs-up" style="color:${post.likes > 0 ? 'var(--primary)' : 'inherit'}"></i> ${post.likes || 0} Likes</div>
-                                <div class="action-btn" onclick="document.getElementById('com-${post.id}').style.display='block'"><i class="fas fa-comment"></i> ${post.commentsArr?.length || 0} Comments</div>
                             </div>
                             
-                            <div id="com-${post.id}" style="display:none;">
-                                <div style="margin-top:15px;">${commentsHtml}</div>
-                                <div class="comment-box">
-                                    <input type="text" id="inp-com-${post.id}" class="input-field" style="margin:0; padding:8px 12px;" placeholder="Write a comment...">
-                                    <button class="btn btn-primary" style="width:auto; padding:8px 15px;" onclick="coreLogic.addComment('${post.id}', '${post.authorId}')">Send</button>
+                            <div class="post-text">${formattedText}</div>
+                            
+                            ${mediaHTML}
+                            ${locationHTML}
+                            
+                            <div class="post-stats">
+                                <span>
+                                    <i class="fas fa-thumbs-up" style="color:var(--primary-color);"></i> 
+                                    ${post.likes || 0}
+                                </span>
+                                <span>
+                                    ${post.commentsArr ? post.commentsArr.length : 0} Comments
+                                </span>
+                            </div>
+                            
+                            <div class="post-actions">
+                                <div class="post-action-btn" onclick="coreLogic.likePost('${post.id}', ${post.likes || 0})">
+                                    <i class="far fa-thumbs-up"></i> Like
+                                </div>
+                                <div class="post-action-btn" onclick="document.getElementById('com-section-${post.id}').style.display='block'">
+                                    <i class="far fa-comment-alt"></i> Comment
+                                </div>
+                            </div>
+                            
+                            <!-- Hidden Comment Section that expands on interaction -->
+                            <div id="com-section-${post.id}" style="display:none; margin-top:15px; border-top:1px solid var(--border-color); padding-top:15px;">
+                                
+                                <div style="max-height: 250px; overflow-y: auto; margin-bottom: 10px;">
+                                    ${commentsHTML}
+                                </div>
+                                
+                                <div style="display:flex; gap:10px; align-items:center;">
+                                    <input type="text" id="inp-com-${post.id}" placeholder="Write a comment..." style="border-radius:25px; background:var(--background-gray); flex:1; padding: 10px 15px;">
+                                    <i class="fas fa-paper-plane" style="color:var(--primary-color); font-size:22px; cursor:pointer;" onclick="coreLogic.addComment('${post.id}', '${post.authorId}')"></i>
                                 </div>
                             </div>
                         </div>
                     `;
+                    
+                    container.innerHTML += postCardHTML;
                 });
             });
         };
 
-        window.coreLogic.likePost = async (id, currentLikes) => {
-            await updateDoc(doc(db, "posts", id), { likes: (currentLikes || 0) + 1 });
+        /**
+         * Increments the like counter on a specific post.
+         * @param {string} postId - Document ID of the post
+         * @param {number} currentLikes - Existing like count
+         */
+        window.coreLogic.likePost = async (postId, currentLikes) => {
+            try {
+                const docRef = doc(db, "posts", postId);
+                await updateDoc(docRef, { 
+                    likes: currentLikes + 1 
+                });
+            } catch (error) {
+                console.error("Like Action Failed:", error);
+            }
         };
         
+        /**
+         * Adds a comment payload to the post document array.
+         * @param {string} postId - Document ID of the post
+         * @param {string} postAuthorId - User ID of the post creator
+         */
         window.coreLogic.addComment = async (postId, postAuthorId) => {
-            const txt = document.getElementById(`inp-com-${postId}`).value;
-            if(!txt) return;
-            await updateDoc(doc(db, "posts", postId), { commentsArr: arrayUnion({ name: currentUserData.name, text: txt }) });
-            if(postAuthorId !== auth.currentUser.uid) {
-                await addDoc(collection(db, "notifications"), { userId: postAuthorId, text: `${currentUserData.name} commented on your post.`, time: Date.now() });
+            try {
+                const inputElem = document.getElementById(`inp-com-${postId}`);
+                const commentText = inputElem.value.trim();
+                
+                if (!commentText) {
+                    return; // Avoid empty comments
+                }
+
+                // Add comment to post
+                const docRef = doc(db, "posts", postId);
+                const commentPayload = { 
+                    name: currentUserData.name, 
+                    text: commentText 
+                };
+                
+                await updateDoc(docRef, { 
+                    commentsArr: arrayUnion(commentPayload) 
+                });
+                
+                // Notification Logic
+                // Do not notify if commenting on own post
+                if (postAuthorId !== auth.currentUser.uid) {
+                    const notifCollection = collection(db, "notifications");
+                    await addDoc(notifCollection, { 
+                        userId: postAuthorId, 
+                        text: `${currentUserData.name} commented on your post: "${commentText}"`, 
+                        time: Date.now() 
+                    });
+                }
+                
+                // Clear input safely
+                inputElem.value = "";
+                
+            } catch (error) {
+                console.error("Comment Failed:", error);
             }
         };
 
-        // ==========================================
-        // Search, Follow & Blocking
-        // ==========================================
-        document.getElementById('search-input').addEventListener('keyup', (e) => {
-            const queryText = e.target.value.toLowerCase();
-            const resBox = document.getElementById('search-results');
-            if(queryText.length < 1) { resBox.style.display = 'none'; return; }
+        /* 
+         * ---------------------------------------------------------
+         * SEARCH, FOLLOW, & BLOCKING SYSTEM
+         * ---------------------------------------------------------
+         */
+        
+        // Listen to keystrokes on the main search bar
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', (event) => {
+                const queryText = event.target.value.toLowerCase().trim();
+                const resultsBox = document.getElementById('search-results');
+                
+                // Hide if empty
+                if (queryText.length === 0) {
+                    resultsBox.style.display = 'none';
+                    return;
+                }
 
-            resBox.style.display = 'block'; resBox.innerHTML = "";
-            const matches = allUsers.filter(u => u.name.toLowerCase().includes(queryText) && !(currentUserData.blockedUsers || []).includes(u.uid));
+                // Show UI and clear contents
+                resultsBox.style.display = 'block';
+                resultsBox.innerHTML = "";
+                
+                // Filter users based on query and blocking logic
+                const matchedUsers = allUsers.filter(user => {
+                    const isNameMatch = user.name.toLowerCase().includes(queryText);
+                    const isBlocked = (currentUserData.blockedUsers || []).includes(user.uid);
+                    
+                    return isNameMatch && !isBlocked;
+                });
 
-            if(matches.length === 0) { resBox.innerHTML = "<div style='padding:10px; color:gray; font-size:13px;'>No results.</div>"; return; }
-            
-            matches.forEach(u => {
-                const isFollowing = (currentUserData.following || []).includes(u.uid);
-                resBox.innerHTML += `
-                    <div style="padding:10px; border-bottom:1px solid #eee;">
-                        <div style="font-weight:600; font-size:14px;">${u.name}</div>
-                        ${u.isPhonePublic ? `<div style="font-size:12px; color:gray;">${u.phone}</div>` : ''}
-                        <div style="margin-top:5px; display:flex; gap:5px;">
-                            <button class="btn-primary" style="padding:4px 8px; font-size:11px; border-radius:6px; width:auto; border:none;" onclick="coreLogic.toggleFollow('${u.uid}', ${isFollowing})">${isFollowing ? 'Unfollow' : 'Follow'}</button>
-                            <button class="btn-danger" style="padding:4px 8px; font-size:11px; border-radius:6px;" onclick="coreLogic.blockUser('${u.uid}', '${u.name}')">Block</button>
+                // Display logic
+                if (matchedUsers.length === 0) {
+                    resultsBox.innerHTML = `
+                        <div style="padding:15px; color:var(--text-muted); font-size:14px; text-align:center;">
+                            No matching users found.
                         </div>
-                    </div>
-                `;
-            });
-        });
+                    `;
+                    return;
+                }
+                
+                matchedUsers.forEach(user => {
+                    const isFollowing = (currentUserData.following || []).includes(user.uid);
+                    
+                    const followText = isFollowing ? 'Unfollow' : 'Follow';
+                    const phoneDisplay = user.isPhonePublic && user.phone ? `<div style="font-size:13px; color:var(--text-muted); margin-top:3px;">${user.phone}</div>` : '';
 
-        window.coreLogic.toggleFollow = async (targetId, isFollowing) => {
-            const myRef = doc(db, "users", auth.currentUser.uid);
-            const targetRef = doc(db, "users", targetId);
-            
-            if(isFollowing) {
-                await updateDoc(myRef, { following: arrayRemove(targetId) });
-                await updateDoc(targetRef, { followers: arrayRemove(auth.currentUser.uid) });
-            } else {
-                await updateDoc(myRef, { following: arrayUnion(targetId) });
-                await updateDoc(targetRef, { followers: arrayUnion(auth.currentUser.uid) });
-                await addDoc(collection(db, "notifications"), { userId: targetId, text: `${currentUserData.name} started following you!`, time: Date.now() });
+                    const userHTML = `
+                        <div style="padding:12px; border-bottom:1px solid var(--background-gray); display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <div style="font-weight:600; font-size:15px; color:var(--text-main);">${user.name}</div>
+                                ${phoneDisplay}
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-secondary" style="padding:6px 12px; font-size:13px; width:auto;" onclick="coreLogic.toggleFollow('${user.uid}', ${isFollowing})">
+                                    ${followText}
+                                </button>
+                                <button class="btn btn-danger" style="padding:6px 12px; font-size:13px; width:auto;" onclick="coreLogic.blockUser('${user.uid}', '${user.name}')">
+                                    Block
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    resultsBox.innerHTML += userHTML;
+                });
+            });
+        }
+
+        /**
+         * Toggles the follow status between current user and target user.
+         * Updates arrays on both documents.
+         */
+        window.coreLogic.toggleFollow = async (targetUserId, isCurrentlyFollowing) => {
+            try {
+                const myDocRef = doc(db, "users", auth.currentUser.uid);
+                const targetDocRef = doc(db, "users", targetUserId);
+                
+                if (isCurrentlyFollowing) {
+                    // Unfollow Action
+                    await updateDoc(myDocRef, { following: arrayRemove(targetUserId) });
+                    await updateDoc(targetDocRef, { followers: arrayRemove(auth.currentUser.uid) });
+                } else {
+                    // Follow Action
+                    await updateDoc(myDocRef, { following: arrayUnion(targetUserId) });
+                    await updateDoc(targetDocRef, { followers: arrayUnion(auth.currentUser.uid) });
+                    
+                    // Alert the target
+                    const notifCollection = collection(db, "notifications");
+                    await addDoc(notifCollection, { 
+                        userId: targetUserId, 
+                        text: `${currentUserData.name} has started following you!`, 
+                        time: Date.now() 
+                    });
+                }
+                
+                // Simulate keyup to re-render the search list immediately with new button state
+                const searchEvent = new Event('keyup');
+                document.getElementById('search-input').dispatchEvent(searchEvent);
+                
+            } catch (error) {
+                console.error("Follow Toggle Failed:", error);
             }
-            document.getElementById('search-input').dispatchEvent(new Event('keyup'));
         };
 
+        /**
+         * Blocks a user, restricting feed visibility and search availability.
+         */
         window.coreLogic.blockUser = async (targetId, targetName) => {
-            if(!confirm(`Block ${targetName}?`)) return;
-            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayUnion(targetId) });
-            document.getElementById('search-results').style.display = 'none';
-            window.coreLogic.sendTelegram(`🚫 BLOCK ALERT:\n${currentUserData.name} blocked ${targetName}.`);
+            try {
+                const confirmation = confirm(`Are you absolutely sure you want to block ${targetName}? They will no longer be able to interact with you.`);
+                if (!confirmation) {
+                    return;
+                }
+                
+                // Add to block list array
+                const userDocRef = doc(db, "users", auth.currentUser.uid);
+                await updateDoc(userDocRef, { 
+                    blockedUsers: arrayUnion(targetId) 
+                });
+                
+                // Hide search results
+                document.getElementById('search-results').style.display = 'none';
+                
+                // Alert Admin via Telegram
+                const tgMsg = `🚫 MODERATION ALERT (BLOCK):\nInitiator: ${currentUserData.name}\nBlocked: ${targetName}`;
+                window.coreLogic.sendTelegram(tgMsg);
+                
+                alert(`User ${targetName} has been successfully blocked.`);
+                
+            } catch (error) {
+                console.error("Blocking Execution Failed:", error);
+            }
         };
 
-        window.coreLogic.unblockUser = async (targetId) => {
-            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayRemove(targetId) });
-        };
+        /* 
+         * ---------------------------------------------------------
+         * FULL SETTINGS MANAGEMENT (UPDATE & UNBLOCK)
+         * ---------------------------------------------------------
+         */
+        
+        // Handle Profile Picture changes from settings
+        const settingsAvatarUpload = document.getElementById('upload-avatar-file');
+        if (settingsAvatarUpload) {
+            settingsAvatarUpload.addEventListener('change', async (event) => {
+                try {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const fileName = `avatars/${auth.currentUser.uid}_${Date.now()}`;
+                        const storageRef = ref(storage, fileName);
+                        
+                        // Process upload
+                        await uploadBytesResumable(storageRef, file);
+                        const downloadUrl = await getDownloadURL(storageRef);
+                        
+                        // Save URL to DB
+                        const userDocRef = doc(db, "users", auth.currentUser.uid);
+                        await updateDoc(userDocRef, { 
+                            photoURL: downloadUrl 
+                        });
+                        
+                        alert("Profile picture updated successfully.");
+                    }
+                } catch (error) {
+                    console.error("Avatar Upload Failed:", error);
+                    alert("Failed to update avatar.");
+                }
+            });
+        }
 
+        // Save Textual Profile Changes
+        const btnSaveSettings = document.getElementById('btn-save-settings');
+        if (btnSaveSettings) {
+            btnSaveSettings.addEventListener('click', async () => {
+                try {
+                    const newName = document.getElementById('edit-name').value.trim();
+                    const newPhone = document.getElementById('edit-phone').value.trim();
+                    const isPublic = document.getElementById('edit-phone-public').checked;
+                    
+                    if (!newName) {
+                        alert("Name cannot be empty.");
+                        return;
+                    }
+                    
+                    const userDocRef = doc(db, "users", auth.currentUser.uid);
+                    await updateDoc(userDocRef, {
+                        name: newName,
+                        phone: newPhone,
+                        isPhonePublic: isPublic
+                    });
+                    
+                    alert("All account settings have been saved successfully.");
+                    
+                } catch (error) {
+                    console.error("Settings Update Failed:", error);
+                    alert("Error saving settings.");
+                }
+            });
+        }
+
+        /**
+         * Renders the Block History array in the Settings modal.
+         */
         window.coreLogic.renderBlockList = () => {
-            const list = document.getElementById('block-list-container');
-            const blocks = currentUserData.blockedUsers || [];
-            if(blocks.length === 0) { list.innerHTML = "<p style='color:gray; font-size:13px;'>No blocked users.</p>"; return; }
+            const listContainer = document.getElementById('block-list-container');
             
-            list.innerHTML = "";
-            blocks.forEach(id => {
-                const u = allUsers.find(x => x.uid === id) || { name: "Unknown" };
-                list.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
-                        <span>${u.name}</span>
-                        <button class="btn-primary" style="padding:6px 12px; font-size:12px; border:none; width:auto;" onclick="coreLogic.unblockUser('${id}')">Unblock</button>
+            // Validate data
+            if (!currentUserData) {
+                return;
+            }
+            
+            const blockedArray = currentUserData.blockedUsers || [];
+            
+            if (blockedArray.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="color: var(--text-muted); font-size: 14px; text-align: center; padding: 15px; background: #f9fafb; border-radius: 8px;">
+                        No users have been blocked.
                     </div>
                 `;
+                return;
+            }
+            
+            listContainer.innerHTML = "";
+            
+            blockedArray.forEach(blockedId => {
+                // Look up user details from cache
+                const userObj = allUsers.find(u => u.uid === blockedId) || { name: "Unknown Data (ID: " + blockedId + ")" };
+                
+                const blockItemHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 15px; border-bottom:1px solid var(--border-color); background: #fff; margin-bottom: 5px; border-radius: 8px;">
+                        <span style="font-size: 15px; font-weight: 500; color: var(--text-main);">
+                            ${userObj.name}
+                        </span>
+                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px; width: auto;" onclick="coreLogic.unblockUser('${blockedId}', '${userObj.name}')">
+                            Unblock
+                        </button>
+                    </div>
+                `;
+                
+                listContainer.innerHTML += blockItemHTML;
             });
         };
 
-        // ==========================================
-        // Profile Settings 
-        // ==========================================
-        document.getElementById('upload-avatar-file').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if(file) {
-                const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
-                await uploadBytesResumable(storageRef, file);
-                const url = await getDownloadURL(storageRef);
-                await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: url });
+        /**
+         * Removes a user from the blocked list array and alerts via Telegram.
+         */
+        window.coreLogic.unblockUser = async (targetId, targetName) => {
+            try {
+                const userDocRef = doc(db, "users", auth.currentUser.uid);
+                
+                await updateDoc(userDocRef, { 
+                    blockedUsers: arrayRemove(targetId) 
+                });
+                
+                // 📝 PER REQUIREMENT: Send Telegram Alert upon Unblock
+                const tgMsg = `✅ MODERATION ALERT (UNBLOCK):\nInitiator: ${currentUserData.name}\nUnblocked: ${targetName}`;
+                window.coreLogic.sendTelegram(tgMsg);
+                
+                // Re-render list
+                window.coreLogic.renderBlockList();
+                
+            } catch (error) {
+                console.error("Unblock Failed:", error);
             }
-        });
+        };
 
-        document.getElementById('btn-save-profile').addEventListener('click', async () => {
-            await updateDoc(doc(db, "users", auth.currentUser.uid), {
-                name: document.getElementById('prof-name').value,
-                phone: document.getElementById('prof-phone').value,
-                isPhonePublic: document.getElementById('prof-phone-public').checked
-            });
-            const btn = document.getElementById('btn-save-profile');
-            btn.innerText = "Saved Successfully!"; setTimeout(()=> btn.innerText = "Save Changes", 2000);
-        });
-
+        /* 
+         * ---------------------------------------------------------
+         * NOTIFICATIONS RENDER ENGINE
+         * ---------------------------------------------------------
+         */
         window.coreLogic.renderNotifications = () => {
-            const q = query(collection(db, "notifications"), orderBy("time", "desc"));
-            onSnapshot(q, (snap) => {
-                const box = document.getElementById('notifications-container');
-                box.innerHTML = "";
-                let hasNotif = false;
-                snap.forEach(docSnap => {
-                    const n = docSnap.data();
-                    if(n.userId === auth.currentUser.uid) {
-                        hasNotif = true;
-                        box.innerHTML += `
-                            <div style="background:white; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid #eee;">
-                                <div style="font-size:14px; color:#111827;">${n.text}</div>
-                                <div style="font-size:12px; color:gray; margin-top:5px;">${new Date(n.time).toLocaleString()}</div>
+            const notifCollection = collection(db, "notifications");
+            const q = query(notifCollection, orderBy("time", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                const containerBox = document.getElementById('notifications-container');
+                containerBox.innerHTML = "";
+                let notificationsFound = false;
+                
+                snapshot.forEach(docSnap => {
+                    const notifData = docSnap.data();
+                    
+                    // Display only notifications targeting the logged-in user
+                    if (notifData.userId === auth.currentUser.uid) {
+                        notificationsFound = true;
+                        
+                        const timeStr = new Date(notifData.time).toLocaleString();
+                        
+                        containerBox.innerHTML += `
+                            <div class="notif-item">
+                                <div style="font-weight: 500; color: var(--text-main); margin-bottom: 4px;">
+                                    ${notifData.text}
+                                </div>
+                                <div style="font-size: 12px; color: var(--primary-color);">
+                                    <i class="far fa-clock"></i> ${timeStr}
+                                </div>
                             </div>
                         `;
                     }
                 });
-                if(!hasNotif) box.innerHTML = "<div style='text-align:center; color:gray; padding:20px;'>Inbox empty</div>";
+                
+                if (!notificationsFound) {
+                    containerBox.innerHTML = `
+                        <div style="padding: 25px 15px; color: var(--text-muted); text-align: center;">
+                            <i class="far fa-bell-slash" style="font-size: 30px; margin-bottom: 10px; color: #ced0d4;"></i>
+                            <br>No new notifications at this time.
+                        </div>
+                    `;
+                }
             });
         };
 
-        // ==========================================
-        // AI Voice Assistant (Web Speech API)
-        // ==========================================
+        /* 
+         * ---------------------------------------------------------
+         * PURE CSS AI BOT WITH WEB SPEECH API
+         * ---------------------------------------------------------
+         */
         window.aiBot = {
+            /**
+             * Initializes speech recognition and responds with TTS (Text-to-Speech)
+             */
             talk: () => {
-                const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRec) return alert("Browser does not support Voice AI.");
+                // Cross-browser setup for Speech API
+                const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
                 
-                const rec = new SpeechRec();
-                rec.onstart = () => {
-                    document.getElementById('header-title').innerText = "AI Listening...";
+                if (!SpeechRecognitionAPI) {
+                    alert("Sorry! Your browser architecture does not support Voice AI functionalities.");
+                    return;
+                }
+                
+                const recognizer = new SpeechRecognitionAPI();
+                
+                // Visual feedback upon start
+                recognizer.onstart = () => {
+                    alert("AI is listening... Try saying 'Hello' or 'Make a post'.");
                 };
-                rec.onresult = (e) => {
-                    const text = e.results[0][0].transcript;
-                    document.getElementById('header-title').innerText = "Newsfeed";
+                
+                // Logic evaluation when speech is processed
+                recognizer.onresult = (event) => {
+                    const speechTranscript = event.results[0][0].transcript;
+                    const lowercaseText = speechTranscript.toLowerCase();
                     
                     setTimeout(() => {
-                        let reply = "Hello! I am your AI assistant designed by Roni Vai.";
-                        if(text.toLowerCase().includes("post")) reply = "Tap the plus button below to create a post.";
-                        alert(`You said: "${text}"\nAI Reply: ${reply}`);
+                        let aiResponse = "I am an intelligent assistant developed specifically by Roni Vai! I am here to help you navigate.";
                         
-                        if ('speechSynthesis' in window) {
-                            const utterance = new SpeechSynthesisUtterance(reply);
-                            window.speechSynthesis.speak(utterance);
+                        if (lowercaseText.includes("post")) {
+                            aiResponse = "Simply tap 'What's on your mind' at the top of the feed to create a brand new post.";
+                        } else if (lowercaseText.includes("hello") || lowercaseText.includes("hi")) {
+                            aiResponse = "Greetings! I hope you are enjoying this application.";
+                        } else if (lowercaseText.includes("block")) {
+                            aiResponse = "You can block users by searching their name in the top search bar.";
                         }
-                    }, 500);
+                        
+                        // Text-to-Speech Execution
+                        if ('speechSynthesis' in window) {
+                            const speechUtterance = new SpeechSynthesisUtterance(aiResponse);
+                            speechUtterance.pitch = 1.2; // Slightly higher pitch for cute cat persona
+                            speechUtterance.rate = 1.0;
+                            
+                            window.speechSynthesis.speak(speechUtterance);
+                        } else {
+                            // Fallback if TTS is missing
+                            alert(`You said: "${speechTranscript}"\n\nAI Replied: ${aiResponse}`);
+                        }
+                    }, 600); // Slight delay for natural interaction feel
                 };
-                rec.start();
+                
+                // Handle system errors (like mic permissions)
+                recognizer.onerror = (errorEvent) => {
+                    console.error("Speech Recognition Error:", errorEvent.error);
+                };
+                
+                // Start listening
+                recognizer.start();
             }
         };
 
