@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Premium Community App</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. PREMIUM GLASSMORPHISM THEME & ANIMATIONS
+        ========================================= */
+        :root {
+            --primary: #8b5cf6; /* Vibrant Purple */
+            --secondary: #ec4899; /* Pink */
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-dark); color: var(--text-main); 
+            height: 100vh; width: 100vw; overflow: hidden; 
+            background-image: radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.2), transparent 25%), 
+                              radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.2), transparent 25%);
+            background-attachment: fixed;
+        }
+        
+        .hidden { display: none !important; }
+        
+        /* Glass Components */
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); }
+        .glass-input { width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: white; padding: 14px 20px; border-radius: 16px; outline: none; font-size: 15px; transition: 0.3s; margin-bottom: 12px; }
+        .glass-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+        
+        .btn { padding: 14px 24px; border: none; border-radius: 16px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.3s; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn:active { transform: scale(0.95); }
+        .btn-gradient { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+        .btn-outline { background: transparent; border: 1px solid var(--glass-border); color: white; }
+        .btn-danger { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 10px; width: auto; font-size: 13px;}
+
+        /* Screens */
+        .screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; z-index: 10; animation: fadeScale 0.5s ease; overflow: hidden; }
+        @keyframes fadeScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        /* App Layout */
+        .header { padding: 20px 20px 10px; display: flex; justify-content: space-between; align-items: center; z-index: 50; }
+        .content-scroll { flex: 1; overflow-y: auto; padding: 10px 20px 100px; scroll-behavior: smooth; }
+        .content-scroll::-webkit-scrollbar { width: 0px; }
+        
+        /* Bottom Nav */
+        .bottom-nav { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 30px; display: flex; justify-content: space-around; padding: 15px 10px; z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .nav-item { color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
+        .nav-item.active { color: var(--primary); transform: translateY(-5px); }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -8px; width: 5px; height: 5px; background: var(--secondary); border-radius: 50%; box-shadow: 0 0 10px var(--secondary); }
+
+        /* =========================================
+           2. POSTS & FEED (UNIQUE DESIGN)
+        ========================================= */
+        .post-card { margin-bottom: 20px; transition: 0.3s; position: relative; overflow: hidden; }
+        .post-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 45px; height: 45px; border-radius: 16px; object-fit: cover; border: 2px solid var(--primary); }
+        .post-text { font-size: 15px; line-height: 1.6; margin-bottom: 15px; font-weight: 300; }
+        .tag-highlight { color: var(--secondary); font-weight: 600; cursor: pointer; }
+        .post-image { width: 100%; border-radius: 16px; margin-bottom: 15px; max-height: 350px; object-fit: cover; }
+        .gps-tag { font-size: 11px; background: rgba(139, 92, 246, 0.15); color: #c4b5fd; padding: 5px 12px; border-radius: 20px; display: inline-block; margin-bottom: 15px; border: 1px solid rgba(139, 92, 246, 0.3); }
+        
+        .action-bar { display: flex; gap: 20px; border-top: 1px solid var(--glass-border); padding-top: 15px; }
+        .action-btn { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
+        .action-btn:hover { color: var(--text-main); }
+        
+        .comment-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--glass-border); display: none; }
+        .comment-box { display: flex; gap: 10px; }
+
+        /* Profile & Settings */
+        .profile-hero { text-align: center; margin-bottom: 30px; position: relative; }
+        .profile-pic { width: 110px; height: 110px; border-radius: 35px; object-fit: cover; border: 3px solid var(--primary); box-shadow: 0 0 20px rgba(139, 92, 246, 0.4); margin: 0 auto 15px; background: #1e293b; }
+        .camera-btn { position: absolute; bottom: 10px; right: calc(50% - 65px); background: var(--secondary); width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 0 10px var(--secondary); }
+        
+        .stat-box { display: flex; justify-content: center; gap: 30px; margin-bottom: 25px; }
+        .stat { text-align: center; }
+        .stat span { display: block; font-size: 22px; font-weight: 700; color: white; }
+        .stat small { font-size: 12px; color: var(--text-muted); }
+
+        .developer-credit { text-align: center; padding: 40px 0; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; }
+
+        /* =========================================
+           3. PURE CSS AI CAT IN GLASS BUBBLE
+        ========================================= */
+        #ai-assistant { position: absolute; bottom: 100px; right: 20px; z-index: 150; cursor: pointer; animation: floatCat 4s infinite ease-in-out; }
+        @keyframes floatCat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        
+        .cat-bubble { width: 70px; height: 70px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(236, 72, 153, 0.4); overflow: hidden; position: relative;}
+        
+        /* The CSS Cat */
+        .cat-face { width: 46px; height: 36px; background: #fff; border-radius: 50% 50% 40% 40%; position: relative; margin-top: 10px; }
+        .ear-l, .ear-r { position: absolute; top: -10px; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 18px solid #fff; }
+        .ear-l { left: -2px; transform: rotate(-25deg); } .ear-r { right: -2px; transform: rotate(25deg); }
+        /* Pink Inner Ear */
+        .ear-l::after, .ear-r::after { content: ''; position: absolute; top: 5px; left: -4px; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 10px solid #f472b6; }
+        /* Eyes */
+        .eye-l, .eye-r { width: 10px; height: 10px; background: #0f172a; border-radius: 50%; position: absolute; top: 14px; animation: blink 3s infinite; }
+        .eye-l { left: 8px; } .eye-r { right: 8px; }
+        .eye-l::after, .eye-r::after { content: ''; position: absolute; top: 1px; left: 1px; width: 4px; height: 4px; background: #fff; border-radius: 50%; }
+        @keyframes blink { 0%, 95%, 100% { transform: scaleY(1); } 97.5% { transform: scaleY(0.1); } }
+        /* Nose */
+        .nose { width: 6px; height: 4px; background: #f472b6; border-radius: 50%; position: absolute; top: 22px; left: 20px; }
+        
+        #ai-chatbox { position: absolute; bottom: 180px; right: 20px; width: 250px; transform: scale(0); transform-origin: bottom right; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 140; }
+        #ai-chatbox.show { transform: scale(1); }
+
+        /* Secret Admin Panel */
+        #admin-panel { background: #000; color: #0f0; font-family: monospace; z-index: 999; }
+        .admin-header { border-bottom: 1px solid #0f0; padding: 20px; font-size: 20px; text-align: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. ONBOARDING SCREEN -->
+    <div id="onboarding-screen" class="screen" style="justify-content: center; align-items: center; padding: 30px; text-align: center;">
+        <div style="width: 120px; height: 120px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 40px; transform: rotate(15deg); display: flex; justify-content: center; align-items: center; font-size: 50px; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);">
+            <i class="fas fa-satellite-dish" style="transform: rotate(-15deg);"></i>
+        </div>
+        <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 15px;">Discover.<br>Connect. Share.</h1>
+        <p style="color: var(--text-muted); margin-bottom: 50px; font-size: 15px;">Experience the next-gen community platform powered by AI and real-time interactions.</p>
+        <button class="btn btn-gradient" style="margin-bottom: 15px; padding: 18px;" onclick="appUI.initAuth()">Get Started Now</button>
+        <button class="btn btn-outline" onclick="appUI.initAuth()">Skip Intro</button>
+    </div>
+
+    <!-- 2. LOGIN SCREEN -->
+    <div id="login-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; text-align: center;">
+        <h2 style="font-size: 28px; margin-bottom: 10px;">Welcome Back</h2>
+        <p style="color: var(--text-muted); margin-bottom: 50px;">Secure authentication via Google.</p>
+        
+        <button class="btn glass-card" id="btn-google-login" style="width: 100%; border: 1px solid rgba(255,255,255,0.2); font-size: 16px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="width: 20px;"> 
+            Continue with Google
+        </button>
+        <!-- Notice: No Admin Button Here. Admin is completely hidden via URL parameter -->
+    </div>
+
+    <!-- 3. MAIN APP INTERFACE -->
+    <div id="main-app" class="screen hidden">
+        
+        <div class="header">
+            <h2 id="header-title" style="font-weight: 600; font-size: 24px;">Feed</h2>
+            <!-- Search System -->
+            <div style="position: relative; width: 60%;">
+                <input type="text" id="search-input" class="glass-input" style="margin:0; padding: 10px 15px; border-radius: 20px;" placeholder="Search or @tag...">
+                <div id="search-results" class="glass-card hidden" style="position: absolute; top: 50px; width: 100%; z-index: 60; padding: 10px; max-height: 250px; overflow-y: auto;"></div>
+            </div>
+        </div>
+
+        <!-- A. FEED TAB -->
+        <div id="tab-feed" class="content-scroll">
+            <div class="glass-card" style="margin-bottom: 25px; padding: 15px;">
+                <textarea id="new-post-text" placeholder="What's happening? (Use @ to tag)" style="width:100%; background:transparent; border:none; color:white; outline:none; resize:none; font-family:inherit; font-size:16px; height: 60px;"></textarea>
+                
+                <img id="new-post-img-preview" class="hidden" style="width: 100%; height: 160px; object-fit: cover; border-radius: 16px; margin-bottom: 15px;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label style="color: var(--secondary); font-size: 22px; cursor: pointer;">
+                        <i class="fas fa-image"></i>
+                        <input type="file" id="new-post-file" accept="image/*" class="hidden">
+                    </label>
+                    <button class="btn btn-gradient" style="width: auto; padding: 8px 24px; border-radius: 20px;" id="btn-publish-post">Post</button>
+                </div>
+            </div>
+            
+            <div id="feed-container">
+                <div style="text-align: center; color: var(--text-muted); margin-top: 40px;"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>
+            </div>
+        </div>
+
+        <!-- B. NOTIFICATIONS TAB -->
+        <div id="tab-notifications" class="content-scroll hidden">
+            <h3 style="margin-bottom: 20px; font-weight: 500;">Inbox & Alerts</h3>
+            <div id="notifications-container"></div>
+        </div>
+
+        <!-- C. PROFILE TAB (Full Features) -->
+        <div id="tab-profile" class="content-scroll hidden">
+            <div class="profile-hero">
+                <div style="position: relative; display: inline-block;">
+                    <img src="https://via.placeholder.com/150" id="prof-avatar" class="profile-pic">
+                    <label class="camera-btn">
+                        <i class="fas fa-camera" style="color: white; font-size: 14px;"></i>
+                        <input type="file" id="upload-avatar-file" accept="image/*" class="hidden">
+                    </label>
+                </div>
+                <h2 id="display-name" style="font-size: 24px;">Loading...</h2>
+                <p id="display-phone" style="color: var(--text-muted); font-size: 14px;">---</p>
+            </div>
+
+            <!-- Follower Stats added -->
+            <div class="stat-box">
+                <div class="stat"><span id="stat-posts">0</span><small>Posts</small></div>
+                <div class="stat"><span id="stat-followers">0</span><small>Followers</small></div>
+                <div class="stat"><span id="stat-following">0</span><small>Following</small></div>
+            </div>
+            
+            <div class="glass-card" style="margin-bottom: 20px;">
+                <h4 style="margin-bottom: 15px; font-weight: 400; color: var(--secondary);">Edit Information</h4>
+                <input type="text" id="prof-name" class="glass-input" placeholder="Full Name">
+                <input type="text" id="prof-phone" class="glass-input" placeholder="Phone Number">
+                
+                <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; margin: 15px 0; cursor: pointer;">
+                    <input type="checkbox" id="prof-phone-public" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                    Make Phone Number Public
+                </label>
+                <button class="btn btn-gradient" id="btn-save-profile">Update Profile</button>
+            </div>
+
+            <div class="glass-card">
+                <h4 style="color: #f87171; margin-bottom: 15px; font-weight: 400;"><i class="fas fa-shield-alt"></i> Block & Privacy</h4>
+                <div id="block-list-container"></div>
+            </div>
+
+            <!-- MANDATORY CREDENTIAL -->
+            <div class="developer-credit">
+                Developer by Roni Vai
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="appUI.switchTab('feed')"><i class="fas fa-layer-group"></i></div>
+            <div class="nav-item" onclick="appUI.switchTab('notifications')"><i class="fas fa-bell"></i></div>
+            <div class="nav-item" onclick="appUI.switchTab('profile')"><i class="fas fa-user-astronaut"></i></div>
+        </div>
+
+        <!-- PURE CSS AI CAT IN GLASS BUBBLE -->
+        <div id="ai-assistant" onclick="aiBot.toggle()">
+            <div class="cat-bubble">
+                <div class="cat-face">
+                    <div class="ear-l"></div>
+                    <div class="ear-r"></div>
+                    <div class="eye-l"></div>
+                    <div class="eye-r"></div>
+                    <div class="nose"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Voice Chatbox -->
+        <div id="ai-chatbox" class="glass-card">
+            <p style="font-size: 14px; font-weight: 500; margin-bottom: 15px; color: white;">
+                <i class="fas fa-bolt" style="color: #fbbf24;"></i> <span id="ai-status">Meow! Ready for voice command.</span>
+            </p>
+            <button class="btn btn-gradient" style="border-radius: 12px; font-size: 13px;" onclick="aiBot.listen()">
+                <i class="fas fa-microphone"></i> Tap & Speak
+            </button>
+        </div>
+    </div>
+
+    <!-- 4. SECRET HIDDEN ADMIN PANEL -->
+    <!-- This is strictly accessible only by appending ?admin=true to the URL -->
+    <div id="admin-panel" class="screen hidden" style="padding: 20px; overflow-y: auto;">
+        <div class="admin-header">
+            TERMINAL: SYSTEM ADMIN <br>
+            <small style="color: gray; font-size: 12px;">Telegram Config Hardcoded in JS.</small>
+        </div>
+        <div style="border: 1px solid #0f0; padding: 15px; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 15px;">Database Moderation</h3>
+            <div id="admin-posts-list">Loading real-time DB...</div>
+        </div>
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT & FIREBASE LOGIC (V10 MODULAR)
+    ========================================================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, getDoc, setDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+        // 🔥 EXACT FIREBASE CONFIG PROVIDED BY USER 🔥
+        const firebaseConfig = {
+            apiKey: "AIzaSyCAtiOdN_n9IYBrsBG0G4H6xBmAYMkK_zM",
+            authDomain: "news-app-94b75.firebaseapp.com",
+            databaseURL: "https://news-app-94b75-default-rtdb.firebaseio.com",
+            projectId: "news-app-94b75",
+            storageBucket: "news-app-94b75.firebasestorage.app",
+            messagingSenderId: "165815847758",
+            appId: "1:165815847758:web:a409bc847d7f9a0bb36c1f"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app); // Using Firestore for advanced querying (viral sort, etc)
+        const storage = getStorage(app);
+        const provider = new GoogleAuthProvider();
+
+        // 🔥 HARDCODED TELEGRAM CREDENTIALS 🔥
+        const TG_TOKEN = "8886551340:AAG3VP-SL8uirznpQzUtmckb_H6qfs8GU00";
+        const TG_CHAT_ID = "6438545807";
+
+        // State Variables
+        let currentUserData = null;
+        let allUsers = [];
+        window.coreLogic = {}; 
+
+        // ==========================================
+        // UI & Admin Routing
+        // ==========================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdminRoute = urlParams.get('admin') === 'true';
+
+        window.appUI = {
+            initAuth: () => {
+                document.getElementById('onboarding-screen').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+            },
+            switchTab: (tabId) => {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.content-scroll').forEach(el => el.classList.add('hidden'));
+                
+                event.currentTarget.classList.add('active');
+                document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+                
+                const title = document.getElementById('header-title');
+                if(tabId === 'feed') title.innerText = "Feed";
+                if(tabId === 'notifications') { title.innerText = "Inbox"; window.coreLogic.renderNotifications(); }
+                if(tabId === 'profile') { title.innerText = "Profile"; window.coreLogic.renderBlockList(); }
+            }
+        };
+
+        // Routing Logic
+        if(isAdminRoute) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
+            document.getElementById('admin-panel').classList.remove('hidden');
+            // Init Admin DB listener
+            onSnapshot(query(collection(db, "posts"), orderBy("timestamp", "desc")), (snap) => {
+                const list = document.getElementById('admin-posts-list');
+                list.innerHTML = "";
+                snap.forEach(docSnap => {
+                    const p = docSnap.data();
+                    list.innerHTML += `<div style="margin-bottom:10px; border-bottom:1px dashed #0f0; padding-bottom:5px;">
+                        [ID: ${docSnap.id}] <br>User: ${p.authorName} <br>Text: ${p.text} 
+                        <button onclick="coreLogic.adminDel('${docSnap.id}')" style="background:red; color:white; border:none; padding:3px 10px; cursor:pointer;">DEL</button>
+                    </div>`;
+                });
+            });
+        }
+
+        window.coreLogic.adminDel = async (id) => await deleteDoc(doc(db, "posts", id));
+
+        // ==========================================
+        // Authentication & User Data
+        // ==========================================
+        document.getElementById('btn-google-login').addEventListener('click', async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: user.uid,
+                        name: user.displayName,
+                        phone: user.phoneNumber || "",
+                        photoURL: user.photoURL,
+                        isPhonePublic: false,
+                        blockedUsers: [],
+                        followers: [],
+                        following: []
+                    });
+                }
+                
+                window.coreLogic.triggerTG(`🚨 Login Alert:\nName: ${user.displayName}\nPhone: ${user.phoneNumber || 'N/A'}`);
+            } catch (error) { alert("Auth Error: " + error.message); }
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user && !isAdminRoute) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                
+                // Realtime User Data
+                onSnapshot(doc(db, "users", user.uid), (docSnap) => {
+                    currentUserData = docSnap.data();
+                    
+                    document.getElementById('prof-name').value = currentUserData.name || "";
+                    document.getElementById('display-name').innerText = currentUserData.name || "User";
+                    document.getElementById('prof-phone').value = currentUserData.phone || "";
+                    document.getElementById('display-phone').innerText = (currentUserData.isPhonePublic && currentUserData.phone) ? currentUserData.phone : "Phone Hidden";
+                    document.getElementById('prof-phone-public').checked = currentUserData.isPhonePublic;
+                    document.getElementById('prof-avatar').src = currentUserData.photoURL || "https://via.placeholder.com/150";
+                    
+                    // Stats
+                    document.getElementById('stat-followers').innerText = (currentUserData.followers || []).length;
+                    document.getElementById('stat-following').innerText = (currentUserData.following || []).length;
+                });
+                
+                // Fetch All Users for Search & Follow
+                onSnapshot(collection(db, "users"), (snapshot) => {
+                    allUsers = [];
+                    snapshot.forEach(docSnap => { if(docSnap.id !== user.uid) allUsers.push(docSnap.data()); });
+                });
+
+                window.coreLogic.initFeedListener();
+            }
+        });
+
+        // ==========================================
+        // Posts, Tags, GPS, & 5-Sec Auto Moderation
+        // ==========================================
+        let selectedFile = null;
+        document.getElementById('new-post-file').addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if(selectedFile) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.getElementById('new-post-img-preview');
+                    img.src = ev.target.result;
+                    img.classList.remove('hidden');
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        });
+
+        document.getElementById('btn-publish-post').addEventListener('click', async () => {
+            const text = document.getElementById('new-post-text').value;
+            if(!text && !selectedFile) return;
+            
+            const btn = document.getElementById('btn-publish-post');
+            btn.innerText = "Posting..."; btn.disabled = true;
+
+            let lat = null, lng = null;
+            if (navigator.geolocation) {
+                try {
+                    const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, {timeout: 4000}));
+                    lat = pos.coords.latitude; lng = pos.coords.longitude;
+                } catch(e) {}
+            }
+
+            let imageUrl = null;
+            if(selectedFile) {
+                const storageRef = ref(storage, `posts/${auth.currentUser.uid}_${Date.now()}`);
+                await uploadBytesResumable(storageRef, selectedFile);
+                imageUrl = await getDownloadURL(storageRef);
+            }
+
+            const docRef = await addDoc(collection(db, "posts"), {
+                authorId: auth.currentUser.uid,
+                authorName: currentUserData.name,
+                authorPic: currentUserData.photoURL,
+                text: text, imageUrl: imageUrl,
+                lat: lat, lng: lng,
+                likes: 0, commentsArr: [],
+                timestamp: Date.now()
+            });
+            
+            document.getElementById('new-post-text').value = "";
+            document.getElementById('new-post-img-preview').classList.add('hidden');
+            selectedFile = null; btn.innerText = "Post"; btn.disabled = false;
+
+            window.coreLogic.triggerTG(`📝 Post Created\nBy: ${currentUserData.name}\nPhone: ${currentUserData.phone}\nText: "${text}"`);
+            
+            // 🤖 5-SECOND AI MODERATION
+            setTimeout(async () => {
+                const badWords = ["badword", "abuse", "spam", "hate"];
+                if(badWords.some(w => text.toLowerCase().includes(w))) {
+                    await deleteDoc(doc(db, "posts", docRef.id));
+                    window.coreLogic.addNotification("System AI deleted your post for breaking rules.");
+                }
+            }, 5000); 
+        });
+
+        // ==========================================
+        // Feed System (Viral Sort, Tag Parse, Comments)
+        // ==========================================
+        window.coreLogic.initFeedListener = () => {
+            onSnapshot(collection(db, "posts"), (snapshot) => {
+                let posts = [];
+                let myPostCount = 0;
+                snapshot.forEach(docSnap => {
+                    const d = docSnap.data();
+                    if(d.authorId === auth.currentUser.uid) myPostCount++;
+                    posts.push({ id: docSnap.id, ...d });
+                });
+                
+                document.getElementById('stat-posts').innerText = myPostCount;
+
+                // 1. Blocked User Filter
+                if(currentUserData && currentUserData.blockedUsers) {
+                    posts = posts.filter(p => !currentUserData.blockedUsers.includes(p.authorId));
+                }
+                
+                // 2. Viral Algorithm Sort
+                posts.sort((a, b) => {
+                    const engA = (a.likes || 0) + (a.commentsArr?.length || 0);
+                    const engB = (b.likes || 0) + (b.commentsArr?.length || 0);
+                    if(engB !== engA) return engB - engA;
+                    return b.timestamp - a.timestamp;
+                });
+
+                const container = document.getElementById('feed-container');
+                container.innerHTML = "";
+                
+                posts.forEach(post => {
+                    // Parse @tags
+                    let formattedText = post.text.replace(/@(\w+)/g, '<span class="tag-highlight">@$1</span>');
+                    
+                    const gpsHtml = post.lat ? `<div class="gps-tag"><i class="fas fa-location-dot"></i> Exact: ${post.lat.toFixed(4)}, ${post.lng.toFixed(4)}</div>` : "";
+                    const imgHtml = post.imageUrl ? `<img src="${post.imageUrl}" class="post-image">` : "";
+                    const blockBtn = post.authorId !== auth.currentUser.uid 
+                        ? `<i class="fas fa-ban" style="color:#ef4444; cursor:pointer;" onclick="coreLogic.blockUser('${post.authorId}', '${post.authorName}')"></i>` : "";
+
+                    // Comments HTML
+                    let commentsHtml = (post.commentsArr || []).map(c => `<div style="font-size:13px; margin-bottom:5px; padding:8px; background:rgba(0,0,0,0.2); border-radius:10px;"><strong>${c.name}:</strong> ${c.text}</div>`).join('');
+
+                    container.innerHTML += `
+                        <div class="glass-card post-card">
+                            <div class="post-header">
+                                <div class="user-info">
+                                    <img src="${post.authorPic || 'https://via.placeholder.com/45'}" class="avatar">
+                                    <div>
+                                        <div style="font-weight: 600;">${post.authorName}</div>
+                                        <div style="font-size: 11px; color: var(--text-muted);">${new Date(post.timestamp).toLocaleString()}</div>
+                                    </div>
+                                </div>
+                                ${blockBtn}
+                            </div>
+                            <div class="post-text">${formattedText}</div>
+                            ${imgHtml}
+                            ${gpsHtml}
+                            <div class="action-bar">
+                                <div class="action-btn" onclick="coreLogic.likePost('${post.id}', ${post.likes})"><i class="fas fa-heart" style="color:${post.likes > 0 ? 'var(--secondary)' : 'gray'}"></i> ${post.likes || 0}</div>
+                                <div class="action-btn" onclick="document.getElementById('com-${post.id}').style.display='block'"><i class="fas fa-comment"></i> ${post.commentsArr?.length || 0}</div>
+                            </div>
+                            
+                            <!-- Comment Section -->
+                            <div class="comment-section" id="com-${post.id}">
+                                ${commentsHtml}
+                                <div class="comment-box" style="margin-top:10px;">
+                                    <input type="text" id="inp-com-${post.id}" class="glass-input" style="margin:0; padding:8px 15px; font-size:13px;" placeholder="Write a comment...">
+                                    <button class="btn btn-gradient" style="width:auto; padding:8px 15px;" onclick="coreLogic.addComment('${post.id}', '${post.authorId}')">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        };
+
+        window.coreLogic.likePost = async (id, currentLikes) => {
+            await updateDoc(doc(db, "posts", id), { likes: (currentLikes || 0) + 1 });
+        };
+        
+        window.coreLogic.addComment = async (postId, postAuthorId) => {
+            const txt = document.getElementById(`inp-com-${postId}`).value;
+            if(!txt) return;
+            await updateDoc(doc(db, "posts", postId), { 
+                commentsArr: arrayUnion({ name: currentUserData.name, text: txt }) 
+            });
+            // Notification mechanism
+            if(postAuthorId !== auth.currentUser.uid) {
+                await addDoc(collection(db, "notifications"), {
+                    userId: postAuthorId, text: `${currentUserData.name} commented on your post.`, time: Date.now()
+                });
+            }
+        };
+
+        // ==========================================
+        // Search, Follow & Block Logic
+        // ==========================================
+        document.getElementById('search-input').addEventListener('keyup', (e) => {
+            const queryText = e.target.value.toLowerCase();
+            const resBox = document.getElementById('search-results');
+            if(queryText.length < 1) { resBox.classList.add('hidden'); return; }
+
+            resBox.classList.remove('hidden'); resBox.innerHTML = "";
+            const matches = allUsers.filter(u => u.name.toLowerCase().includes(queryText) && !(currentUserData.blockedUsers || []).includes(u.uid));
+
+            if(matches.length === 0) { resBox.innerHTML = "<div style='color:gray; font-size:13px;'>No results found.</div>"; return; }
+            
+            matches.forEach(u => {
+                const isFollowing = (currentUserData.following || []).includes(u.uid);
+                const followBtn = `<button class="btn btn-outline" style="padding:4px 10px; font-size:12px; width:auto;" onclick="coreLogic.toggleFollow('${u.uid}', ${isFollowing})">${isFollowing ? 'Unfollow' : 'Follow'}</button>`;
+                
+                resBox.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--glass-border);">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${u.photoURL || 'https://via.placeholder.com/30'}" style="width:35px; height:35px; border-radius:10px; object-fit:cover;">
+                            <div>
+                                <div style="font-size:14px; font-weight:600;">${u.name}</div>
+                                ${u.isPhonePublic ? `<div style="font-size:11px; color:gray;">${u.phone}</div>` : ''}
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            ${followBtn}
+                            <button class="btn-danger" style="padding:4px 10px; font-size:12px; border-radius:10px;" onclick="coreLogic.blockUser('${u.uid}', '${u.name}')"><i class="fas fa-ban"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        window.coreLogic.toggleFollow = async (targetId, isFollowing) => {
+            const myRef = doc(db, "users", auth.currentUser.uid);
+            const targetRef = doc(db, "users", targetId);
+            
+            if(isFollowing) {
+                await updateDoc(myRef, { following: arrayRemove(targetId) });
+                await updateDoc(targetRef, { followers: arrayRemove(auth.currentUser.uid) });
+            } else {
+                await updateDoc(myRef, { following: arrayUnion(targetId) });
+                await updateDoc(targetRef, { followers: arrayUnion(auth.currentUser.uid) });
+                
+                // Real-time Follow Notification
+                await addDoc(collection(db, "notifications"), {
+                    userId: targetId, text: `${currentUserData.name} started following you!`, time: Date.now()
+                });
+            }
+            document.getElementById('search-input').dispatchEvent(new Event('keyup')); // Refresh search list
+        };
+
+        window.coreLogic.blockUser = async (targetId, targetName) => {
+            if(!confirm(`Block ${targetName}?`)) return;
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayUnion(targetId) });
+            document.getElementById('search-results').classList.add('hidden');
+            window.coreLogic.triggerTG(`🚫 Block Action\n${currentUserData.name} (${currentUserData.phone}) blocked ${targetName}.`);
+        };
+
+        window.coreLogic.unblockUser = async (targetId) => {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayRemove(targetId) });
+        };
+
+        window.coreLogic.renderBlockList = () => {
+            const list = document.getElementById('block-list-container');
+            const blocks = currentUserData.blockedUsers || [];
+            if(blocks.length === 0) { list.innerHTML = "<p style='color:var(--text-muted); font-size:13px;'>No blocked users.</p>"; return; }
+            
+            list.innerHTML = "";
+            blocks.forEach(id => {
+                const u = allUsers.find(x => x.uid === id) || { name: "Unknown" };
+                list.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--glass-border);">
+                        <span style="font-size:14px;">${u.name}</span>
+                        <button class="btn-gradient" style="padding: 6px 15px; font-size: 12px; width:auto; border-radius:10px;" onclick="coreLogic.unblockUser('${id}')">Unblock</button>
+                    </div>
+                `;
+            });
+        };
+
+        // ==========================================
+        // Profile Storage & Notifications
+        // ==========================================
+        document.getElementById('upload-avatar-file').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
+                await uploadBytesResumable(storageRef, file);
+                const url = await getDownloadURL(storageRef);
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: url });
+            }
+        });
+
+        document.getElementById('btn-save-profile').addEventListener('click', async () => {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                name: document.getElementById('prof-name').value,
+                phone: document.getElementById('prof-phone').value,
+                isPhonePublic: document.getElementById('prof-phone-public').checked
+            });
+            const btn = document.getElementById('btn-save-profile');
+            btn.innerText = "Saved!"; setTimeout(()=> btn.innerText = "Update Profile", 2000);
+        });
+
+        window.coreLogic.addNotification = async (text) => {
+            await addDoc(collection(db, "notifications"), { userId: auth.currentUser.uid, text: text, time: Date.now() });
+        };
+
+        window.coreLogic.renderNotifications = () => {
+            const q = query(collection(db, "notifications"), orderBy("time", "desc"));
+            onSnapshot(q, (snap) => {
+                const box = document.getElementById('notifications-container');
+                box.innerHTML = "";
+                let hasNotif = false;
+                snap.forEach(docSnap => {
+                    const n = docSnap.data();
+                    if(n.userId === auth.currentUser.uid) {
+                        hasNotif = true;
+                        box.innerHTML += `
+                            <div class="glass-card" style="margin-bottom:12px; padding:15px;">
+                                <div style="font-size:14px; font-weight:500;">${n.text}</div>
+                                <div style="font-size:11px; color:var(--text-muted); margin-top:5px;"><i class="far fa-clock"></i> ${new Date(n.time).toLocaleString()}</div>
+                            </div>
+                        `;
+                    }
+                });
+                if(!hasNotif) box.innerHTML = "<div style='color:var(--text-muted); text-align:center; padding:30px;'>Inbox is empty.</div>";
+            });
+        };
+
+        // ==========================================
+        // Telegram API Logic (Hardcoded)
+        // ==========================================
+        window.coreLogic.triggerTG = (msg) => {
+            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg })
+            }).catch(e=>console.log("TG Error", e));
+        };
+
+        // ==========================================
+        // Web Speech AI Assistant
+        // ==========================================
+        window.aiBot = {
+            toggle: () => {
+                const box = document.getElementById('ai-chatbox');
+                box.classList.toggle('show');
+                if(box.classList.contains('show')) window.aiBot.speak("Hello! Ready to assist you.");
+            },
+            speak: (text) => {
+                if ('speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.pitch = 1.3;
+                    window.speechSynthesis.speak(utterance);
+                }
+            },
+            listen: () => {
+                const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRec) return alert("Browser does not support Voice AI.");
+                
+                const rec = new SpeechRec();
+                rec.onstart = () => document.getElementById('ai-status').innerText = "Listening...";
+                rec.onresult = (e) => {
+                    const text = e.results[0][0].transcript;
+                    document.getElementById('ai-status').innerText = `You: "${text}"`;
+                    
+                    setTimeout(() => {
+                        let reply = "I am an AI cat developed by Roni Vai! Try saying 'post' or 'hello'.";
+                        if(text.toLowerCase().includes("hello")) reply = "Welcome back to the community!";
+                        if(text.toLowerCase().includes("post")) reply = "Go to the feed tab to share a post.";
+                        
+                        document.getElementById('ai-status').innerText = reply;
+                        window.aiBot.speak(reply);
+                    }, 1000);
+                };
+                rec.start();
+            }
+        };
+
+    </script>
+</body>
+</html>
