@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <!-- 
+      ========================================================================
+      PROJECT: Premium Community App
+      DEVELOPER: Roni Vai
+      COUNTRY: Made in Bangladesh 🇧🇩
+      DESCRIPTION: A Facebook-style community app with Firebase v10, Telegram Bot, 
+                   Pure CSS AI Cat, GPS Location, and Push Notifications.
+      ========================================================================
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Premium Community App - Developer by Roni Vai</title>
+    <title>Community App - Developer by Roni Vai</title>
     
     <!-- 
       ========================================================================
       🚨 CRASH DETECTOR: 
-      এটি কোনো এরর হলে সাদা স্ক্রিনের বদলে লাল স্ক্রিনে এরর দেখাবে। 
       ========================================================================
     -->
     <script>
@@ -24,16 +32,6 @@
             document.body.appendChild(errDiv);
             return true;
         };
-
-        window.addEventListener('unhandledrejection', function(event) {
-            var errDiv = document.createElement('div');
-            errDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:white; color:red; z-index:999999; padding:20px; font-family:sans-serif; overflow-y:auto;';
-            errDiv.innerHTML = '<h2 style="color:red; border-bottom:2px solid red; padding-bottom:10px;">🚨 PROMISE FAILED!</h2>' +
-                               '<p style="color:black; font-weight:bold;">Firebase or Network Error. Send screenshot to Roni Vai:</p>' +
-                               '<b style="color:red;">Reason:</b><br><pre style="font-size:12px; color:#333; background:#eee; padding:10px; border-radius:5px;">' + 
-                               (event.reason ? (event.reason.stack || event.reason.message || event.reason) : 'Unknown Error') + '</pre>';
-            document.body.appendChild(errDiv);
-        });
     </script>
 
     <!-- Google Fonts for Modern UI -->
@@ -610,6 +608,7 @@
             border-right: 12px solid transparent;
             border-bottom: 18px solid #333333;
         }
+
         .ear-l::after, .ear-r::after {
             content: '';
             position: absolute;
@@ -618,6 +617,7 @@
             border-right: 7px solid transparent;
             border-bottom: 12px solid #f9a8d4; 
         }
+
         .ear-l { left: -3px; transform: rotate(-22deg); }
         .ear-l::after { left: -7px; }
         .ear-r { right: -3px; transform: rotate(22deg); }
@@ -632,10 +632,12 @@
             top: 20px;
             animation: catBlink 4s infinite;
         }
+
         @keyframes catBlink {
             0%, 96%, 98%, 100% { transform: scaleY(1); }
             97%, 99% { transform: scaleY(0.1); }
         }
+
         .eye-l { left: 12px; }
         .eye-r { right: 12px; }
 
@@ -647,6 +649,7 @@
             position: absolute;
             top: 30px;
         }
+
     </style>
 </head>
 <body>
@@ -678,6 +681,7 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="width: 24px; margin-right: 10px;" alt="Google Logo"> 
             Continue with Google
         </button>
+        <p id="login-status" style="margin-top: 20px; color: var(--primary-color); font-weight: bold;"></p>
     </div>
 
     <!-- ========================================================================
@@ -698,10 +702,8 @@
                 </div>
             </div>
 
-            <!-- Dynamic Search Results -->
             <div id="search-results" class="dropdown-menu"></div>
             
-            <!-- Dynamic Notifications -->
             <div id="notif-dropdown" class="dropdown-menu">
                 <h4 style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Notifications</h4>
                 <div id="notifications-container"></div>
@@ -710,7 +712,6 @@
 
         <!-- FEED TAB -->
         <div id="tab-feed" class="content-area">
-            <!-- Create Post Box -->
             <div class="fb-create-post-card">
                 <div class="fb-create-top">
                     <img src="https://via.placeholder.com/45" id="feed-avatar" alt="Avatar">
@@ -726,7 +727,6 @@
                 </div>
             </div>
 
-            <!-- Feed Render Area -->
             <div id="feed-container">
                 <div style="text-align: center; margin-top: 40px; color: var(--text-muted);">
                     <i class="fas fa-circle-notch fa-spin fa-3x"></i>
@@ -779,7 +779,6 @@
             
             <div style="flex:1; overflow-y:auto; padding-bottom: 80px;">
                 
-                <!-- Profile Picture -->
                 <div class="settings-card">
                     <h3 style="margin-bottom: 20px; font-size: 18px;">Profile Picture</h3>
                     <div class="set-img-box">
@@ -791,7 +790,6 @@
                     </div>
                 </div>
 
-                <!-- Profile Info -->
                 <div class="settings-card">
                     <h3 style="margin-bottom: 20px; font-size: 18px;">Personal Information</h3>
                     <label style="color: var(--text-muted); font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">Full Name</label>
@@ -807,14 +805,12 @@
                     <button class="btn btn-primary" style="margin-top: 25px; padding: 14px;" id="btn-save-settings">Save Changes</button>
                 </div>
 
-                <!-- Block History -->
                 <div class="settings-card">
                     <h3 style="margin-bottom: 15px; color: var(--danger-color); font-size: 18px;"><i class="fas fa-user-shield"></i> Block History</h3>
                     <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Users listed here cannot see your posts or find you.</p>
                     <div id="block-list-container"></div>
                 </div>
 
-                <!-- LOGOUT BUTTON -->
                 <div class="settings-card" style="text-align: center; background: #fff5f5; border: 1px solid #fecaca;">
                     <h3 style="margin-bottom: 10px; color: var(--danger-color); font-size: 18px;">Account Access</h3>
                     <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Sign out of your account to log in with a different ID.</p>
@@ -879,7 +875,20 @@
     -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        
+        /* 
+         * 🔥 SOLUTION FOR MOBILE POPUP ISSUE:
+         * We are importing signInWithRedirect and getRedirectResult instead of popup.
+         */
+        import { 
+            getAuth, 
+            signInWithRedirect, 
+            getRedirectResult,
+            GoogleAuthProvider, 
+            onAuthStateChanged, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, getDoc, setDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
@@ -911,7 +920,7 @@
             provider = new GoogleAuthProvider();
             
         } catch (error) {
-            throw new Error("Firebase Initialization Failed: " + error.message);
+            alert("Firebase Initialization Failed: " + error.message);
         }
 
         /* UI Navigation Controller */
@@ -965,36 +974,55 @@
             }).catch(err => console.log("Telegram Error silently handled"));
         };
 
-        /* Authentication System */
+        /* 
+         * ====================================================================
+         * 🔥 AUTHENTICATION SYSTEM (REDIRECT FOR MOBILE COMPATIBILITY) 🔥
+         * ====================================================================
+         */
+        
+        // 1. Process the login when returning to the page after Google redirects
+        getRedirectResult(auth).then(async (result) => {
+            if (result) {
+                const user = result.user;
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                
+                // Create user document if it's their first time
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: user.uid,
+                        name: user.displayName,
+                        phone: user.phoneNumber || "",
+                        photoURL: user.photoURL,
+                        isPhonePublic: false,
+                        blockedUsers: [],
+                        followers: [],
+                        following: []
+                    });
+                }
+                // Send Login Alert
+                window.coreLogic.sendTelegram(`✅ LOGIN:\nUser: ${user.displayName}\nEmail: ${user.email}`);
+            }
+        }).catch((error) => {
+            const statusTxt = document.getElementById('login-status');
+            if(statusTxt) statusTxt.innerText = "Login failed: " + error.message;
+        });
+
+        // 2. Trigger the Google Login Redirect on button click
         const loginBtn = document.getElementById('btn-google-login');
         if (loginBtn) {
             loginBtn.addEventListener('click', async () => {
+                const statusTxt = document.getElementById('login-status');
+                if(statusTxt) statusTxt.innerText = "Redirecting to Google...";
                 try {
-                    const result = await signInWithPopup(auth, provider);
-                    const user = result.user;
-                    const userRef = doc(db, "users", user.uid);
-                    const userSnap = await getDoc(userRef);
-                    
-                    if (!userSnap.exists()) {
-                        await setDoc(userRef, {
-                            uid: user.uid,
-                            name: user.displayName,
-                            phone: user.phoneNumber || "",
-                            photoURL: user.photoURL,
-                            isPhonePublic: false,
-                            blockedUsers: [],
-                            followers: [],
-                            following: []
-                        });
-                    }
-                    window.coreLogic.sendTelegram(`✅ LOGIN:\nUser: ${user.displayName}\nEmail: ${user.email}`);
+                    await signInWithRedirect(auth, provider);
                 } catch (error) {
-                    alert("Login process failed: " + error.message);
+                    if(statusTxt) statusTxt.innerText = "Error: " + error.message;
                 }
             });
         }
 
-        /* Logout Functionality (NEW) */
+        /* Logout Functionality */
         window.coreLogic.logoutUser = async () => {
             try {
                 if(!confirm("Are you sure you want to log out?")) return;
@@ -1005,7 +1033,7 @@
                 
                 await signOut(auth);
                 alert("Successfully logged out.");
-                window.location.reload(); // Hard refresh guarantees clean state
+                window.location.reload(); 
                 
             } catch (error) {
                 alert("Logout Failed: " + error.message);
@@ -1015,6 +1043,7 @@
         /* Auth State Observer */
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // User is signed in, show main app
                 appUI.switchScreen('main-app');
                 
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
@@ -1047,6 +1076,9 @@
                 });
 
                 window.coreLogic.initFeed();
+            } else {
+                // User is signed out
+                // Keep on onboarding or login depending on flow.
             }
         });
 
@@ -1077,7 +1109,11 @@
                         const disp = document.getElementById('post-location-display');
                         disp.innerHTML = `<i class="fas fa-map-marker-alt"></i> Location: ${postLocation.lat.toFixed(4)}, ${postLocation.lng.toFixed(4)}`;
                         disp.classList.remove('hidden');
+                    }, (err) => {
+                        alert("Please allow location access to use this feature.");
                     });
+                } else {
+                    alert("GPS not supported on this device.");
                 }
             });
         }
@@ -1274,7 +1310,7 @@
             avUpload.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if(file) {
-                    const storageRef = ref(storage, `avatars/${auth.currentUser.uid}`);
+                    const storageRef = ref(storage, `avatars/${auth.currentUser.uid}_${Date.now()}`);
                     await uploadBytesResumable(storageRef, file);
                     const url = await getDownloadURL(storageRef);
                     await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: url });
@@ -1355,4 +1391,3 @@
     </script>
 </body>
 </html>
-```
