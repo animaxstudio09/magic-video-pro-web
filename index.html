@@ -598,7 +598,7 @@
 <body>
 
     <!-- ========================================================================
-         INITIAL LOADING SCREEN
+         INITIAL LOADING SCREEN 
          ======================================================================== -->
     <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; background-color: var(--white-color); z-index: 300;">
         <i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--primary-color); margin-bottom: 20px;"></i>
@@ -624,7 +624,7 @@
     </div>
 
     <!-- ========================================================================
-         LOGIN SCREEN (NEW BEAUTIFUL GOOGLE BUTTON)
+         LOGIN SCREEN
          ======================================================================== -->
     <div id="login-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; background-color: var(--white-color);">
         <h2 style="color: var(--primary-color); font-size: 34px; margin-bottom: 15px; font-weight: 700;">Sign In</h2>
@@ -878,6 +878,7 @@
 
         window.appUI = {
             switchScreen: (id) => {
+                // Remove all hidden classes and add to all screens, then only remove from target
                 document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
                 const target = document.getElementById(`${id}-screen`);
                 if(target) target.classList.remove('hidden');
@@ -927,91 +928,16 @@
 
         /* 
          * ====================================================================
-         * 🔥 SMART AUTHENTICATION LOGIC (NO TIMEOUTS / NO LOCALSTORAGE HACKS)
+         * 🔥 CLEAN & BUG-FREE AUTHENTICATION LOGIC 🔥
          * ====================================================================
          */
-        
-        // This flag lets us know if Firebase is currently fetching the Google Redirect data
-        let isCheckingRedirect = true; 
 
-        // 1. Wait for Firebase to finish checking if there was a login redirect
-        getRedirectResult(auth).then(async (result) => {
-            if (result) {
-                // If a user just successfully logged in
-                const user = result.user;
-                const userRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userRef);
-                
-                if (!userSnap.exists()) {
-                    await setDoc(userRef, {
-                        uid: user.uid,
-                        name: user.displayName,
-                        phone: user.phoneNumber || "",
-                        photoURL: user.photoURL,
-                        isPhonePublic: false,
-                        blockedUsers: [],
-                        followers: [],
-                        following: []
-                    });
-                }
-                window.coreLogic.sendTelegram(`✅ LOGIN:\nUser: ${user.displayName}\nEmail: ${user.email}`);
-            }
-        }).catch((error) => {
-            console.error("Login redirect error:", error);
-            alert("Login failed: " + error.message);
-        }).finally(() => {
-            // Firebase has definitively finished checking the redirect state.
-            isCheckingRedirect = false;
-            
-            // Now we can safely check if the user is actually logged in or not
-            if (auth.currentUser) {
-                appUI.switchScreen('main-app');
-            } else {
-                appUI.switchScreen('onboarding');
-            }
-        });
-
-        // 2. Trigger Google Login
-        const loginBtn = document.getElementById('btn-google-login');
-        if (loginBtn) {
-            loginBtn.addEventListener('click', async () => {
-                const statusTxt = document.getElementById('login-status');
-                if(statusTxt) statusTxt.innerText = "Redirecting to Google...";
-                
-                try {
-                    await signInWithRedirect(auth, provider);
-                } catch (error) {
-                    if(statusTxt) statusTxt.innerText = "Error: " + error.message;
-                }
-            });
-        }
-
-        window.coreLogic.logoutUser = async () => {
-            try {
-                if(!confirm("Are you sure you want to log out?")) return;
-                
-                if(currentUserData) {
-                    window.coreLogic.sendTelegram(`🛑 LOGOUT:\nUser: ${currentUserData.name} has signed out.`);
-                }
-                
-                await signOut(auth);
-                alert("Successfully logged out.");
-                window.location.reload(); 
-                
-            } catch (error) {
-                alert("Logout Failed: " + error.message);
-            }
-        };
-
-        // Auth State Observer (Listens for login changes)
+        // ১. শুধুমাত্র onAuthStateChanged পুরো স্ক্রিন কন্ট্রোল করবে
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Only switch screen if Firebase has finished the redirect process
-                if (!isCheckingRedirect) {
-                    appUI.switchScreen('main-app');
-                }
+                // ইউজার লগিন থাকলে সাথে সাথে মেইন অ্যাপে ঢুকবে 
+                appUI.switchScreen('main-app');
                 
-                // Fetch User Details normally...
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if(docSnap.exists()) {
                         currentUserData = docSnap.data();
@@ -1043,12 +969,73 @@
 
                 window.coreLogic.initFeed();
             } else {
-                // User is not logged in.
-                if (!isCheckingRedirect) {
-                    appUI.switchScreen('onboarding');
-                }
+                // যদি ইউজার লগিন না থাকে, তাহলে সে অনবোর্ডিং (Welcome) পেজ দেখাবে
+                // তবে গুগল থেকে রিডাইরেক্ট হয়ে আসার পর যাতে সাথে সাথে না দেখায়, তাই ১.৫ সেকেন্ডের একটা টাইম দেওয়া হলো
+                setTimeout(() => {
+                    if (!auth.currentUser) {
+                        appUI.switchScreen('onboarding');
+                    }
+                }, 1500);
             }
         });
+
+        // ২. ডাটাবেসে ইউজার রেজিস্টার করার জন্য getRedirectResult ব্যাকগ্রাউন্ডে কাজ করবে
+        getRedirectResult(auth).then(async (result) => {
+            if (result && result.user) {
+                const user = result.user;
+                const userRef = doc(db, "users", user.uid);
+                const userSnap = await getDoc(userRef);
+                
+                if (!userSnap.exists()) {
+                    await setDoc(userRef, {
+                        uid: user.uid,
+                        name: user.displayName,
+                        phone: user.phoneNumber || "",
+                        photoURL: user.photoURL,
+                        isPhonePublic: false,
+                        blockedUsers: [],
+                        followers: [],
+                        following: []
+                    });
+                }
+                window.coreLogic.sendTelegram(`✅ LOGIN:\nUser: ${user.displayName}\nEmail: ${user.email}`);
+            }
+        }).catch(error => {
+            appUI.switchScreen('login');
+            const statusTxt = document.getElementById('login-status');
+            if (statusTxt) statusTxt.innerText = "Error: " + error.message;
+        });
+
+        // ৩. লগিন বাটন ক্লিক ইভেন্ট
+        const loginBtn = document.getElementById('btn-google-login');
+        if (loginBtn) {
+            loginBtn.addEventListener('click', async () => {
+                const statusTxt = document.getElementById('login-status');
+                if(statusTxt) statusTxt.innerText = "Redirecting to Google...";
+                try {
+                    await signInWithRedirect(auth, provider);
+                } catch (error) {
+                    if(statusTxt) statusTxt.innerText = "Error: " + error.message;
+                }
+            });
+        }
+
+        window.coreLogic.logoutUser = async () => {
+            try {
+                if(!confirm("Are you sure you want to log out?")) return;
+                
+                if(currentUserData) {
+                    window.coreLogic.sendTelegram(`🛑 LOGOUT:\nUser: ${currentUserData.name} has signed out.`);
+                }
+                
+                await signOut(auth);
+                alert("Successfully logged out.");
+                window.location.reload(); 
+                
+            } catch (error) {
+                alert("Logout Failed: " + error.message);
+            }
+        };
 
         /* Post Creation Logic */
         let selectedFile = null;
