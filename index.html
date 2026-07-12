@@ -598,7 +598,7 @@
 <body>
 
     <!-- ========================================================================
-         INITIAL LOADING SCREEN (নতুন যোগ করা হয়েছে)
+         INITIAL LOADING SCREEN
          ======================================================================== -->
     <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; background-color: var(--white-color); z-index: 300;">
         <i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--primary-color); margin-bottom: 20px;"></i>
@@ -607,7 +607,7 @@
     </div>
 
     <!-- ========================================================================
-         ONBOARDING SCREEN (এখন hidden দেওয়া হয়েছে)
+         ONBOARDING SCREEN
          ======================================================================== -->
     <div id="onboarding-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; text-align: center; background-color: var(--white-color);">
         <i class="fas fa-globe-americas" style="font-size: 90px; color: var(--primary-color); margin-bottom: 40px;"></i>
@@ -916,15 +916,17 @@
 
         /* 
          * ====================================================================
-         * 🔥 AUTHENTICATION SYSTEM (UPDATED TO PREVENT ONBOARDING FLASH) 🔥
+         * 🔥 NEW ROBUST AUTHENTICATION LOGIC WITH LOCALSTORAGE TRICK 🔥
          * ====================================================================
          */
         
-        let isAuthLoading = true; // Track if Firebase is currently processing a login redirect
+        // Check if we just came back from Google Login Page
+        const wasRedirecting = localStorage.getItem('authRedirectActive') === 'true';
+        let isRedirectChecking = wasRedirecting; 
 
-        // 1. Process the login when returning to the page after Google redirects
         getRedirectResult(auth).then(async (result) => {
-            isAuthLoading = false; // Processing complete
+            localStorage.removeItem('authRedirectActive'); // Clear the flag
+            
             if (result) {
                 const user = result.user;
                 const userRef = doc(db, "users", user.uid);
@@ -943,31 +945,36 @@
                     });
                 }
                 window.coreLogic.sendTelegram(`✅ LOGIN:\nUser: ${user.displayName}\nEmail: ${user.email}`);
-                
-                // Directly switch to main app after successful redirect
-                appUI.switchScreen('main-app');
-            } else {
-                // If there's no redirect result and user is NOT logged in, show onboarding
-                if(!auth.currentUser) {
+            }
+            
+            // Give Firebase an extra 1.5 seconds to properly sync state before forcing onboarding
+            setTimeout(() => {
+                isRedirectChecking = false;
+                if (!auth.currentUser) {
                     appUI.switchScreen('onboarding');
                 }
-            }
+            }, 1500);
+            
         }).catch((error) => {
-            isAuthLoading = false;
+            localStorage.removeItem('authRedirectActive');
+            isRedirectChecking = false;
             appUI.switchScreen('login');
             const statusTxt = document.getElementById('login-status');
             if(statusTxt) statusTxt.innerText = "Login failed: " + error.message;
         });
 
-        // 2. Trigger the Google Login Redirect on button click
+        // Trigger Google Login
         const loginBtn = document.getElementById('btn-google-login');
         if (loginBtn) {
             loginBtn.addEventListener('click', async () => {
                 const statusTxt = document.getElementById('login-status');
                 if(statusTxt) statusTxt.innerText = "Redirecting to Google...";
                 try {
+                    // Set flag BEFORE leaving the site
+                    localStorage.setItem('authRedirectActive', 'true');
                     await signInWithRedirect(auth, provider);
                 } catch (error) {
+                    localStorage.removeItem('authRedirectActive');
                     if(statusTxt) statusTxt.innerText = "Error: " + error.message;
                 }
             });
@@ -993,7 +1000,8 @@
         // Auth State Observer
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // User is signed in, show main app
+                // If logged in, clear flag and go to main app immediately!
+                localStorage.removeItem('authRedirectActive');
                 appUI.switchScreen('main-app');
                 
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
@@ -1027,9 +1035,8 @@
 
                 window.coreLogic.initFeed();
             } else {
-                // User is signed out. 
-                // Only show onboarding if Firebase has finished checking the redirect status!
-                if (!isAuthLoading) {
+                // If not logged in, wait for redirect logic to finish before showing Onboarding
+                if (!isRedirectChecking) {
                     appUI.switchScreen('onboarding');
                 }
             }
