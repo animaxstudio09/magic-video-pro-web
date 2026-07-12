@@ -624,16 +624,27 @@
     </div>
 
     <!-- ========================================================================
-         LOGIN SCREEN
+         LOGIN SCREEN (NEW BEAUTIFUL GOOGLE BUTTON)
          ======================================================================== -->
     <div id="login-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; background-color: var(--white-color);">
         <h2 style="color: var(--primary-color); font-size: 34px; margin-bottom: 15px; font-weight: 700;">Sign In</h2>
         <p style="color: var(--text-muted); margin-bottom: 50px; font-size: 16px;">Secure authentication via Google</p>
-        <button class="btn" id="btn-google-login" style="background-color: var(--background-gray); width: 100%; border: 1px solid var(--border-color); padding: 15px; font-size: 18px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="width: 24px; margin-right: 10px;" alt="Google Logo"> 
-            Continue with Google
-        </button>
-        <p id="login-status" style="margin-top: 20px; color: var(--primary-color); font-weight: bold;"></p>
+        
+        <div style="width: 100%; max-width: 320px; margin: 0 auto;">
+            <!-- Modern Styled Google Login Button with Inline SVG Logo -->
+            <button id="btn-google-login" style="background-color: #ffffff; color: #3c4043; width: 100%; border: 1px solid #dadce0; border-radius: 24px; padding: 12px 24px; font-size: 16px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 1px 2px rgba(60,64,67,0.3); transition: background-color 0.2s, box-shadow 0.2s; cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style="width: 24px; height: 24px;">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    <path fill="none" d="M0 0h48v48z"/>
+                </svg>
+                Continue with Google
+            </button>
+        </div>
+        
+        <p id="login-status" style="margin-top: 25px; color: var(--primary-color); font-weight: bold;"></p>
     </div>
 
     <!-- ========================================================================
@@ -916,18 +927,17 @@
 
         /* 
          * ====================================================================
-         * 🔥 NEW ROBUST AUTHENTICATION LOGIC WITH LOCALSTORAGE TRICK 🔥
+         * 🔥 SMART AUTHENTICATION LOGIC (NO TIMEOUTS / NO LOCALSTORAGE HACKS)
          * ====================================================================
          */
         
-        // Check if we just came back from Google Login Page
-        const wasRedirecting = localStorage.getItem('authRedirectActive') === 'true';
-        let isRedirectChecking = wasRedirecting; 
+        // This flag lets us know if Firebase is currently fetching the Google Redirect data
+        let isCheckingRedirect = true; 
 
+        // 1. Wait for Firebase to finish checking if there was a login redirect
         getRedirectResult(auth).then(async (result) => {
-            localStorage.removeItem('authRedirectActive'); // Clear the flag
-            
             if (result) {
+                // If a user just successfully logged in
                 const user = result.user;
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
@@ -946,35 +956,31 @@
                 }
                 window.coreLogic.sendTelegram(`✅ LOGIN:\nUser: ${user.displayName}\nEmail: ${user.email}`);
             }
-            
-            // Give Firebase an extra 1.5 seconds to properly sync state before forcing onboarding
-            setTimeout(() => {
-                isRedirectChecking = false;
-                if (!auth.currentUser) {
-                    appUI.switchScreen('onboarding');
-                }
-            }, 1500);
-            
         }).catch((error) => {
-            localStorage.removeItem('authRedirectActive');
-            isRedirectChecking = false;
-            appUI.switchScreen('login');
-            const statusTxt = document.getElementById('login-status');
-            if(statusTxt) statusTxt.innerText = "Login failed: " + error.message;
+            console.error("Login redirect error:", error);
+            alert("Login failed: " + error.message);
+        }).finally(() => {
+            // Firebase has definitively finished checking the redirect state.
+            isCheckingRedirect = false;
+            
+            // Now we can safely check if the user is actually logged in or not
+            if (auth.currentUser) {
+                appUI.switchScreen('main-app');
+            } else {
+                appUI.switchScreen('onboarding');
+            }
         });
 
-        // Trigger Google Login
+        // 2. Trigger Google Login
         const loginBtn = document.getElementById('btn-google-login');
         if (loginBtn) {
             loginBtn.addEventListener('click', async () => {
                 const statusTxt = document.getElementById('login-status');
                 if(statusTxt) statusTxt.innerText = "Redirecting to Google...";
+                
                 try {
-                    // Set flag BEFORE leaving the site
-                    localStorage.setItem('authRedirectActive', 'true');
                     await signInWithRedirect(auth, provider);
                 } catch (error) {
-                    localStorage.removeItem('authRedirectActive');
                     if(statusTxt) statusTxt.innerText = "Error: " + error.message;
                 }
             });
@@ -997,13 +1003,15 @@
             }
         };
 
-        // Auth State Observer
+        // Auth State Observer (Listens for login changes)
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // If logged in, clear flag and go to main app immediately!
-                localStorage.removeItem('authRedirectActive');
-                appUI.switchScreen('main-app');
+                // Only switch screen if Firebase has finished the redirect process
+                if (!isCheckingRedirect) {
+                    appUI.switchScreen('main-app');
+                }
                 
+                // Fetch User Details normally...
                 onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if(docSnap.exists()) {
                         currentUserData = docSnap.data();
@@ -1035,8 +1043,8 @@
 
                 window.coreLogic.initFeed();
             } else {
-                // If not logged in, wait for redirect logic to finish before showing Onboarding
-                if (!isRedirectChecking) {
+                // User is not logged in.
+                if (!isCheckingRedirect) {
                     appUI.switchScreen('onboarding');
                 }
             }
