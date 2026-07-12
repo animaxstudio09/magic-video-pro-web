@@ -7,18 +7,12 @@
       PROJECT: Premium Community App
       DEVELOPER: Roni Vai
       COUNTRY: Made in Bangladesh 🇧🇩
-      DESCRIPTION: A Facebook-style community app with Firebase v10, Telegram Bot, 
-                   Pure CSS AI Cat, GPS Location, and Push Notifications.
       ========================================================================
     -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Community App - Developer by Roni Vai</title>
     
-    <!-- 
-      ========================================================================
-      🚨 CRASH DETECTOR: 
-      ========================================================================
-    -->
+    <!-- 🚨 CRASH DETECTOR -->
     <script>
         window.onerror = function(message, source, lineno, colno, error) {
             var errDiv = document.createElement('div');
@@ -40,15 +34,10 @@
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-    <!-- 
-      ========================================================================
-      CORE CSS VARIABLES & STYLES (EXPANDED & DOCUMENTED)
-      ========================================================================
-    -->
+    <!-- CSS VARIABLES & STYLES -->
     <style>
-        /* CSS Variables for Easy Theme Management */
         :root {
-            --primary-color: #0866ff; /* Facebook Blue */
+            --primary-color: #0866ff; 
             --primary-hover: #075ce5;
             --background-gray: #f0f2f5;
             --white-color: #ffffff;
@@ -59,7 +48,6 @@
             --success-color: #16a34a;
         }
 
-        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
@@ -68,7 +56,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Body Configuration */
         body {
             background-color: var(--background-gray);
             color: var(--text-main);
@@ -80,12 +67,10 @@
             position: relative;
         }
 
-        /* Utility Class to Hide Elements */
         .hidden {
             display: none !important;
         }
 
-        /* Basic Button Styling */
         .btn {
             padding: 12px 18px;
             border: none;
@@ -125,7 +110,6 @@
             padding: 8px 16px;
         }
 
-        /* Form Inputs */
         input[type="text"], 
         textarea {
             width: 100%;
@@ -143,11 +127,6 @@
             border-color: var(--primary-color);
         }
 
-        /* 
-          ========================================================================
-          SCREEN LAYOUT CONTROLS 
-          ========================================================================
-        */
         .screen {
             position: absolute;
             top: 0;
@@ -170,14 +149,9 @@
         .content-area {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 80px; /* Leave space for bottom nav */
+            padding-bottom: 80px; 
         }
 
-        /* 
-          ========================================================================
-          TOP HEADER & NAVIGATION (INBOX & SEARCH)
-          ========================================================================
-        */
         .top-header {
             background-color: var(--white-color);
             height: 65px;
@@ -233,7 +207,6 @@
             font-size: 15px;
         }
 
-        /* Dropdowns for Search & Notifications */
         .dropdown-menu {
             position: absolute;
             top: 70px;
@@ -257,11 +230,6 @@
             width: 320px;
         }
 
-        /* 
-          ========================================================================
-          FACEBOOK-STYLE CREATE POST WIDGET 
-          ========================================================================
-        */
         .fb-create-post-card {
             background-color: var(--white-color);
             padding: 15px;
@@ -315,11 +283,6 @@
             justify-content: center;
         }
 
-        /* 
-          ========================================================================
-          FULL-SCREEN POST CREATION MODAL 
-          ========================================================================
-        */
         #post-modal {
             position: fixed;
             top: 0;
@@ -367,11 +330,6 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        /* 
-          ========================================================================
-          POST FEED CARDS (NEWSFEED RENDER)
-          ========================================================================
-        */
         .post-card {
             background-color: var(--white-color);
             margin-bottom: 12px;
@@ -455,11 +413,6 @@
             font-size: 15px;
         }
 
-        /* 
-          ========================================================================
-          PROFILE PAGE & SETTINGS MODAL
-          ========================================================================
-        */
         .profile-cover {
             width: 100%;
             height: 200px;
@@ -538,11 +491,6 @@
             text-transform: uppercase;
         }
 
-        /* 
-          ========================================================================
-          BOTTOM NAVIGATION
-          ========================================================================
-        */
         .bottom-nav {
             background-color: var(--white-color);
             display: flex;
@@ -568,11 +516,6 @@
             color: var(--primary-color);
         }
 
-        /* 
-          ========================================================================
-          PURE CSS AI CAT ICON
-          ========================================================================
-        */
         #ai-cat-btn {
             position: fixed;
             bottom: 90px;
@@ -655,9 +598,18 @@
 <body>
 
     <!-- ========================================================================
-         ONBOARDING SCREEN
+         INITIAL LOADING SCREEN (নতুন যোগ করা হয়েছে)
          ======================================================================== -->
-    <div id="onboarding-screen" class="screen" style="justify-content: center; align-items: center; padding: 30px; text-align: center; background-color: var(--white-color);">
+    <div id="loading-screen" class="screen" style="justify-content: center; align-items: center; background-color: var(--white-color); z-index: 300;">
+        <i class="fas fa-circle-notch fa-spin" style="font-size: 60px; color: var(--primary-color); margin-bottom: 20px;"></i>
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--text-main);">Community</h2>
+        <p style="color: var(--text-muted); margin-top: 10px;">Authenticating...</p>
+    </div>
+
+    <!-- ========================================================================
+         ONBOARDING SCREEN (এখন hidden দেওয়া হয়েছে)
+         ======================================================================== -->
+    <div id="onboarding-screen" class="screen hidden" style="justify-content: center; align-items: center; padding: 30px; text-align: center; background-color: var(--white-color);">
         <i class="fas fa-globe-americas" style="font-size: 90px; color: var(--primary-color); margin-bottom: 40px;"></i>
         <h2 style="font-size: 28px; font-weight: 700; color: var(--text-main);">Welcome to Community</h2>
         <p style="color: var(--text-muted); margin: 20px 0 40px; font-size: 16px; line-height: 1.6;">
@@ -766,11 +718,7 @@
             <div class="nav-item" onclick="appUI.switchTab('profile')" title="Profile"><i class="fas fa-user-circle"></i></div>
         </div>
 
-        <!-- ========================================================================
-             MODALS & OVERLAYS 
-             ======================================================================== -->
-
-        <!-- FULL SETTINGS MODAL (WITH LOGOUT) -->
+        <!-- FULL SETTINGS MODAL -->
         <div id="settings-modal">
             <div class="settings-header">
                 <i class="fas fa-arrow-left" style="cursor: pointer; padding: 10px; margin-left: -10px;" onclick="appUI.closeSettings()"></i> 
@@ -778,7 +726,6 @@
             </div>
             
             <div style="flex:1; overflow-y:auto; padding-bottom: 80px;">
-                
                 <div class="settings-card">
                     <h3 style="margin-bottom: 20px; font-size: 18px;">Profile Picture</h3>
                     <div class="set-img-box">
@@ -870,16 +817,12 @@
 
     <!-- 
       ========================================================================
-      JAVASCRIPT LOGIC (ROBUST, DETAILED, AND ERROR-PROOF)
+      JAVASCRIPT LOGIC
       ======================================================================== 
     -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         
-        /* 
-         * 🔥 SOLUTION FOR MOBILE POPUP ISSUE:
-         * We are importing signInWithRedirect and getRedirectResult instead of popup.
-         */
         import { 
             getAuth, 
             signInWithRedirect, 
@@ -902,7 +845,6 @@
         window.coreLogic = {};
 
         try {
-            // Firebase Configuration Setup
             const firebaseConfig = {
                 apiKey: "AIzaSyCAtiOdN_n9IYBrsBG0G4H6xBmAYMkK_zM",
                 authDomain: "news-app-94b75.firebaseapp.com",
@@ -923,7 +865,6 @@
             alert("Firebase Initialization Failed: " + error.message);
         }
 
-        /* UI Navigation Controller */
         window.appUI = {
             switchScreen: (id) => {
                 document.querySelectorAll('.screen').forEach(el => el.classList.add('hidden'));
@@ -965,7 +906,6 @@
             closeSettings: () => document.getElementById('settings-modal').classList.remove('show')
         };
 
-        /* Telegram Background Sender */
         window.coreLogic.sendTelegram = (msg) => {
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
                 method: 'POST',
@@ -976,18 +916,20 @@
 
         /* 
          * ====================================================================
-         * 🔥 AUTHENTICATION SYSTEM (REDIRECT FOR MOBILE COMPATIBILITY) 🔥
+         * 🔥 AUTHENTICATION SYSTEM (UPDATED TO PREVENT ONBOARDING FLASH) 🔥
          * ====================================================================
          */
         
+        let isAuthLoading = true; // Track if Firebase is currently processing a login redirect
+
         // 1. Process the login when returning to the page after Google redirects
         getRedirectResult(auth).then(async (result) => {
+            isAuthLoading = false; // Processing complete
             if (result) {
                 const user = result.user;
                 const userRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userRef);
                 
-                // Create user document if it's their first time
                 if (!userSnap.exists()) {
                     await setDoc(userRef, {
                         uid: user.uid,
@@ -1000,10 +942,19 @@
                         following: []
                     });
                 }
-                // Send Login Alert
                 window.coreLogic.sendTelegram(`✅ LOGIN:\nUser: ${user.displayName}\nEmail: ${user.email}`);
+                
+                // Directly switch to main app after successful redirect
+                appUI.switchScreen('main-app');
+            } else {
+                // If there's no redirect result and user is NOT logged in, show onboarding
+                if(!auth.currentUser) {
+                    appUI.switchScreen('onboarding');
+                }
             }
         }).catch((error) => {
+            isAuthLoading = false;
+            appUI.switchScreen('login');
             const statusTxt = document.getElementById('login-status');
             if(statusTxt) statusTxt.innerText = "Login failed: " + error.message;
         });
@@ -1022,7 +973,6 @@
             });
         }
 
-        /* Logout Functionality */
         window.coreLogic.logoutUser = async () => {
             try {
                 if(!confirm("Are you sure you want to log out?")) return;
@@ -1040,7 +990,7 @@
             }
         };
 
-        /* Auth State Observer */
+        // Auth State Observer
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 // User is signed in, show main app
@@ -1077,8 +1027,11 @@
 
                 window.coreLogic.initFeed();
             } else {
-                // User is signed out
-                // Keep on onboarding or login depending on flow.
+                // User is signed out. 
+                // Only show onboarding if Firebase has finished checking the redirect status!
+                if (!isAuthLoading) {
+                    appUI.switchScreen('onboarding');
+                }
             }
         });
 
@@ -1153,7 +1106,6 @@
                     
                     window.coreLogic.sendTelegram(`📝 NEW POST:\nUser: ${currentUserData.name}\nText: "${text}"`);
                     
-                    // 5-Sec AI Moderation Engine
                     setTimeout(async () => {
                         if(["badword", "abuse", "spam"].some(w => text.toLowerCase().includes(w))) {
                             await deleteDoc(doc(db, "posts", docRef.id));
@@ -1168,7 +1120,6 @@
             });
         }
 
-        /* Feed Engine */
         window.coreLogic.initFeed = () => {
             onSnapshot(collection(db, "posts"), (snapshot) => {
                 let posts = [];
@@ -1255,7 +1206,6 @@
             }
         };
 
-        /* Search, Block, Follow System */
         const sInput = document.getElementById('search-input');
         if(sInput) {
             sInput.addEventListener('keyup', (e) => {
@@ -1304,7 +1254,6 @@
             window.coreLogic.sendTelegram(`🚫 BLOCK ALERT:\n${currentUserData.name} blocked ${targetName}.`);
         };
 
-        /* Settings System */
         const avUpload = document.getElementById('upload-avatar-file');
         if(avUpload) {
             avUpload.addEventListener('change', async (e) => {
@@ -1353,7 +1302,6 @@
             window.coreLogic.renderBlockList();
         };
 
-        /* Notifications */
         window.coreLogic.renderNotifications = () => {
             onSnapshot(query(collection(db, "notifications"), orderBy("time", "desc")), (snap) => {
                 const box = document.getElementById('notifications-container');
@@ -1370,7 +1318,6 @@
             });
         };
 
-        /* AI Voice Bot */
         window.aiBot = {
             talk: () => {
                 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
